@@ -15,6 +15,7 @@ let sessao = null;
 let recordes = {};   // exercício -> { kg, reps, data }
 let salvas = [];     // refeições salvas para repetir
 let diasDieta = {};  // data -> kcal somadas
+let plano = null;    // dados/plano-alimentar.json, quando existe
 let gradeDe = 'treino';
 let catalogo = [];   // dados/exercicios.json
 let alimentos = [];  // dados/taco.json + os criados pelo usuário
@@ -39,6 +40,7 @@ async function carregar() {
   ]);
   // As quatro refeições do dia já vêm postas; o usuário acrescenta outras se quiser.
   if (!diaHoje.refeicoes.length) diaHoje.refeicoes = REFEICOES_PADRAO.map((nome) => ({ nome, itens: [] }));
+  gradeDe = (await db.config('gradeDe')) || 'treino';
   const cor = await db.config('cor');
   if (cor) document.documentElement.style.setProperty('--cor', cor);
   renderTudo();
@@ -46,11 +48,13 @@ async function carregar() {
 }
 
 async function carregarCatalogos() {
-  const [ex, taco, meus] = await Promise.all([
+  const [ex, taco, meus, p] = await Promise.all([
     fetch('dados/exercicios.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
     fetch('dados/taco.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
     db.todos(db.LOJAS.alimentos).catch(() => []),
+    fetch('dados/plano-alimentar.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
   ]);
+  if (p) { plano = p; await aplicarPlano(); }
   catalogo = ex;
   alimentos = [
     ...meus,
@@ -60,6 +64,34 @@ async function carregarCatalogos() {
       c: nz(a.por100g?.carboidrato), g: nz(a.por100g?.gordura),
     })),
   ];
+}
+
+/**
+ * As refeições do plano viram refeições salvas, uma vez só, para ele registrar
+ * o dia com um toque em cada. Depois disso são dele: editar ou apagar não as traz
+ * de volta, por isso a marca em config.
+ */
+async function aplicarPlano() {
+  if (await db.config('planoImportado')) return;
+  for (const r of plano.refeicoes) {
+    await db.gravar(db.LOJAS.salvas, { nome: r.nome, itens: r.itens.map((i) => ({ ...i })) });
+  }
+  await db.salvarConfig('planoImportado', plano.origem || true);
+  salvas = await db.todos(db.LOJAS.salvas);
+  renderTudo();
+}
+
+/**
+ * Aderência do dia: o quanto do plano foi registrado.
+ * Verde a partir de 90%, amarelo abaixo disso, vermelho abaixo de 60% — a regra
+ * que o usuário escreveu. Sem plano, não há como calcular e a grade só acende.
+ */
+function corDoDia(kcal) {
+  if (!plano || !kcal) return '';
+  const pct = (kcal / plano.alvo.kcal) * 100;
+  if (pct < 60) return 'vermelho';
+  if (pct < 90) return 'amarelo';
+  return 'verde';
 }
 
 // =========================================================================
@@ -362,7 +394,7 @@ function folhaRepetirSalva(iRef) {
       const t = somaMacros(s.itens);
       return `<button class="opcao" data-usar-salva="${iRef}:${s.id}">
         <div><div>${esc(s.nome)}</div>
-          <div class="sub">${s.itens.length} item${s.itens.length === 1 ? '' : 's'} · ${t.kcal.toFixed(0)} kcal</div></div></button>`;
+          <div class="sub">${s.itens.length === 1 ? '1 item' : s.itens.length + ' itens'} · ${t.kcal.toFixed(0)} kcal</div></div></button>`;
     }).join('')}`);
 }
 
@@ -429,7 +461,8 @@ function mesMini(mes) {
   let q = '<span class="d off"></span>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    q += `<span class="${['d', dias.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ')}"></span>`;
+    const cor = gradeDe === 'dieta' ? corDoDia(diasDieta[k]) : '';
+    q += `<span class="${['d', dias.has(k) ? 'on' : '', cor, k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ')}"></span>`;
   }
   return `<button class="mes ${mes === HOJE.getMonth() ? 'atual' : ''} ${futuro ? 'futuro' : ''}" data-mes="${mes}">
     <div class="nome"><span>${MESES[mes].slice(0, 3)}</span><span>${contaMes(mes) || ''}</span></div>
@@ -449,7 +482,8 @@ function renderMesAmpliado() {
   let cel = '<button class="espaco"></button>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const cls = [dias.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
+    const cor = gradeDe === 'dieta' ? corDoDia(diasDieta[k]) : '';
+    const cls = [dias.has(k) ? 'on' : '', cor, k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
     cel += `<button class="${cls}" data-dia="${k}">${d}</button>`;
   }
   $('#mesAmpliado').innerHTML = `
@@ -754,7 +788,11 @@ document.addEventListener('click', async (ev) => {
     fecharFolha();
     return renderTudo();
   }
-  if ((el = achar('[data-grade]'))) { gradeDe = el.dataset.grade; return renderPerfil(); }
+  if ((el = achar('[data-grade]'))) {
+    gradeDe = el.dataset.grade;
+    await db.salvarConfig('gradeDe', gradeDe);
+    return renderPerfil();
+  }
 
   if ((el = achar('[data-reg]'))) {
     fecharFolha();

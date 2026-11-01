@@ -1,0 +1,67 @@
+{
+  "origem": "Plano alimentar ajustado, 11/10/2026, a partir do plano Saraiva Team de 24/07/2026",
+  "pesoReferencia": 55.1,
+  "alvo": { "kcal": 2406, "p": 101.4, "c": 385.8, "g": 52.0 },
+  "refeicoes": [
+    {
+      "nome": "Café da manhã",
+      "itens": [
+        { "nome": "Frutas (mamão, abacaxi, maçã ou kiwi)", "g_": 100, "kcal": 40, "p": 0.5, "c": 10.0, "g": 0.0 },
+        { "nome": "Banana nanica", "g_": 100, "kcal": 89, "p": 1.4, "c": 23.0, "g": 0.1 },
+        { "nome": "Leite desnatado", "g_": 150, "kcal": 52, "p": 5.1, "c": 7.3, "g": 0.3 },
+        { "nome": "Aveia em flocos", "g_": 30, "kcal": 118, "p": 4.2, "c": 20.0, "g": 2.6 },
+        { "nome": "Doce de leite cremoso", "g_": 20, "kcal": 61, "p": 1.1, "c": 11.9, "g": 1.2 },
+        { "nome": "Semente de chia", "g_": 10, "kcal": 50, "p": 1.6, "c": 4.2, "g": 3.0 }
+      ]
+    },
+    {
+      "nome": "Almoço",
+      "itens": [
+        { "nome": "Arroz branco cozido", "g_": 300, "kcal": 384, "p": 7.5, "c": 84.3, "g": 0.6 },
+        { "nome": "Feijão carioca cozido", "g_": 80, "kcal": 61, "p": 3.8, "c": 10.9, "g": 0.4 },
+        { "nome": "Peito de frango grelhado", "g_": 55, "kcal": 87, "p": 17.6, "c": 0.0, "g": 1.5 },
+        { "nome": "Legumes (brócolis, abobrinha, cenoura, chuchu ou vagem)", "g_": 100, "kcal": 29, "p": 1.5, "c": 5.5, "g": 0.2 },
+        { "nome": "Azeite de oliva extravirgem", "g_": 12, "kcal": 106, "p": 0.0, "c": 0.0, "g": 12.0 }
+      ]
+    },
+    {
+      "nome": "Lanche da tarde",
+      "itens": [
+        { "nome": "Pão de forma branco", "g_": 60, "kcal": 160, "p": 5.0, "c": 29.8, "g": 1.9 },
+        { "nome": "Banana nanica", "g_": 100, "kcal": 89, "p": 1.4, "c": 23.0, "g": 0.1 },
+        { "nome": "Ovo inteiro cozido (1 unidade)", "g_": 50, "kcal": 73, "p": 6.7, "c": 0.3, "g": 4.8 },
+        { "nome": "Queijo mussarela", "g_": 20, "kcal": 58, "p": 4.2, "c": 0.4, "g": 4.4 },
+        { "nome": "Mel", "g_": 10, "kcal": 31, "p": 0.0, "c": 8.4, "g": 0.0 }
+      ]
+    },
+    {
+      "nome": "Janta",
+      "itens": [
+        { "nome": "Arroz branco cozido", "g_": 300, "kcal": 384, "p": 7.5, "c": 84.3, "g": 0.6 },
+        { "nome": "Feijão carioca cozido", "g_": 80, "kcal": 61, "p": 3.8, "c": 10.9, "g": 0.4 },
+        { "nome": "Peito de frango grelhado", "g_": 55, "kcal": 87, "p": 17.6, "c": 0.0, "g": 1.5 },
+        { "nome": "Legumes (brócolis, abobrinha, cenoura, chuchu ou vagem)", "g_": 100, "kcal": 29, "p": 1.5, "c": 5.5, "g": 0.2 },
+        { "nome": "Azeite de oliva extravirgem", "g_": 12, "kcal": 106, "p": 0.0, "c": 0.0, "g": 12.0 }
+      ]
+    },
+    {
+      "nome": "Ceia",
+      "itens": [
+        { "nome": "Iogurte natural desnatado", "g_": 100, "kcal": 36, "p": 3.5, "c": 5.0, "g": 0.1 },
+        { "nome": "Aveia em flocos", "g_": 30, "kcal": 118, "p": 4.2, "c": 20.0, "g": 2.6 },
+        { "nome": "Frutas (mamão, abacaxi, maçã ou kiwi)", "g_": 150, "kcal": 60, "p": 0.8, "c": 15.0, "g": 0.0 },
+        { "nome": "Semente de chia", "g_": 5, "kcal": 25, "p": 0.8, "c": 2.1, "g": 1.5 },
+        { "nome": "Psyllium (casca)", "g_": 5, "kcal": 10, "p": 0.1, "c": 4.0, "g": 0.1 }
+      ]
+    },
+    {
+      "nome": "Almoço ou janta com macarrão",
+      "itens": [
+        { "nome": "Macarrão cozido", "g_": 300, "kcal": 474, "p": 17.4, "c": 92.7, "g": 2.7 },
+        { "nome": "Peito de frango grelhado", "g_": 40, "kcal": 64, "p": 12.8, "c": 0.0, "g": 1.1 },
+        { "nome": "Legumes (brócolis, abobrinha, cenoura, chuchu ou vagem)", "g_": 100, "kcal": 29, "p": 1.5, "c": 5.5, "g": 0.2 },
+        { "nome": "Azeite de oliva extravirgem", "g_": 10, "kcal": 88, "p": 0.0, "c": 0.0, "g": 10.0 }
+      ]
+    }
+  ]
+}
