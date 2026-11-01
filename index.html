@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vinland Saga</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Vinland Saga">
+<style>
+  :root {
+    --cor: #e5342b;
+    --bg: #000;
+    --surf: #0e0e11;
+    --surf2: #16161a;
+    --linha: #1e1e23;
+    --txt: #fff;
+    --fraco: #86868f;
+    --barra: 76px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--txt); }
+  body {
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; padding: 0; cursor: pointer; }
+
+  .tela { display: none; padding: 0 16px calc(var(--barra) + env(safe-area-inset-bottom) + 28px); }
+  .tela.ativa { display: block; }
+
+  header.topo { padding: calc(env(safe-area-inset-top) + 18px) 0 14px; }
+  header.topo h1 { margin: 0; font-size: 26px; letter-spacing: -0.4px; }
+  header.topo .data { color: var(--fraco); font-size: 13px; margin-top: 2px; }
+  header.topo .data::first-letter { text-transform: uppercase; }
+
+  .card { background: var(--surf); border: 1px solid var(--linha); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .card h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--fraco); text-transform: uppercase; letter-spacing: 0.6px; }
+
+  .linha-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--linha); }
+  .linha-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .linha-item:first-of-type { padding-top: 0; }
+  .sub { color: var(--fraco); font-size: 13px; }
+  .destaque { color: var(--cor); }
+  .vazio { color: var(--fraco); font-size: 14px; padding: 6px 0; }
+
+  .num-grande { font-size: 42px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+
+  /* ---- grade anual ---- */
+  .ano-cabeca { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .ano-cabeca .ano { font-size: 17px; font-weight: 600; }
+  .meses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 12px; }
+  .mes { text-align: left; }
+  .mes .nome { font-size: 11px; font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between; color: var(--fraco); }
+  .mes.atual .nome { color: var(--cor); }
+  .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .d { aspect-ratio: 1; border-radius: 2px; background: var(--linha); }
+  .d.off { background: transparent; }
+  .d.on { background: var(--cor); }
+  .d.hoje { box-shadow: inset 0 0 0 1.5px var(--cor); }
+  .mes.futuro { opacity: .3; }
+
+  /* ---- mês ampliado ---- */
+  #mesAmpliado { position: fixed; inset: 0; background: var(--bg); z-index: 40; overflow-y: auto; display: none; padding: 0 16px 40px; }
+  #mesAmpliado.aberto { display: block; }
+  .amp-topo { display: flex; align-items: center; gap: 14px; padding: calc(env(safe-area-inset-top) + 16px) 0 18px; }
+  .amp-topo h2 { margin: 0; font-size: 22px; }
+  .voltar { font-size: 22px; color: var(--fraco); width: 32px; }
+  .semana { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
+  .semana span { text-align: center; font-size: 11px; color: var(--fraco); }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal button { aspect-ratio: 1; border-radius: 10px; background: var(--surf2); font-size: 14px; color: var(--fraco); display: grid; place-items: center; }
+  .cal button.on { background: var(--cor); color: #fff; font-weight: 600; }
+  .cal button.hoje { box-shadow: inset 0 0 0 2px var(--cor); color: var(--txt); }
+  .cal button.sel { outline: 2px solid var(--txt); outline-offset: 2px; }
+  .cal .espaco { visibility: hidden; }
+
+  /* ---- barra de abas ---- */
+  nav.abas {
+    position: fixed; z-index: 30;
+    left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom) + 10px);
+    height: var(--barra);
+    background: rgba(18,18,22,.86); backdrop-filter: blur(18px);
+    border: 1px solid var(--linha); border-radius: 26px;
+    display: grid; grid-template-columns: 1fr 1fr 86px 1fr 1fr; align-items: center;
+  }
+  nav.abas button.aba { display: grid; justify-items: center; gap: 3px; color: var(--fraco); font-size: 10px; padding-top: 2px; }
+  nav.abas button.aba svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  nav.abas button.aba.ativa { color: var(--cor); }
+  .fab {
+    width: 58px; height: 58px; border-radius: 50%; justify-self: center;
+    background: var(--cor); display: grid; place-items: center;
+    box-shadow: 0 0 22px -2px var(--cor), 0 0 48px -10px var(--cor);
+  }
+  .fab svg { width: 26px; height: 26px; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; fill: none; }
+
+  /* ---- folha deslizante ---- */
+  .folha-fundo { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 50; display: none; }
+  .folha-fundo.aberta { display: block; }
+  .folha {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 51;
+    background: var(--surf); border-radius: 22px 22px 0 0; border-top: 1px solid var(--linha);
+    padding: 10px 16px calc(env(safe-area-inset-bottom) + 22px);
+    transform: translateY(100%); transition: transform .22s ease;
+    max-height: 86vh; overflow-y: auto;
+  }
+  .folha.aberta { transform: none; }
+  .puxador { width: 36px; height: 4px; border-radius: 2px; background: var(--linha); margin: 0 auto 14px; }
+  .folha h3 { margin: 0 0 14px; font-size: 17px; }
+  .opcao { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 0; border-bottom: 1px solid var(--linha); text-align: left; }
+  .opcao:last-child { border-bottom: 0; }
+  .opcao .bolha { width: 36px; height: 36px; border-radius: 10px; background: var(--surf2); display: grid; place-items: center; font-size: 17px; }
+
+  .botao { display: block; width: 100%; background: var(--cor); color: #fff; font-weight: 600; padding: 15px; border-radius: 14px; text-align: center; margin-top: 8px; }
+  .botao.fraco { background: var(--surf2); color: var(--txt); }
+
+  /* ---- perfil ---- */
+  .perfil-topo { display: flex; align-items: center; gap: 14px; padding: calc(env(safe-area-inset-top) + 18px) 0 18px; }
+  .avatar { width: 62px; height: 62px; border-radius: 50%; background: var(--surf2); display: grid; place-items: center; font-size: 26px; border: 1px solid var(--linha); }
+  .perfil-topo .nome { font-size: 20px; font-weight: 600; }
+  .cores { display: flex; gap: 10px; margin-left: auto; }
+  .cores button { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; }
+  .cores button.sel { border-color: var(--txt); }
+
+  /* ---- treino ---- */
+  .serie { display: grid; grid-template-columns: 22px 1fr 1fr 40px; gap: 8px; align-items: center; padding: 7px 0; }
+  .serie .idx { color: var(--fraco); font-size: 13px; }
+  .serie input { background: var(--surf2); border: 1px solid var(--linha); border-radius: 9px; padding: 9px; width: 100%; text-align: center; }
+  .serie .ok { width: 32px; height: 32px; border-radius: 9px; background: var(--surf2); display: grid; place-items: center; color: var(--fraco); justify-self: end; }
+  .serie.feita .ok { background: var(--cor); color: #fff; }
+  .serie-cab { display: grid; grid-template-columns: 22px 1fr 1fr 40px; gap: 8px; font-size: 11px; color: var(--fraco); text-transform: uppercase; letter-spacing: .5px; }
+
+  /* ---- barras de meta ---- */
+  .macro { margin-top: 12px; }
+  .macro .rot { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .trilho { height: 6px; border-radius: 3px; background: var(--surf2); overflow: hidden; }
+  .trilho i { display: block; height: 100%; background: var(--cor); border-radius: 3px; }
+
+  .busca { width: 100%; background: var(--surf2); border: 1px solid var(--linha); border-radius: 12px; padding: 13px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<main id="app">
+  <section class="tela ativa" id="tela-hoje"></section>
+  <section class="tela" id="tela-treino"></section>
+  <section class="tela" id="tela-dieta"></section>
+  <section class="tela" id="tela-perfil"></section>
+</main>
+
+<div id="mesAmpliado"></div>
+
+<nav class="abas">
+  <button class="aba ativa" data-tela="hoje">
+    <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Hoje</button>
+  <button class="aba" data-tela="treino">
+    <svg viewBox="0 0 24 24"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg>Treino</button>
+  <button class="fab" id="fab" aria-label="Registrar">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="aba" data-tela="dieta">
+    <svg viewBox="0 0 24 24"><path d="M6 3v8a3 3 0 0 0 6 0V3M9 11v10"/><path d="M17 3c-1.5 2-2 4-2 6s.7 3 2 3 2-1 2-3-.5-4-2-6zM17 12v9"/></svg>Dieta</button>
+  <button class="aba" data-tela="perfil">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.9-5.6 7.5-5.6s6.7 1.8 7.5 5.6"/></svg>Perfil</button>
+</nav>
+
+<div class="folha-fundo" id="folhaFundo"></div>
+<div class="folha" id="folha"><div class="puxador"></div><div id="folhaConteudo"></div></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
