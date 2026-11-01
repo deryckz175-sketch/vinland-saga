@@ -12,6 +12,7 @@ let fichas = [];
 let diasTreino = new Set();
 let diaHoje = { data: CHAVE_HOJE, refeicoes: [], agua: 0 };
 let sessao = null;
+let recordes = {};   // exercício -> { kg, reps, data }
 let catalogo = [];   // dados/exercicios.json
 let alimentos = [];  // dados/taco.json + os criados pelo usuário
 
@@ -29,8 +30,8 @@ const nz = (v) => (v == null ? 0 : v); // TACO usa null para "não analisado"
 // =========================================================================
 
 async function carregar() {
-  [perfil, fichas, diasTreino, diaHoje] = await Promise.all([
-    db.perfil(), db.todos(db.LOJAS.fichas), db.diasComTreino(), db.dia(CHAVE_HOJE),
+  [perfil, fichas, diasTreino, diaHoje, recordes] = await Promise.all([
+    db.perfil(), db.todos(db.LOJAS.fichas), db.diasComTreino(), db.dia(CHAVE_HOJE), db.recordes(),
   ]);
   const cor = await db.config('cor');
   if (cor) document.documentElement.style.setProperty('--cor', cor);
@@ -116,18 +117,8 @@ function renderTreino() {
         <h1>${esc(sessao.nome)}</h1>
         <div class="data">${feitas} de ${todas.length} séries</div>
       </header>
-      ${sessao.exercicios.map((ex, ie) => `
-        <div class="card">
-          <h2>${esc(ex.nome)}</h2>
-          <div class="serie-cab"><span></span><span>kg</span><span>reps</span><span></span></div>
-          ${ex.series.map((s, is) => `
-            <div class="serie ${s.feita ? 'feita' : ''}">
-              <span class="idx">${is + 1}</span>
-              <input type="number" inputmode="decimal" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">
-              <input type="number" inputmode="numeric" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">
-              <button class="ok" data-feita="${ie}:${is}">✓</button>
-            </div>`).join('')}
-        </div>`).join('')}
+      ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
+      <button class="botao fraco" id="addExercicio">Adicionar exercício</button>
       <button class="botao" id="finalizar">Finalizar treino</button>
       <button class="botao fraco" id="cancelar">Cancelar</button>`;
     return;
@@ -146,7 +137,63 @@ function renderTreino() {
           </div>
         </button>`).join('')
       : `<div class="card"><div class="vazio">Monte uma ficha para começar a registrar seus treinos.</div></div>`}
-    <button class="botao ${fichas.length ? 'fraco' : ''}" id="novaFicha">Nova ficha</button>`;
+    <button class="botao ${fichas.length ? 'fraco' : ''}" id="novaFicha">Nova ficha</button>
+    <button class="botao fraco" id="abrirCardio">Registrar cardio</button>`;
+}
+
+function folhaAddExercicio() {
+  abrirFolha(`<h3>Adicionar exercício</h3>
+    <input class="busca" id="axBusca" placeholder="Buscar exercício" autocomplete="off">
+    <div id="axResultados"></div>`);
+  const lista = () => {
+    const q = $('#axBusca').value.trim();
+    const ql = q.toLowerCase();
+    const achados = (ql ? catalogo.filter((e) => e.nome.toLowerCase().includes(ql)) : catalogo).slice(0, 8);
+    $('#axResultados').innerHTML = achados.length
+      ? achados.map((e) => `<button class="opcao" data-ax="${esc(e.nome)}">
+          <div><div>${esc(e.nome)}</div><div class="sub">${esc(e.grupo)} · ${esc(e.equipamento)}</div></div></button>`).join('')
+      : `<div class="vazio">Nada encontrado.${q ? ` <button class="destaque" data-ax="${esc(q)}">Usar "${esc(q)}"</button>` : ''}</div>`;
+  };
+  lista();
+  $('#axBusca').addEventListener('input', lista);
+}
+
+/**
+ * No modo cluster a carga é uma só para o exercício inteiro: os blocos mudam
+ * as repetições, não o peso. Por isso o campo de kg sai das linhas e sobe
+ * para o topo do cartão.
+ */
+function cartaoExercicio(ex, ie) {
+  const rec = recordes[ex.nome];
+  const cluster = ex.modo === 'cluster';
+  const bateuPr = (s) => s.feita && s.kg != null && (!rec || s.kg > rec.kg);
+
+  const linhas = ex.series.map((s, is) => `
+    <div class="serie ${cluster ? 'cluster' : ''} ${s.feita ? 'feita' : ''}">
+      <span class="idx">${cluster ? 'bloco ' + (is + 1) : is + 1}</span>
+      ${cluster ? '' : `<input type="number" inputmode="decimal" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">`}
+      <input type="number" inputmode="numeric" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">
+      <button class="ok" data-feita="${ie}:${is}">${bateuPr(s) ? 'PR' : '✓'}</button>
+    </div>`).join('');
+
+  return `<div class="card">
+    <div class="ex-cab">
+      <h2>${esc(ex.nome)}</h2>
+      <button class="chip" data-modo="${ie}">${cluster ? 'cluster' : 'linear'}</button>
+      <button class="chip apagar" data-tirar-ex="${ie}" aria-label="Remover exercício">✕</button>
+    </div>
+    ${rec ? `<div class="sub">recorde ${n1(rec.kg)} kg${rec.reps ? ' × ' + rec.reps : ''}</div>` : ''}
+    ${cluster
+      ? `<div class="serie-cab cluster"><span></span><span>reps</span><span></span></div>
+         <label class="rot" for="kgc-${ie}">Carga do exercício (kg)</label>
+         <input class="busca" id="kgc-${ie}" type="number" inputmode="decimal" value="${ex.series[0]?.kg ?? ''}" data-campo="kgCluster" data-e="${ie}">`
+      : '<div class="serie-cab"><span></span><span>kg</span><span>reps</span><span></span></div>'}
+    ${linhas}
+    <div class="ex-pe">
+      <button class="chip" data-menos-serie="${ie}">− série</button>
+      <button class="chip" data-mais-serie="${ie}">+ série</button>
+    </div>
+  </div>`;
 }
 
 async function abrirSessao(fichaId) {
@@ -159,6 +206,7 @@ async function abrirSessao(fichaId) {
       const ant = anteriores[e.nome];
       return {
         nome: e.nome,
+        modo: e.modo || 'linear',
         series: Array.from({ length: e.series || 3 }, () => ({
           kg: ant ? ant.kg : null, reps: ant ? ant.reps : null, feita: false,
         })),
@@ -168,20 +216,77 @@ async function abrirSessao(fichaId) {
   setTela('treino');
 }
 
-async function finalizarSessao() {
+/** Como a ficha ficaria se as mudanças desta sessão fossem salvas nela. */
+function fichaDaSessao() {
+  return sessao.exercicios.map((e) => ({ nome: e.nome, series: e.series.length, modo: e.modo }));
+}
+
+function fichaMudou() {
+  const f = fichas.find((x) => x.id === sessao.fichaId);
+  if (!f) return false;
+  const antes = f.exercicios.map((e) => `${e.nome}|${e.series || 3}|${e.modo || 'linear'}`).join('~');
+  const agora = fichaDaSessao().map((e) => `${e.nome}|${e.series}|${e.modo}`).join('~');
+  return antes !== agora;
+}
+
+function pedirFinalizar() {
+  const feitas = sessao.exercicios.flatMap((e) => e.series).filter((s) => s.feita).length;
+  if (!feitas) { alerta('Marque pelo menos uma série antes de finalizar.'); return; }
+
+  if (!fichaMudou()) return finalizarSessao(false);
+
+  abrirFolha(`<h3>Você mudou a ficha durante o treino</h3>
+    <div class="sub" style="margin-bottom:16px">Salvar essas mudanças em "${esc(sessao.nome)}" para as próximas vezes?</div>
+    <button class="botao" id="salvarNaFicha">Salvar na ficha</button>
+    <button class="botao fraco" id="soHoje">Só para hoje</button>`);
+}
+
+async function finalizarSessao(salvarNaFicha) {
   const exercicios = sessao.exercicios.map((e) => ({
-    nome: e.nome,
+    nome: e.nome, modo: e.modo,
     series: e.series.filter((s) => s.feita).map((s) => ({ kg: s.kg, reps: s.reps })),
   })).filter((e) => e.series.length);
 
-  if (!exercicios.length) { alerta('Marque pelo menos uma série antes de finalizar.'); return; }
-
   await db.gravar(db.LOJAS.sessoes, {
-    data: CHAVE_HOJE, fichaId: sessao.fichaId, nome: sessao.nome,
-    exercicios, minutos: null, em: new Date().toISOString(),
+    data: CHAVE_HOJE, tipo: 'musculacao', fichaId: sessao.fichaId, nome: sessao.nome,
+    exercicios, em: new Date().toISOString(),
+  });
+
+  if (salvarNaFicha) {
+    const f = fichas.find((x) => x.id === sessao.fichaId);
+    if (f) await db.gravar(db.LOJAS.fichas, { ...f, exercicios: fichaDaSessao() });
+  }
+
+  [diasTreino, recordes, fichas] = await Promise.all([
+    db.diasComTreino(), db.recordes(), db.todos(db.LOJAS.fichas),
+  ]);
+  sessao = null;
+  fecharFolha();
+  setTela('perfil');
+}
+
+function folhaCardio() {
+  const tipos = catalogo.filter((e) => e.tipo === 'cardio');
+  abrirFolha(`<h3>Registrar cardio</h3>
+    <label class="rot" for="cTipo">O quê</label>
+    <select class="busca" id="cTipo">
+      ${tipos.map((t) => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join('')}
+    </select>
+    <label class="rot" for="cMin">Tempo (minutos)</label>
+    <input class="busca" id="cMin" type="number" inputmode="numeric" placeholder="30">
+    <button class="botao" id="salvarCardio">Registrar</button>`);
+}
+
+async function salvarCardio() {
+  const atividade = $('#cTipo').value;
+  const minutos = Number($('#cMin').value) || 0;
+  if (!atividade || minutos <= 0) return;
+  await db.gravar(db.LOJAS.sessoes, {
+    data: CHAVE_HOJE, tipo: 'cardio', nome: atividade, minutos,
+    exercicios: [], em: new Date().toISOString(),
   });
   diasTreino = await db.diasComTreino();
-  sessao = null;
+  fecharFolha();
   setTela('perfil');
 }
 
@@ -316,7 +421,8 @@ async function mostrarDia(k) {
   alvo.innerHTML = `<h2>${dd} de ${MESES[+mm - 1].toLowerCase()}</h2>
     ${sessoes.length
       ? sessoes.map((s) => `<div class="linha-item"><div><div>${esc(s.nome)}</div>
-          <div class="sub">${s.exercicios.length} exercícios</div></div><div class="destaque">✓</div></div>`).join('')
+          <div class="sub">${s.tipo === 'cardio' ? s.minutos + ' min' : s.exercicios.length + ' exercício' + (s.exercicios.length === 1 ? '' : 's')}</div></div>
+          <div class="destaque">✓</div></div>`).join('')
       : '<div class="linha-item"><div class="sub">Sem treino.</div></div>'}
     ${m.kcal
       ? `<div class="linha-item"><div>Dieta</div><div class="sub">${m.kcal.toFixed(0)} kcal</div></div>`
@@ -474,8 +580,48 @@ document.addEventListener('click', async (ev) => {
     s.feita = !s.feita;
     return renderTreino();
   }
-  if (achar('#finalizar')) return finalizarSessao();
+  if (achar('#finalizar')) return pedirFinalizar();
+  if (achar('#salvarNaFicha')) return finalizarSessao(true);
+  if (achar('#soHoje')) return finalizarSessao(false);
   if (achar('#cancelar')) { sessao = null; return renderTreino(); }
+
+  if ((el = achar('[data-modo]'))) {
+    const ex = sessao.exercicios[+el.dataset.modo];
+    ex.modo = ex.modo === 'cluster' ? 'linear' : 'cluster';
+    // No cluster a carga é uma só: iguala todos os blocos à do primeiro.
+    if (ex.modo === 'cluster') { const kg = ex.series[0]?.kg ?? null; ex.series.forEach((s) => { s.kg = kg; }); }
+    return renderTreino();
+  }
+  if ((el = achar('[data-mais-serie]'))) {
+    const ex = sessao.exercicios[+el.dataset.maisSerie];
+    const ult = ex.series[ex.series.length - 1];
+    ex.series.push({ kg: ult ? ult.kg : null, reps: ult ? ult.reps : null, feita: false });
+    return renderTreino();
+  }
+  if ((el = achar('[data-menos-serie]'))) {
+    const ex = sessao.exercicios[+el.dataset.menosSerie];
+    if (ex.series.length > 1) ex.series.pop();
+    return renderTreino();
+  }
+  if ((el = achar('[data-tirar-ex]'))) {
+    sessao.exercicios.splice(+el.dataset.tirarEx, 1);
+    if (!sessao.exercicios.length) { sessao = null; }
+    return renderTreino();
+  }
+  if (achar('#addExercicio')) return folhaAddExercicio();
+  if ((el = achar('[data-ax]'))) {
+    const nome = el.dataset.ax;
+    const ant = (await db.cargasAnteriores(sessao.fichaId))[nome];
+    sessao.exercicios.push({
+      nome, modo: 'linear',
+      series: Array.from({ length: 3 }, () => ({ kg: ant ? ant.kg : null, reps: ant ? ant.reps : null, feita: false })),
+    });
+    fecharFolha();
+    return renderTreino();
+  }
+
+  if (achar('#abrirCardio')) return folhaCardio();
+  if (achar('#salvarCardio')) return salvarCardio();
 
   if ((el = achar('[data-mes]'))) return abrirMes(Number(el.dataset.mes));
   if (achar('#fecharMes')) { mesAberto = null; return $('#mesAmpliado').classList.remove('aberto'); }
@@ -553,7 +699,9 @@ document.addEventListener('input', (ev) => {
   const el = ev.target.closest('[data-campo]');
   if (!el || !sessao) return;
   const v = el.value === '' ? null : Number(el.value);
-  sessao.exercicios[+el.dataset.e].series[+el.dataset.s][el.dataset.campo] = v;
+  const ex = sessao.exercicios[+el.dataset.e];
+  if (el.dataset.campo === 'kgCluster') { ex.series.forEach((s) => { s.kg = v; }); return; }
+  ex.series[+el.dataset.s][el.dataset.campo] = v;
 });
 
 document.addEventListener('change', (ev) => {

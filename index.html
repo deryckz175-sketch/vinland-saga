@@ -146,6 +146,15 @@
   .serie .ok { width: 32px; height: 32px; border-radius: 9px; background: var(--surf2); display: grid; place-items: center; color: var(--fraco); justify-self: end; }
   .serie.feita .ok { background: var(--cor); color: #fff; }
   .serie-cab { display: grid; grid-template-columns: 22px 1fr 1fr 40px; gap: 8px; font-size: 11px; color: var(--fraco); text-transform: uppercase; letter-spacing: .5px; }
+  .serie.cluster, .serie-cab.cluster { grid-template-columns: 58px 1fr 40px; }
+  .serie.cluster .idx { font-size: 11px; }
+  .ex-cab { display: flex; align-items: center; gap: 8px; }
+  .ex-cab h2 { flex: 1; min-width: 0; margin: 0; }
+  .ex-pe { display: flex; gap: 8px; margin-top: 10px; }
+  .chip { font: inherit; font-size: 12px; background: var(--surf2); border: 1px solid var(--linha);
+          border-radius: 999px; padding: 6px 11px; color: var(--fraco); white-space: nowrap; }
+  .chip.apagar { color: var(--fraco); padding: 6px 10px; }
+  .serie .ok { font-size: 12px; font-weight: 600; }
 
   .busca { width: 100%; background: var(--surf2); border: 1px solid var(--linha); border-radius: 12px; padding: 13px; margin-bottom: 10px; }
 </style>

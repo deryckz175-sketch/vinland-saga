@@ -127,6 +127,24 @@ export async function cargasAnteriores(fichaId) {
   return mapa;
 }
 
+/**
+ * Maior carga já registrada em cada exercício, com a data.
+ * Vale entre fichas: um PR no supino é um PR, tenha sido na ficha A ou na C.
+ */
+export async function recordes() {
+  const mapa = {};
+  for (const s of await todos(LOJAS.sessoes)) {
+    for (const ex of s.exercicios || []) {
+      for (const serie of ex.series || []) {
+        if (serie.kg == null) continue;
+        const atual = mapa[ex.nome];
+        if (!atual || serie.kg > atual.kg) mapa[ex.nome] = { kg: serie.kg, reps: serie.reps, data: s.data };
+      }
+    }
+  }
+  return mapa;
+}
+
 export async function dia(data) {
   return (await obter(LOJAS.dias, data)) || { data, refeicoes: [], agua: 0 };
 }
