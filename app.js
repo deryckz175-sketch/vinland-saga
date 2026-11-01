@@ -41,6 +41,11 @@ async function carregar() {
   // As quatro refeições do dia já vêm postas; o usuário acrescenta outras se quiser.
   if (!diaHoje.refeicoes.length) diaHoje.refeicoes = REFEICOES_PADRAO.map((nome) => ({ nome, itens: [] }));
   gradeDe = (await db.config('gradeDe')) || 'treino';
+
+  // Retoma um treino que ficou aberto: o app pode ter sido encerrado no meio.
+  const aberta = await db.config('sessaoAberta');
+  if (aberta && aberta.data === CHAVE_HOJE) { sessao = aberta; tocarRelogio(); }
+  else if (aberta) await db.salvarConfig('sessaoAberta', null);
   const cor = await db.config('cor');
   if (cor) document.documentElement.style.setProperty('--cor', cor);
   renderTudo();
@@ -152,13 +157,15 @@ function renderTreino() {
     const feitas = todas.filter((s) => s.feita).length;
     el.innerHTML = `
       <header class="topo">
+        <div class="cronometro" id="cronometro">${relogio()}</div>
         <h1>${esc(sessao.nome)}</h1>
-        <div class="data">${feitas} de ${todas.length} séries</div>
+        <div class="data">${todas.length ? `${feitas} de ${todas.length} séries` : 'Adicione o primeiro exercício'}</div>
       </header>
       ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
-      <button class="botao fraco" id="addExercicio">Adicionar exercício</button>
-      <button class="botao" id="finalizar">Finalizar treino</button>
+      <button class="botao ${sessao.exercicios.length ? 'fraco' : ''}" id="addExercicio">Adicionar exercício</button>
+      ${sessao.exercicios.length ? '<button class="botao" id="finalizar">Finalizar treino</button>' : ''}
       <button class="botao fraco" id="cancelar">Cancelar</button>`;
+    agendarGuardar();
     return;
   }
 
@@ -234,12 +241,55 @@ function cartaoExercicio(ex, ie) {
   </div>`;
 }
 
+// ---- cronômetro da sessão ----
+
+let tique = null;
+
+function relogio() {
+  const s = Math.max(0, Math.floor((Date.now() - (sessao?.inicio || Date.now())) / 1000));
+  const d = (n) => String(n).padStart(2, '0');
+  return s >= 3600 ? `${Math.floor(s / 3600)}:${d(Math.floor(s / 60) % 60)}:${d(s % 60)}` : `${d(Math.floor(s / 60))}:${d(s % 60)}`;
+}
+
+/** Atualiza só o texto do relógio: redesenhar a tela tiraria o foco dos campos. */
+function tocarRelogio() {
+  clearInterval(tique);
+  tique = setInterval(() => {
+    const el = $('#cronometro');
+    if (!sessao) return clearInterval(tique);
+    if (el) el.textContent = relogio();
+  }, 1000);
+}
+
+function minutosDaSessao() {
+  return Math.max(1, Math.round((Date.now() - sessao.inicio) / 60000));
+}
+
+/** Guarda a sessão em andamento: o iPhone encerra o app em segundo plano. */
+async function guardarSessao() {
+  await db.salvarConfig('sessaoAberta', sessao ? { ...sessao, data: CHAVE_HOJE } : null);
+}
+
+let guardaPendente = null;
+function agendarGuardar() {
+  clearTimeout(guardaPendente);
+  guardaPendente = setTimeout(guardarSessao, 500);
+}
+
+/** Sessão sem ficha: começa vazia e os exercícios entram conforme ele treina. */
+function novaSessaoLivre() {
+  sessao = { fichaId: null, nome: 'Treino', inicio: Date.now(), exercicios: [] };
+  tocarRelogio();
+  guardarSessao();
+  setTela('treino');
+}
+
 async function abrirSessao(fichaId) {
   const f = fichas.find((x) => x.id === fichaId);
   if (!f) return;
   const anteriores = await db.cargasAnteriores(fichaId);
   sessao = {
-    fichaId, nome: f.nome,
+    fichaId, nome: f.nome, inicio: Date.now(),
     exercicios: f.exercicios.map((e) => {
       const ant = anteriores[e.nome];
       return {
@@ -251,6 +301,8 @@ async function abrirSessao(fichaId) {
       };
     }),
   };
+  tocarRelogio();
+  guardarSessao();
   setTela('treino');
 }
 
@@ -271,6 +323,17 @@ function pedirFinalizar() {
   const feitas = sessao.exercicios.flatMap((e) => e.series).filter((s) => s.feita).length;
   if (!feitas) { alerta('Marque pelo menos uma série antes de finalizar.'); return; }
 
+  // Sessão livre: não havia ficha, então a pergunta é se vira uma.
+  if (!sessao.fichaId) {
+    abrirFolha(`<h3>Treino de ${relogio()}</h3>
+      <div class="sub" style="margin-bottom:14px">Salvar ${sessao.exercicios.length === 1 ? 'este exercício' : `estes ${sessao.exercicios.length} exercícios`} como uma ficha, para repetir depois?</div>
+      <label class="rot" for="nfNome">Nome da ficha</label>
+      <input class="busca" id="nfNome" placeholder="Ficha A — peito e tríceps" autocomplete="off">
+      <button class="botao" id="salvarComoFicha">Salvar como ficha</button>
+      <button class="botao fraco" id="soHoje">Só registrar o treino</button>`);
+    return;
+  }
+
   if (!fichaMudou()) return finalizarSessao(false);
 
   abrirFolha(`<h3>Você mudou a ficha durante o treino</h3>
@@ -279,26 +342,32 @@ function pedirFinalizar() {
     <button class="botao fraco" id="soHoje">Só para hoje</button>`);
 }
 
-async function finalizarSessao(salvarNaFicha) {
+async function finalizarSessao(salvarNaFicha, nomeNovaFicha) {
   const exercicios = sessao.exercicios.map((e) => ({
     nome: e.nome, modo: e.modo,
     series: e.series.filter((s) => s.feita).map((s) => ({ kg: s.kg, reps: s.reps })),
   })).filter((e) => e.series.length);
 
-  await db.gravar(db.LOJAS.sessoes, {
-    data: CHAVE_HOJE, tipo: 'musculacao', fichaId: sessao.fichaId, nome: sessao.nome,
-    exercicios, em: new Date().toISOString(),
-  });
-
-  if (salvarNaFicha) {
-    const f = fichas.find((x) => x.id === sessao.fichaId);
+  let fichaId = sessao.fichaId;
+  if (nomeNovaFicha) {
+    fichaId = 'f' + Date.now();
+    await db.gravar(db.LOJAS.fichas, { id: fichaId, nome: nomeNovaFicha, exercicios: fichaDaSessao() });
+  } else if (salvarNaFicha) {
+    const f = fichas.find((x) => x.id === fichaId);
     if (f) await db.gravar(db.LOJAS.fichas, { ...f, exercicios: fichaDaSessao() });
   }
 
+  await db.gravar(db.LOJAS.sessoes, {
+    data: CHAVE_HOJE, tipo: 'musculacao', fichaId, nome: nomeNovaFicha || sessao.nome,
+    exercicios, minutos: minutosDaSessao(), em: new Date().toISOString(),
+  });
+
+  clearInterval(tique);
+  sessao = null;
+  await guardarSessao();
   [diasTreino, recordes, fichas] = await Promise.all([
     db.diasComTreino(), db.recordes(), db.todos(db.LOJAS.fichas),
   ]);
-  sessao = null;
   fecharFolha();
   setTela('perfil');
 }
@@ -437,7 +506,7 @@ function renderPerfil() {
     <div class="card">
       <div class="ano-cabeca">
         <span class="ano">${ANO} ›</span>
-        <span><span class="num-grande ${total ? 'destaque' : ''}">${total}</span> <span class="sub">dias</span></span>
+        <span><span class="num-grande ${total ? 'destaque' : ''}">${total}</span> <span class="sub">${total === 1 ? 'dia' : 'dias'}</span></span>
       </div>
       <div class="ex-pe" style="margin:0 0 14px">
         <button class="chip ${gradeDe === 'treino' ? 'sel' : ''}" data-grade="treino">Treino</button>
@@ -534,7 +603,9 @@ function alerta(txt) {
 
 function folhaRegistro() {
   abrirFolha(`<h3>Registrar</h3>
-    <button class="opcao" data-reg="treino"><span class="bolha">🏋️</span><div><div>Treino</div><div class="sub">${fichas.length ? 'Abrir uma ficha' : 'Montar a primeira ficha'}</div></div></button>
+    <button class="opcao" data-reg="treino"><span class="bolha">🏋️</span><div><div>Treino</div><div class="sub">${sessao ? 'Voltar para o treino em andamento' : 'Começa agora, com o tempo correndo'}</div></div></button>
+    ${fichas.length && !sessao ? `<button class="opcao" data-reg="ficha"><span class="bolha">📋</span><div><div>Treino por ficha</div><div class="sub">${fichas.length} ficha${fichas.length === 1 ? '' : 's'} salva${fichas.length === 1 ? '' : 's'}</div></div></button>` : ''}
+    <button class="opcao" data-reg="cardio"><span class="bolha">🏃</span><div><div>Cardio</div><div class="sub">Tipo e tempo</div></div></button>
     <button class="opcao" data-reg="refeicao"><span class="bolha">🍽️</span><div><div>Refeição</div><div class="sub">Adicionar alimento</div></div></button>
     <button class="opcao" data-reg="perfil"><span class="bolha">👤</span><div><div>Perfil</div><div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'Preencher'}</div></div></button>`);
 }
@@ -669,7 +740,17 @@ document.addEventListener('click', async (ev) => {
   if (achar('#finalizar')) return pedirFinalizar();
   if (achar('#salvarNaFicha')) return finalizarSessao(true);
   if (achar('#soHoje')) return finalizarSessao(false);
-  if (achar('#cancelar')) { sessao = null; return renderTreino(); }
+  if (achar('#salvarComoFicha')) {
+    const nome = $('#nfNome').value.trim();
+    if (!nome) return;
+    return finalizarSessao(false, nome);
+  }
+  if (achar('#cancelar')) {
+    clearInterval(tique);
+    sessao = null;
+    await guardarSessao();
+    return renderTreino();
+  }
 
   if ((el = achar('[data-modo]'))) {
     const ex = sessao.exercicios[+el.dataset.modo];
@@ -796,7 +877,9 @@ document.addEventListener('click', async (ev) => {
 
   if ((el = achar('[data-reg]'))) {
     fecharFolha();
-    if (el.dataset.reg === 'treino') return setTela('treino');
+    if (el.dataset.reg === 'treino') return sessao ? setTela('treino') : novaSessaoLivre();
+    if (el.dataset.reg === 'ficha') return setTela('treino');
+    if (el.dataset.reg === 'cardio') return folhaCardio();
     if (el.dataset.reg === 'perfil') { setTela('perfil'); return folhaPerfil(); }
     if (el.dataset.reg === 'refeicao') {
       setTela('dieta');
@@ -811,8 +894,9 @@ document.addEventListener('input', (ev) => {
   if (!el || !sessao) return;
   const v = el.value === '' ? null : Number(el.value);
   const ex = sessao.exercicios[+el.dataset.e];
-  if (el.dataset.campo === 'kgCluster') { ex.series.forEach((s) => { s.kg = v; }); return; }
-  ex.series[+el.dataset.s][el.dataset.campo] = v;
+  if (el.dataset.campo === 'kgCluster') ex.series.forEach((s) => { s.kg = v; });
+  else ex.series[+el.dataset.s][el.dataset.campo] = v;
+  agendarGuardar();
 });
 
 document.addEventListener('change', (ev) => {

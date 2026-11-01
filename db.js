@@ -121,6 +121,7 @@ export async function diasComTreino() {
  * dia em que ele fez extensora em qualquer treino.
  */
 export async function ultimaSessaoDaFicha(fichaId) {
+  if (!fichaId) return null; // sessão livre não tem ficha, e null não é chave válida
   const l = await loja(LOJAS.sessoes);
   const lista = await pedir(l.index('fichaId').getAll(IDBKeyRange.only(fichaId)));
   if (!lista.length) return null;
