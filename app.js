@@ -13,6 +13,9 @@ let diasTreino = new Set();
 let diaHoje = { data: CHAVE_HOJE, refeicoes: [], agua: 0 };
 let sessao = null;
 let recordes = {};   // exercício -> { kg, reps, data }
+let salvas = [];     // refeições salvas para repetir
+let diasDieta = {};  // data -> kcal somadas
+let gradeDe = 'treino';
 let catalogo = [];   // dados/exercicios.json
 let alimentos = [];  // dados/taco.json + os criados pelo usuário
 
@@ -30,9 +33,12 @@ const nz = (v) => (v == null ? 0 : v); // TACO usa null para "não analisado"
 // =========================================================================
 
 async function carregar() {
-  [perfil, fichas, diasTreino, diaHoje, recordes] = await Promise.all([
-    db.perfil(), db.todos(db.LOJAS.fichas), db.diasComTreino(), db.dia(CHAVE_HOJE), db.recordes(),
+  [perfil, fichas, diasTreino, diaHoje, recordes, salvas, diasDieta] = await Promise.all([
+    db.perfil(), db.todos(db.LOJAS.fichas), db.diasComTreino(), db.dia(CHAVE_HOJE),
+    db.recordes(), db.todos(db.LOJAS.salvas), db.diasComDieta(),
   ]);
+  // As quatro refeições do dia já vêm postas; o usuário acrescenta outras se quiser.
+  if (!diaHoje.refeicoes.length) diaHoje.refeicoes = REFEICOES_PADRAO.map((nome) => ({ nome, itens: [] }));
   const cor = await db.config('cor');
   if (cor) document.documentElement.style.setProperty('--cor', cor);
   renderTudo();
@@ -318,28 +324,68 @@ function renderDieta() {
                 <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g</div></div>
                 <button class="sub" data-remover="${i}:${j}">${it.kcal.toFixed(0)} kcal ✕</button></div>`).join('')
             : '<div class="vazio">Nada registrado.</div>'}
-          <div class="linha-item" style="border-top:1px solid var(--linha);margin-top:8px;padding-top:11px">
-            <button class="destaque" data-add-refeicao="${i}">+ Adicionar alimento</button>
-            <div class="sub" style="white-space:nowrap">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>
+          <div class="ex-pe">
+            <button class="chip" data-add-refeicao="${i}">+ alimento</button>
+            ${salvas.length ? `<button class="chip" data-repetir="${i}">repetir salva</button>` : ''}
+            ${r.itens.length ? `<button class="chip" data-salvar-ref="${i}">salvar</button>` : ''}
           </div>
+          ${r.itens.length ? `<div class="sub" style="margin-top:8px">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>` : ''}
         </div>`;
       }).join('')
       : '<div class="card"><div class="vazio">Nenhuma refeição hoje.</div></div>'}
+
+    <div class="card">
+      <h2>Água</h2>
+      <div class="linha-item">
+        <div><div class="num-grande ${diaHoje.agua ? 'destaque' : ''}">${(diaHoje.agua / 1000).toFixed(1).replace('.', ',')}</div>
+          <div class="sub" style="margin-top:6px">litros hoje</div></div>
+        <div class="ex-pe" style="margin:0">
+          <button class="chip" data-agua="-250">−</button>
+          <button class="chip" data-agua="250">+ copo</button>
+          <button class="chip" data-agua="500">+ garrafa</button>
+        </div>
+      </div>
+    </div>
 
     <button class="botao fraco" id="novaRefeicao">Adicionar refeição</button>`;
 }
 
 async function salvarDiaHoje() {
   await db.salvarDia(diaHoje);
+  diasDieta = await db.diasComDieta();
   renderTudo();
+}
+
+function folhaRepetirSalva(iRef) {
+  abrirFolha(`<h3>Repetir uma refeição salva</h3>
+    ${salvas.map((s) => {
+      const t = somaMacros(s.itens);
+      return `<button class="opcao" data-usar-salva="${iRef}:${s.id}">
+        <div><div>${esc(s.nome)}</div>
+          <div class="sub">${s.itens.length} item${s.itens.length === 1 ? '' : 's'} · ${t.kcal.toFixed(0)} kcal</div></div></button>`;
+    }).join('')}`);
+}
+
+function folhaSalvarRefeicao(iRef) {
+  const r = diaHoje.refeicoes[iRef];
+  abrirFolha(`<h3>Salvar para repetir</h3>
+    <div class="sub" style="margin-bottom:12px">${r.itens.length} itens de ${esc(r.nome)}.</div>
+    <label class="rot" for="sNome">Nome</label>
+    <input class="busca" id="sNome" value="${esc(r.nome)}" autocomplete="off">
+    <button class="botao" data-confirma-salvar="${iRef}">Salvar</button>`);
 }
 
 // =========================================================================
 // Perfil
 // =========================================================================
 
+/** A grade do perfil mostra treino ou dieta, conforme o botão de cima. */
+function diasDaGrade() {
+  return gradeDe === 'dieta' ? new Set(Object.keys(diasDieta)) : diasTreino;
+}
+
 function renderPerfil() {
-  const total = [...diasTreino].filter((k) => k.startsWith(ANO)).length;
+  const total = [...diasDaGrade()].filter((k) => k.startsWith(ANO)).length;
   const cores = ['#e5342b', '#ff7a1a', '#f5c518', '#28c76f', '#2f9bff', '#a855f7'];
   const atual = getComputedStyle(document.documentElement).getPropertyValue('--cor').trim();
 
@@ -361,24 +407,29 @@ function renderPerfil() {
         <span class="ano">${ANO} ›</span>
         <span><span class="num-grande ${total ? 'destaque' : ''}">${total}</span> <span class="sub">dias</span></span>
       </div>
+      <div class="ex-pe" style="margin:0 0 14px">
+        <button class="chip ${gradeDe === 'treino' ? 'sel' : ''}" data-grade="treino">Treino</button>
+        <button class="chip ${gradeDe === 'dieta' ? 'sel' : ''}" data-grade="dieta">Dieta</button>
+      </div>
       <div class="meses">${MESES.map((_, i) => mesMini(i)).join('')}</div>
     </div>
 
-    ${total ? '' : '<div class="card"><div class="vazio">A grade acende conforme você registra treinos.</div></div>'}`;
+    ${total ? '' : `<div class="card"><div class="vazio">A grade acende conforme você registra ${gradeDe === 'dieta' ? 'refeições' : 'treinos'}.</div></div>`}`;
 }
 
 function contaMes(mes) {
   const pre = `${ANO}-${String(mes + 1).padStart(2, '0')}`;
-  return [...diasTreino].filter((k) => k.startsWith(pre)).length;
+  return [...diasDaGrade()].filter((k) => k.startsWith(pre)).length;
 }
 
 function mesMini(mes) {
   const { vazios, total } = diasDoMes(ANO, mes);
   const futuro = mes > HOJE.getMonth();
+  const dias = diasDaGrade();
   let q = '<span class="d off"></span>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    q += `<span class="${['d', diasTreino.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ')}"></span>`;
+    q += `<span class="${['d', dias.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ')}"></span>`;
   }
   return `<button class="mes ${mes === HOJE.getMonth() ? 'atual' : ''} ${futuro ? 'futuro' : ''}" data-mes="${mes}">
     <div class="nome"><span>${MESES[mes].slice(0, 3)}</span><span>${contaMes(mes) || ''}</span></div>
@@ -394,10 +445,11 @@ function abrirMes(mes) { mesAberto = mes; diaSelecionado = null; renderMesAmplia
 function renderMesAmpliado() {
   const mes = mesAberto;
   const { vazios, total } = diasDoMes(ANO, mes);
+  const dias = diasDaGrade();
   let cel = '<button class="espaco"></button>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const cls = [diasTreino.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
+    const cls = [dias.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
     cel += `<button class="${cls}" data-dia="${k}">${d}</button>`;
   }
   $('#mesAmpliado').innerHTML = `
@@ -682,6 +734,27 @@ document.addEventListener('click', async (ev) => {
     diaHoje.refeicoes[i].itens.splice(j, 1);
     return salvarDiaHoje();
   }
+  if ((el = achar('[data-agua]'))) {
+    diaHoje.agua = Math.max(0, (diaHoje.agua || 0) + Number(el.dataset.agua));
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-repetir]'))) return folhaRepetirSalva(Number(el.dataset.repetir));
+  if ((el = achar('[data-usar-salva]'))) {
+    const [iRef, id] = el.dataset.usarSalva.split(':');
+    const s = salvas.find((x) => String(x.id) === id);
+    if (s) diaHoje.refeicoes[Number(iRef)].itens.push(...s.itens.map((i) => ({ ...i })));
+    fecharFolha();
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-salvar-ref]'))) return folhaSalvarRefeicao(Number(el.dataset.salvarRef));
+  if ((el = achar('[data-confirma-salvar]'))) {
+    const r = diaHoje.refeicoes[Number(el.dataset.confirmaSalvar)];
+    await db.gravar(db.LOJAS.salvas, { nome: $('#sNome').value.trim() || r.nome, itens: r.itens.map((i) => ({ ...i })) });
+    salvas = await db.todos(db.LOJAS.salvas);
+    fecharFolha();
+    return renderTudo();
+  }
+  if ((el = achar('[data-grade]'))) { gradeDe = el.dataset.grade; return renderPerfil(); }
 
   if ((el = achar('[data-reg]'))) {
     fecharFolha();
@@ -726,9 +799,11 @@ document.addEventListener('change', (ev) => {
 
 carregar().catch((e) => {
   console.error(e);
+  const bloqueado = String(e.message || e).startsWith('bloqueado');
   $('#tela-hoje').innerHTML = `<header class="topo"><h1>Hoje</h1></header>
-    <div class="card"><div class="vazio">Não deu para abrir o armazenamento do aparelho.
-    Em aba anônima o navegador bloqueia, e aí nada fica salvo.</div></div>`;
+    <div class="card"><div class="vazio">${bloqueado
+      ? 'O app está aberto em outra aba com uma versão anterior. Feche as outras e abra de novo.'
+      : 'Não deu para abrir o armazenamento do aparelho. Em aba anônima o navegador bloqueia, e aí nada fica salvo.'}</div></div>`;
 });
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

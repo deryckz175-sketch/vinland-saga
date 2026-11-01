@@ -4,14 +4,15 @@
 // daquela ficha, não do último dia em que o exercício apareceu.
 
 const BANCO = 'vinland';
-const VERSAO = 1;
+const VERSAO = 2;
 
 export const LOJAS = {
   perfil: 'perfil',       // um registro só, id 'eu'
-  fichas: 'fichas',       // { id, nome, titulo, exercicios: [{ nome, series, modo }] }
-  sessoes: 'sessoes',     // { id, data, fichaId, exercicios, minutos }
+  fichas: 'fichas',       // { id, nome, exercicios: [{ nome, series, modo }] }
+  sessoes: 'sessoes',     // { id, data, tipo, fichaId, exercicios, minutos }
   dias: 'dias',           // { data, refeicoes: [...], agua }
   alimentos: 'alimentos', // alimentos que o usuário criou
+  salvas: 'salvas',       // refeições salvas para repetir: { id, nome, itens }
   config: 'config',       // { chave, valor }
 };
 
@@ -33,9 +34,20 @@ export function abrir() {
         db.createObjectStore(LOJAS.alimentos, { keyPath: 'id', autoIncrement: true });
         db.createObjectStore(LOJAS.config, { keyPath: 'chave' });
       }
+      if (ev.oldVersion < 2) {
+        db.createObjectStore(LOJAS.salvas, { keyPath: 'id', autoIncrement: true });
+      }
     };
-    req.onsuccess = () => ok(req.result);
+    req.onsuccess = () => {
+      // Se outra aba subir o esquema depois, esta conexão precisa sair da frente,
+      // senão é ela que fica travando a outra.
+      req.result.onversionchange = () => req.result.close();
+      ok(req.result);
+    };
     req.onerror = () => falha(req.error);
+    // Outra aba aberta na versão anterior impede o upgrade. Sem isto o app
+    // ficaria em branco esperando para sempre.
+    req.onblocked = () => falha(new Error('bloqueado: o app está aberto em outra aba'));
   });
   return aberto;
 }
@@ -151,6 +163,16 @@ export async function dia(data) {
 
 export function salvarDia(d) {
   return gravar(LOJAS.dias, d);
+}
+
+/** Dias que têm comida registrada, com as kcal somadas, para a grade da dieta. */
+export async function diasComDieta() {
+  const mapa = {};
+  for (const d of await todos(LOJAS.dias)) {
+    const kcal = (d.refeicoes || []).reduce((t, r) => t + (r.itens || []).reduce((x, i) => x + (i.kcal || 0), 0), 0);
+    if (kcal > 0) mapa[d.data] = kcal;
+  }
+  return mapa;
 }
 
 export async function config(chave, padrao = null) {
