@@ -1,9 +1,10 @@
-// Cache simples para o protótipo funcionar em modo avião.
+// Cache do app para funcionar em modo avião. Os registros do usuário ficam no
+// IndexedDB e não passam por aqui — isto guarda só o código e as tabelas fixas.
 // shortcut: troca o cache inteiro a cada versão, sem atualização parcial.
-// Quando o app tiver dados reais (etapa 3), separar o cache do app do cache de dados.
-const VERSAO = 'vinland-v1';
+const VERSAO = 'vinland-v2';
 const ARQUIVOS = [
-  './', 'index.html', 'app.js', 'datas.js', 'manifest.json',
+  './', 'index.html', 'app.js', 'datas.js', 'db.js', 'manifest.json',
+  'dados/exercicios.json', 'dados/taco.json',
   'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png',
 ];
 

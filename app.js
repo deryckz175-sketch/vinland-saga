@@ -1,116 +1,72 @@
 import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros } from './datas.js';
-
-// =========================================================================
-// PROTÓTIPO DA ETAPA 2 — dados fictícios, nada é salvo de verdade.
-// O armazenamento em IndexedDB entra na etapa 3.
-// =========================================================================
+import * as db from './db.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
 const CHAVE_HOJE = chaveDia(HOJE);
+const REFEICOES_PADRAO = ['Café da manhã', 'Almoço', 'Lanche', 'Jantar'];
 
-const perfil = { nome: 'Você', peso: 80 };
+// ---- estado em memória, espelho do que está no banco ----
+let perfil = { id: 'eu', nome: '', peso: null, altura: null, foto: null };
+let fichas = [];
+let diasTreino = new Set();
+let diaHoje = { data: CHAVE_HOJE, refeicoes: [], agua: 0 };
+let sessao = null;
+let catalogo = [];   // dados/exercicios.json
+let alimentos = [];  // dados/taco.json + os criados pelo usuário
 
-// Metas digitadas pelo usuário. O app nunca calcula nem sugere metas.
-let metas = { kcal: 2400, p: 148, c: 333, g: 53 };
-
-const FICHAS = {
-  A: { titulo: 'Peito e tríceps', exercicios: [
-    { nome: 'Supino reto com barra', ultima: [60, 10] },
-    { nome: 'Supino inclinado com halteres', ultima: [24, 10] },
-    { nome: 'Crucifixo na polia', ultima: [15, 12] },
-    { nome: 'Tríceps na polia alta', ultima: [30, 12] },
-    { nome: 'Tríceps testa', ultima: [25, 10] },
-  ]},
-  B: { titulo: 'Costas e bíceps', exercicios: [
-    { nome: 'Barra fixa', ultima: [0, 8] },
-    { nome: 'Remada curvada', ultima: [50, 10] },
-    { nome: 'Puxada frente', ultima: [55, 10] },
-    { nome: 'Rosca direta', ultima: [30, 10] },
-    { nome: 'Rosca martelo', ultima: [14, 12] },
-  ]},
-  C: { titulo: 'Pernas e ombros', exercicios: [
-    { nome: 'Agachamento livre', ultima: [80, 8] },
-    { nome: 'Leg press', ultima: [140, 12] },
-    { nome: 'Cadeira extensora', ultima: [45, 12] },
-    { nome: 'Desenvolvimento com halteres', ultima: [18, 10] },
-    { nome: 'Elevação lateral', ultima: [10, 15] },
-  ]},
-};
-
-let ALIMENTOS = [
-  { nome: 'Ovo, de galinha, cozido', kcal: 146, p: 13.3, c: 0.6, g: 9.5 },
-  { nome: 'Arroz, integral, cozido', kcal: 124, p: 2.6, c: 25.8, g: 1.0 },
-  { nome: 'Feijão, carioca, cozido', kcal: 76, p: 4.8, c: 13.6, g: 0.5 },
-  { nome: 'Frango, peito, grelhado', kcal: 159, p: 32.0, c: 0, g: 2.5 },
-  { nome: 'Pão, francês', kcal: 300, p: 8.0, c: 58.6, g: 3.1 },
-  { nome: 'Banana, prata', kcal: 98, p: 1.3, c: 26.0, g: 0.1 },
-  { nome: 'Batata, doce, cozida', kcal: 77, p: 0.6, c: 18.4, g: 0.1 },
-  { nome: 'Whey, concentrado', kcal: 400, p: 80.0, c: 8.0, g: 6.0 },
-  { nome: 'Aveia, em flocos', kcal: 394, p: 13.9, c: 66.6, g: 8.5 },
-  { nome: 'Azeite, de oliva', kcal: 884, p: 0, c: 0, g: 100 },
-];
-
-// --- histórico fictício do ano, gerado de forma determinística ---
-const treinos = new Map();
-const kcalPorDia = new Map();
-(function semear() {
-  const letras = ['A', 'B', 'C'];
-  let i = 0;
-  for (let d = new Date(ANO, 0, 1); d <= HOJE; d.setDate(d.getDate() + 1)) {
-    const semana = d.getDay();
-    const dia = d.getDate();
-    const faltou = (dia * 31 + d.getMonth() * 17) % 9 === 0;
-    kcalPorDia.set(chaveDia(d), 1900 + ((dia * 53 + d.getMonth() * 29) % 700));
-    if (![1, 3, 5, 6].includes(semana) || faltou) continue;
-    const letra = letras[i++ % 3];
-    treinos.set(chaveDia(d), {
-      ficha: letra,
-      titulo: FICHAS[letra].titulo,
-      exercicios: FICHAS[letra].exercicios.length,
-      minutos: 48 + (dia % 5) * 6,
-    });
-  }
-})();
-
-const refeicoes = [
-  { nome: 'Café da manhã', hora: '07:20', itens: [
-    { nome: 'Ovo, de galinha, cozido', g: 120, kcal: 175, p: 16, c: 0.7, g_: 11.4 },
-    { nome: 'Pão, francês', g: 50, kcal: 150, p: 4, c: 29.3, g_: 1.6 },
-  ]},
-  { nome: 'Almoço', hora: '12:40', itens: [
-    { nome: 'Arroz, integral, cozido', g: 180, kcal: 223, p: 4.7, c: 46.4, g_: 1.8 },
-    { nome: 'Feijão, carioca, cozido', g: 140, kcal: 106, p: 6.7, c: 19, g_: 0.7 },
-    { nome: 'Frango, peito, grelhado', g: 180, kcal: 286, p: 57.6, c: 0, g_: 4.5 },
-  ]},
-  { nome: 'Lanche', hora: '16:10', itens: [
-    { nome: 'Whey, concentrado', g: 30, kcal: 120, p: 24, c: 2.4, g_: 1.8 },
-    { nome: 'Banana, prata', g: 100, kcal: 98, p: 1.3, c: 26, g_: 0.1 },
-  ]},
-  { nome: 'Jantar', hora: '20:30', itens: [] },
-];
-
-// --- estado da interface ---
 let telaAtual = 'hoje';
-let sessao = null;        // sessão de treino em andamento
 let diaSelecionado = null;
 let mesAberto = null;
 
-const $ = (sel) => document.querySelector(sel);
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const n1 = (v) => (Math.round(v * 10) / 10).toString().replace('.', ',');
+const nz = (v) => (v == null ? 0 : v); // TACO usa null para "não analisado"
 
-function macrosDoDia() {
-  return somaMacros(refeicoes.flatMap((r) => r.itens.map((i) => ({ kcal: i.kcal, p: i.p, c: i.c, g: i.g_ }))));
+// =========================================================================
+// Carga inicial
+// =========================================================================
+
+async function carregar() {
+  [perfil, fichas, diasTreino, diaHoje] = await Promise.all([
+    db.perfil(), db.todos(db.LOJAS.fichas), db.diasComTreino(), db.dia(CHAVE_HOJE),
+  ]);
+  const cor = await db.config('cor');
+  if (cor) document.documentElement.style.setProperty('--cor', cor);
+  renderTudo();
+  carregarCatalogos();
+}
+
+async function carregarCatalogos() {
+  const [ex, taco, meus] = await Promise.all([
+    fetch('dados/exercicios.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
+    fetch('dados/taco.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
+    db.todos(db.LOJAS.alimentos).catch(() => []),
+  ]);
+  catalogo = ex;
+  alimentos = [
+    ...meus,
+    ...taco.map((a) => ({
+      id: a.id, nome: a.nome,
+      kcal: nz(a.por100g?.kcal), p: nz(a.por100g?.proteina),
+      c: nz(a.por100g?.carboidrato), g: nz(a.por100g?.gordura),
+    })),
+  ];
 }
 
 // =========================================================================
-// Telas
+// Hoje
 // =========================================================================
 
+function macrosDoDia() {
+  return somaMacros(diaHoje.refeicoes.flatMap((r) => r.itens.map((i) => ({ kcal: i.kcal, p: i.p, c: i.c, g: i.g }))));
+}
+
 function renderHoje() {
-  const t = treinos.get(CHAVE_HOJE);
+  const sessoes = [...diasTreino].includes(CHAVE_HOJE);
   const m = macrosDoDia();
+  const temComida = diaHoje.refeicoes.some((r) => r.itens.length);
   const dataLonga = HOJE.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
   $('#tela-hoje').innerHTML = `
@@ -121,197 +77,224 @@ function renderHoje() {
 
     <div class="card">
       <h2>Treino</h2>
-      ${t
-        ? `<div class="linha-item"><div><div>Ficha ${t.ficha} — ${esc(t.titulo)}</div>
-             <div class="sub">${t.exercicios} exercícios · ${t.minutos} min</div></div>
-             <div class="destaque">✓</div></div>`
+      ${sessoes
+        ? `<div class="linha-item"><div>Treino registrado</div><div class="destaque">✓</div></div>`
         : `<div class="vazio">Nada registrado hoje.</div>
            <button class="botao" data-ir="treino">Registrar treino</button>`}
     </div>
 
     <div class="card">
       <h2>Dieta</h2>
-      <div class="linha-item"><div>Calorias</div>
-        <div><span class="destaque">${m.kcal.toFixed(0)}</span> <span class="sub">/ ${metas.kcal} kcal</span></div></div>
-      ${barra('Proteína', m.p, metas.p)}
-      ${barra('Carboidrato', m.c, metas.c)}
-      ${barra('Gordura', m.g, metas.g)}
+      ${temComida
+        ? `<div class="linha-item"><div>Calorias</div><div class="destaque">${m.kcal.toFixed(0)} kcal</div></div>
+           <div class="linha-item"><div class="sub">Proteína ${n1(m.p)} g · Carboidrato ${n1(m.c)} g · Gordura ${n1(m.g)} g</div></div>`
+        : `<div class="vazio">Nada registrado hoje.</div>
+           <button class="botao" data-ir="dieta">Registrar refeição</button>`}
     </div>
 
     <div class="card">
       <h2>Este mês</h2>
       <div class="linha-item">
-        <div><div class="num-grande destaque">${contaMes(HOJE.getMonth())}</div>
+        <div><div class="num-grande ${contaMes(HOJE.getMonth()) ? 'destaque' : ''}">${contaMes(HOJE.getMonth())}</div>
           <div class="sub" style="margin-top:6px">dias treinados em ${MESES[HOJE.getMonth()].toLowerCase()}</div></div>
       </div>
     </div>`;
 }
 
-function barra(rotulo, valor, meta) {
-  const pct = meta ? Math.min(100, (valor / meta) * 100) : 0;
-  return `<div class="macro">
-    <div class="rot"><span>${rotulo}</span><span class="sub">${n1(valor)} / ${meta} g</span></div>
-    <div class="trilho"><i style="width:${pct}%"></i></div></div>`;
-}
+// =========================================================================
+// Treino
+// =========================================================================
 
 function renderTreino() {
   const el = $('#tela-treino');
 
-  if (!sessao) {
+  if (sessao) {
+    const todas = sessao.exercicios.flatMap((e) => e.series);
+    const feitas = todas.filter((s) => s.feita).length;
     el.innerHTML = `
-      <header class="topo"><h1>Treino</h1><div class="data">Escolha uma ficha</div></header>
-      ${Object.entries(FICHAS).map(([letra, f]) => `
-        <button class="card" style="display:block;width:100%;text-align:left" data-ficha="${letra}">
-          <div class="linha-item">
-            <div><div style="font-weight:600">Ficha ${letra}</div>
-              <div class="sub">${esc(f.titulo)} · ${f.exercicios.length} exercícios</div></div>
-            <div class="sub">›</div>
-          </div>
-        </button>`).join('')}
-      <div class="card">
-        <h2>Últimos treinos</h2>
-        ${ultimosTreinos(5)}
-      </div>`;
+      <header class="topo">
+        <h1>${esc(sessao.nome)}</h1>
+        <div class="data">${feitas} de ${todas.length} séries</div>
+      </header>
+      ${sessao.exercicios.map((ex, ie) => `
+        <div class="card">
+          <h2>${esc(ex.nome)}</h2>
+          <div class="serie-cab"><span></span><span>kg</span><span>reps</span><span></span></div>
+          ${ex.series.map((s, is) => `
+            <div class="serie ${s.feita ? 'feita' : ''}">
+              <span class="idx">${is + 1}</span>
+              <input type="number" inputmode="decimal" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">
+              <input type="number" inputmode="numeric" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">
+              <button class="ok" data-feita="${ie}:${is}">✓</button>
+            </div>`).join('')}
+        </div>`).join('')}
+      <button class="botao" id="finalizar">Finalizar treino</button>
+      <button class="botao fraco" id="cancelar">Cancelar</button>`;
     return;
   }
 
-  const feitas = sessao.exercicios.flatMap((e) => e.series).filter((s) => s.feita).length;
-  const total = sessao.exercicios.flatMap((e) => e.series).length;
-
   el.innerHTML = `
-    <header class="topo">
-      <h1>Ficha ${sessao.ficha}</h1>
-      <div class="data">${esc(FICHAS[sessao.ficha].titulo)} · ${feitas} de ${total} séries</div>
-    </header>
-    ${sessao.exercicios.map((ex, ie) => `
-      <div class="card">
-        <h2>${esc(ex.nome)}</h2>
-        <div class="serie-cab"><span></span><span>kg</span><span>reps</span><span></span></div>
-        ${ex.series.map((s, is) => `
-          <div class="serie ${s.feita ? 'feita' : ''}">
-            <span class="idx">${is + 1}</span>
-            <input type="number" inputmode="decimal" value="${s.kg}" data-campo="kg" data-e="${ie}" data-s="${is}">
-            <input type="number" inputmode="numeric" value="${s.reps}" data-campo="reps" data-e="${ie}" data-s="${is}">
-            <button class="ok" data-feita="${ie}:${is}">✓</button>
-          </div>`).join('')}
-      </div>`).join('')}
-    <button class="botao" id="finalizar">Finalizar treino</button>
-    <button class="botao fraco" id="cancelar">Cancelar</button>`;
+    <header class="topo"><h1>Treino</h1>
+      <div class="data">${fichas.length ? 'Escolha uma ficha' : 'Nenhuma ficha ainda'}</div></header>
+    ${fichas.length
+      ? fichas.map((f) => `
+        <button class="card" style="display:block;width:100%;text-align:left" data-ficha="${esc(f.id)}">
+          <div class="linha-item">
+            <div><div style="font-weight:600">${esc(f.nome)}</div>
+              <div class="sub">${f.exercicios.length} exercício${f.exercicios.length === 1 ? '' : 's'}</div></div>
+            <div class="sub">›</div>
+          </div>
+        </button>`).join('')
+      : `<div class="card"><div class="vazio">Monte uma ficha para começar a registrar seus treinos.</div></div>`}
+    <button class="botao ${fichas.length ? 'fraco' : ''}" id="novaFicha">Nova ficha</button>`;
 }
 
-function ultimosTreinos(qtd) {
-  const chaves = [...treinos.keys()].sort().reverse().slice(0, qtd);
-  if (!chaves.length) return '<div class="vazio">Nenhum treino registrado.</div>';
-  return chaves.map((k) => {
-    const t = treinos.get(k);
-    const [a, m, d] = k.split('-');
-    return `<div class="linha-item">
-      <div><div>Ficha ${t.ficha} — ${esc(t.titulo)}</div><div class="sub">${t.minutos} min</div></div>
-      <div class="sub">${d}/${m}</div></div>`;
-  }).join('');
+async function abrirSessao(fichaId) {
+  const f = fichas.find((x) => x.id === fichaId);
+  if (!f) return;
+  const anteriores = await db.cargasAnteriores(fichaId);
+  sessao = {
+    fichaId, nome: f.nome,
+    exercicios: f.exercicios.map((e) => {
+      const ant = anteriores[e.nome];
+      return {
+        nome: e.nome,
+        series: Array.from({ length: e.series || 3 }, () => ({
+          kg: ant ? ant.kg : null, reps: ant ? ant.reps : null, feita: false,
+        })),
+      };
+    }),
+  };
+  setTela('treino');
 }
+
+async function finalizarSessao() {
+  const exercicios = sessao.exercicios.map((e) => ({
+    nome: e.nome,
+    series: e.series.filter((s) => s.feita).map((s) => ({ kg: s.kg, reps: s.reps })),
+  })).filter((e) => e.series.length);
+
+  if (!exercicios.length) { alerta('Marque pelo menos uma série antes de finalizar.'); return; }
+
+  await db.gravar(db.LOJAS.sessoes, {
+    data: CHAVE_HOJE, fichaId: sessao.fichaId, nome: sessao.nome,
+    exercicios, minutos: null, em: new Date().toISOString(),
+  });
+  diasTreino = await db.diasComTreino();
+  sessao = null;
+  setTela('perfil');
+}
+
+// =========================================================================
+// Dieta
+// =========================================================================
 
 function renderDieta() {
   const m = macrosDoDia();
+  const refs = diaHoje.refeicoes;
   $('#tela-dieta').innerHTML = `
     <header class="topo"><h1>Dieta</h1><div class="data">Hoje</div></header>
 
     <div class="card">
       <div class="linha-item">
-        <div><div class="num-grande">${m.kcal.toFixed(0)}</div>
-          <div class="sub" style="margin-top:6px">de ${metas.kcal} kcal que você definiu</div></div>
-        <button class="sub" id="editarMetas">editar</button>
+        <div><div class="num-grande ${m.kcal ? 'destaque' : ''}">${m.kcal.toFixed(0)}</div>
+          <div class="sub" style="margin-top:6px">kcal somadas hoje</div></div>
       </div>
-      ${barra('Proteína', m.p, metas.p)}
-      ${barra('Carboidrato', m.c, metas.c)}
-      ${barra('Gordura', m.g, metas.g)}
+      ${m.kcal ? `<div class="linha-item"><div class="sub">P ${n1(m.p)} g · C ${n1(m.c)} g · G ${n1(m.g)} g</div></div>` : ''}
     </div>
 
-    ${refeicoes.map((r, i) => {
-      const s = somaMacros(r.itens.map((x) => ({ kcal: x.kcal, p: x.p, c: x.c, g: x.g_ })));
-      return `<div class="card">
-        <h2>${esc(r.nome)} · ${r.hora}</h2>
-        ${r.itens.length
-          ? r.itens.map((it) => `<div class="linha-item">
-              <div><div>${esc(it.nome)}</div><div class="sub">${it.g} g</div></div>
-              <div class="sub">${it.kcal.toFixed(0)} kcal</div></div>`).join('')
-          : '<div class="vazio">Nada registrado.</div>'}
-        <div class="linha-item" style="border-top:1px solid var(--linha);margin-top:8px;padding-top:11px">
-          <button class="destaque" data-add-refeicao="${i}">+ Adicionar alimento</button>
-          <div class="sub" style="white-space:nowrap">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>
-        </div>
-      </div>`;
-    }).join('')}`;
+    ${refs.length
+      ? refs.map((r, i) => {
+        const s = somaMacros(r.itens);
+        return `<div class="card">
+          <h2>${esc(r.nome)}</h2>
+          ${r.itens.length
+            ? r.itens.map((it, j) => `<div class="linha-item">
+                <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g</div></div>
+                <button class="sub" data-remover="${i}:${j}">${it.kcal.toFixed(0)} kcal ✕</button></div>`).join('')
+            : '<div class="vazio">Nada registrado.</div>'}
+          <div class="linha-item" style="border-top:1px solid var(--linha);margin-top:8px;padding-top:11px">
+            <button class="destaque" data-add-refeicao="${i}">+ Adicionar alimento</button>
+            <div class="sub" style="white-space:nowrap">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>
+          </div>
+        </div>`;
+      }).join('')
+      : '<div class="card"><div class="vazio">Nenhuma refeição hoje.</div></div>'}
+
+    <button class="botao fraco" id="novaRefeicao">Adicionar refeição</button>`;
 }
 
+async function salvarDiaHoje() {
+  await db.salvarDia(diaHoje);
+  renderTudo();
+}
+
+// =========================================================================
+// Perfil
+// =========================================================================
+
 function renderPerfil() {
-  const total = [...treinos.keys()].filter((k) => k.startsWith(ANO)).length;
+  const total = [...diasTreino].filter((k) => k.startsWith(ANO)).length;
   const cores = ['#e5342b', '#ff7a1a', '#f5c518', '#28c76f', '#2f9bff', '#a855f7'];
   const atual = getComputedStyle(document.documentElement).getPropertyValue('--cor').trim();
 
   $('#tela-perfil').innerHTML = `
     <div class="perfil-topo">
-      <div class="avatar">🗿</div>
-      <div><div class="nome">${esc(perfil.nome)}</div><div class="sub">${perfil.peso} kg</div></div>
+      <button class="avatar" id="abrirPerfil" aria-label="Editar perfil">
+        ${perfil.foto ? `<img src="${esc(perfil.foto)}" alt="">` : '<span>+</span>'}
+      </button>
+      <button id="abrirPerfilTexto" style="text-align:left">
+        <div class="nome">${esc(perfil.nome) || 'Seu nome'}</div>
+        <div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'toque para preencher'}${perfil.altura ? ' · ' + perfil.altura + ' cm' : ''}</div>
+      </button>
       <div class="cores">${cores.map((c) => `
-        <button data-cor="${c}" style="background:${c}" class="${c === atual ? 'sel' : ''}"></button>`).join('')}</div>
+        <button data-cor="${c}" style="background:${c}" class="${c === atual ? 'sel' : ''}" aria-label="Cor"></button>`).join('')}</div>
     </div>
 
     <div class="card">
       <div class="ano-cabeca">
         <span class="ano">${ANO} ›</span>
-        <span><span class="num-grande destaque">${total}</span> <span class="sub">dias</span></span>
+        <span><span class="num-grande ${total ? 'destaque' : ''}">${total}</span> <span class="sub">dias</span></span>
       </div>
       <div class="meses">${MESES.map((_, i) => mesMini(i)).join('')}</div>
     </div>
 
-    <div class="card">
-      <h2>Toque num mês</h2>
-      <div class="sub">Abre o calendário ampliado com os dias numerados e o que foi registrado em cada um.</div>
-    </div>`;
+    ${total ? '' : '<div class="card"><div class="vazio">A grade acende conforme você registra treinos.</div></div>'}`;
 }
 
 function contaMes(mes) {
   const pre = `${ANO}-${String(mes + 1).padStart(2, '0')}`;
-  return [...treinos.keys()].filter((k) => k.startsWith(pre)).length;
+  return [...diasTreino].filter((k) => k.startsWith(pre)).length;
 }
 
 function mesMini(mes) {
   const { vazios, total } = diasDoMes(ANO, mes);
   const futuro = mes > HOJE.getMonth();
-  let quadrados = '<span class="d off"></span>'.repeat(vazios);
+  let q = '<span class="d off"></span>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const classes = ['d', treinos.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ');
-    quadrados += `<span class="${classes}"></span>`;
+    q += `<span class="${['d', diasTreino.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : ''].filter(Boolean).join(' ')}"></span>`;
   }
   return `<button class="mes ${mes === HOJE.getMonth() ? 'atual' : ''} ${futuro ? 'futuro' : ''}" data-mes="${mes}">
     <div class="nome"><span>${MESES[mes].slice(0, 3)}</span><span>${contaMes(mes) || ''}</span></div>
-    <div class="dias">${quadrados}</div>
-  </button>`;
+    <div class="dias">${q}</div></button>`;
 }
 
 // =========================================================================
 // Mês ampliado
 // =========================================================================
 
-function abrirMes(mes) {
-  mesAberto = mes;
-  diaSelecionado = null;
-  renderMesAmpliado();
-  $('#mesAmpliado').classList.add('aberto');
-}
+function abrirMes(mes) { mesAberto = mes; diaSelecionado = null; renderMesAmpliado(); $('#mesAmpliado').classList.add('aberto'); }
 
 function renderMesAmpliado() {
   const mes = mesAberto;
   const { vazios, total } = diasDoMes(ANO, mes);
-  let celulas = '<button class="espaco"></button>'.repeat(vazios);
+  let cel = '<button class="espaco"></button>'.repeat(vazios);
   for (let d = 1; d <= total; d++) {
     const k = `${ANO}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const classes = [treinos.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
-    celulas += `<button class="${classes}" data-dia="${k}">${d}</button>`;
+    const cls = [diasTreino.has(k) ? 'on' : '', k === CHAVE_HOJE ? 'hoje' : '', k === diaSelecionado ? 'sel' : ''].filter(Boolean).join(' ');
+    cel += `<button class="${cls}" data-dia="${k}">${d}</button>`;
   }
-
   $('#mesAmpliado').innerHTML = `
     <div class="amp-topo">
       <button class="voltar" id="fecharMes">‹</button>
@@ -319,22 +302,24 @@ function renderMesAmpliado() {
       <span class="sub" style="margin-left:auto">${contaMes(mes)} dias</span>
     </div>
     <div class="semana">${DIAS_SEMANA.map((d) => `<span>${d}</span>`).join('')}</div>
-    <div class="cal">${celulas}</div>
-    <div class="card" style="margin-top:20px">${detalheDia()}</div>`;
+    <div class="cal">${cel}</div>
+    <div class="card" style="margin-top:20px" id="detalheDia"><div class="vazio">Toque num dia para ver o que foi registrado.</div></div>`;
+  if (diaSelecionado) mostrarDia(diaSelecionado);
 }
 
-function detalheDia() {
-  if (!diaSelecionado) return '<div class="vazio">Toque num dia para ver o que foi registrado.</div>';
-  const [a, m, d] = diaSelecionado.split('-');
-  const t = treinos.get(diaSelecionado);
-  const kcal = kcalPorDia.get(diaSelecionado);
-  return `<h2>${d} de ${MESES[+m - 1].toLowerCase()}</h2>
-    ${t
-      ? `<div class="linha-item"><div><div>Ficha ${t.ficha} — ${esc(t.titulo)}</div>
-          <div class="sub">${t.exercicios} exercícios · ${t.minutos} min</div></div><div class="destaque">✓</div></div>`
+async function mostrarDia(k) {
+  const [sessoes, d] = await Promise.all([db.sessoesDoDia(k), db.dia(k)]);
+  const m = somaMacros(d.refeicoes.flatMap((r) => r.itens));
+  const [, mm, dd] = k.split('-');
+  const alvo = $('#detalheDia');
+  if (!alvo) return;
+  alvo.innerHTML = `<h2>${dd} de ${MESES[+mm - 1].toLowerCase()}</h2>
+    ${sessoes.length
+      ? sessoes.map((s) => `<div class="linha-item"><div><div>${esc(s.nome)}</div>
+          <div class="sub">${s.exercicios.length} exercícios</div></div><div class="destaque">✓</div></div>`).join('')
       : '<div class="linha-item"><div class="sub">Sem treino.</div></div>'}
-    ${kcal
-      ? `<div class="linha-item"><div>Dieta</div><div class="sub">${kcal} kcal</div></div>`
+    ${m.kcal
+      ? `<div class="linha-item"><div>Dieta</div><div class="sub">${m.kcal.toFixed(0)} kcal</div></div>`
       : '<div class="linha-item"><div class="sub">Sem refeições.</div></div>'}`;
 }
 
@@ -347,57 +332,111 @@ function abrirFolha(html) {
   $('#folhaFundo').classList.add('aberta');
   requestAnimationFrame(() => $('#folha').classList.add('aberta'));
 }
-
 function fecharFolha() {
   $('#folha').classList.remove('aberta');
   $('#folhaFundo').classList.remove('aberta');
 }
+function alerta(txt) {
+  abrirFolha(`<h3>${esc(txt)}</h3><button class="botao" id="fecharAviso">Entendi</button>`);
+}
 
 function folhaRegistro() {
   abrirFolha(`<h3>Registrar</h3>
-    <button class="opcao" data-reg="treino"><span class="bolha">🏋️</span><div><div>Treino</div><div class="sub">Abrir uma ficha</div></div></button>
+    <button class="opcao" data-reg="treino"><span class="bolha">🏋️</span><div><div>Treino</div><div class="sub">${fichas.length ? 'Abrir uma ficha' : 'Montar a primeira ficha'}</div></div></button>
     <button class="opcao" data-reg="refeicao"><span class="bolha">🍽️</span><div><div>Refeição</div><div class="sub">Adicionar alimento</div></div></button>
-    <button class="opcao" data-reg="peso"><span class="bolha">⚖️</span><div><div>Peso</div><div class="sub">Atual: ${perfil.peso} kg</div></div></button>`);
+    <button class="opcao" data-reg="perfil"><span class="bolha">👤</span><div><div>Perfil</div><div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'Preencher'}</div></div></button>`);
 }
 
-function folhaAlimento(indiceRefeicao) {
-  abrirFolha(`<h3>Adicionar em ${esc(refeicoes[indiceRefeicao].nome)}</h3>
+function folhaPerfil() {
+  abrirFolha(`<h3>Seu perfil</h3>
+    <div class="campo-foto">
+      <div class="avatar grande">${perfil.foto ? `<img src="${esc(perfil.foto)}" alt="">` : '<span>+</span>'}</div>
+      <label class="botao fraco" for="arqFoto" style="margin:0">Escolher foto</label>
+      <input type="file" id="arqFoto" accept="image/*" hidden>
+    </div>
+    <label class="rot" for="pNome">Nome</label>
+    <input class="busca" id="pNome" value="${esc(perfil.nome)}" autocomplete="off">
+    <label class="rot" for="pPeso">Peso (kg)</label>
+    <input class="busca" id="pPeso" type="number" inputmode="decimal" value="${perfil.peso ?? ''}">
+    <label class="rot" for="pAltura">Altura (cm)</label>
+    <input class="busca" id="pAltura" type="number" inputmode="numeric" value="${perfil.altura ?? ''}">
+    <button class="botao" id="salvarPerfil">Salvar</button>`);
+}
+
+function folhaNovaFicha() {
+  abrirFolha(`<h3>Nova ficha</h3>
+    <label class="rot" for="fNome">Nome da ficha</label>
+    <input class="busca" id="fNome" placeholder="Ficha A — peito e tríceps" autocomplete="off">
+    <label class="rot" for="fBusca">Exercícios</label>
+    <input class="busca" id="fBusca" placeholder="Buscar exercício" autocomplete="off">
+    <div id="fEscolhidos" class="escolhidos"></div>
+    <div id="fResultados"></div>
+    <button class="botao" id="salvarFicha">Criar ficha</button>`);
+  const escolhidos = [];
+  const pinta = () => {
+    $('#fEscolhidos').innerHTML = escolhidos.length
+      ? escolhidos.map((n, i) => `<button class="marca" data-tirar="${i}">${esc(n)} ✕</button>`).join('')
+      : '<div class="sub">Nenhum exercício escolhido.</div>';
+  };
+  const lista = () => {
+    const q = $('#fBusca').value.trim().toLowerCase();
+    const achados = (q ? catalogo.filter((e) => e.nome.toLowerCase().includes(q)) : catalogo).slice(0, 8);
+    $('#fResultados').innerHTML = achados.length
+      ? achados.map((e) => `<button class="opcao" data-ex="${esc(e.nome)}"><div><div>${esc(e.nome)}</div><div class="sub">${esc(e.grupo)} · ${esc(e.equipamento)}</div></div></button>`).join('')
+      : `<div class="vazio">Nada encontrado.${q ? ` <button class="destaque" data-ex="${esc($('#fBusca').value.trim())}">Usar "${esc($('#fBusca').value.trim())}"</button>` : ''}</div>`;
+  };
+  pinta(); lista();
+  $('#fBusca').addEventListener('input', lista);
+  $('#folhaConteudo').addEventListener('click', (ev) => {
+    const a = ev.target.closest('[data-ex]');
+    if (a) { if (!escolhidos.includes(a.dataset.ex)) escolhidos.push(a.dataset.ex); pinta(); return; }
+    const t = ev.target.closest('[data-tirar]');
+    if (t) { escolhidos.splice(+t.dataset.tirar, 1); pinta(); return; }
+    if (ev.target.closest('#salvarFicha')) {
+      const nome = $('#fNome').value.trim();
+      if (!nome || !escolhidos.length) { return; }
+      const ficha = { id: 'f' + Date.now(), nome, exercicios: escolhidos.map((n) => ({ nome: n, series: 3 })) };
+      db.gravar(db.LOJAS.fichas, ficha).then(async () => {
+        fichas = await db.todos(db.LOJAS.fichas);
+        fecharFolha(); setTela('treino');
+      });
+    }
+  });
+}
+
+function folhaNovaRefeicao() {
+  const sugestoes = REFEICOES_PADRAO.filter((n) => !diaHoje.refeicoes.some((r) => r.nome === n));
+  abrirFolha(`<h3>Adicionar refeição</h3>
+    ${sugestoes.map((n) => `<button class="opcao" data-ref-nome="${esc(n)}"><div>${esc(n)}</div></button>`).join('')}
+    <label class="rot" for="rNome">Ou um nome seu</label>
+    <input class="busca" id="rNome" placeholder="Pré-treino" autocomplete="off">
+    <button class="botao" id="salvarRefeicao">Adicionar</button>`);
+}
+
+function folhaAlimento(iRef) {
+  abrirFolha(`<h3>Adicionar em ${esc(diaHoje.refeicoes[iRef].nome)}</h3>
     <input class="busca" id="buscaAlimento" placeholder="Buscar alimento" autocomplete="off">
     <div id="resultados"></div>`);
   const lista = () => {
-    const q = $('#buscaAlimento').value.toLowerCase();
-    const achados = ALIMENTOS.filter((a) => a.nome.toLowerCase().includes(q)).slice(0, 8);
+    const q = $('#buscaAlimento').value.trim().toLowerCase();
+    if (!q) { $('#resultados').innerHTML = `<div class="vazio">${alimentos.length} alimentos disponíveis. Digite para buscar.</div>`; return; }
+    const achados = alimentos.filter((a) => a.nome.toLowerCase().includes(q)).slice(0, 8);
     $('#resultados').innerHTML = achados.length
-      ? achados.map((a, i) => `<button class="opcao" data-alimento="${indiceRefeicao}:${ALIMENTOS.indexOf(a)}">
-          <div><div>${esc(a.nome)}</div><div class="sub">${a.kcal} kcal · P ${n1(a.p)} C ${n1(a.c)} G ${n1(a.g)} por 100 g</div></div></button>`).join('')
+      ? achados.map((a) => `<button class="opcao" data-alimento="${iRef}:${esc(a.id)}">
+          <div><div>${esc(a.nome)}</div><div class="sub">${a.kcal.toFixed(0)} kcal · P ${n1(a.p)} C ${n1(a.c)} G ${n1(a.g)} por 100 g</div></div></button>`).join('')
       : '<div class="vazio">Nenhum alimento encontrado.</div>';
   };
   lista();
   $('#buscaAlimento').addEventListener('input', lista);
 }
 
-function folhaPorcao(iRef, iAli) {
-  const a = ALIMENTOS[iAli];
+function folhaPorcao(iRef, idAli) {
+  const a = alimentos.find((x) => String(x.id) === String(idAli));
+  if (!a) return;
   abrirFolha(`<h3>${esc(a.nome)}</h3>
     <input class="busca" id="qtd" type="number" inputmode="decimal" value="100">
     <div class="sub" style="margin-bottom:14px">gramas</div>
-    <button class="botao" data-confirma="${iRef}:${iAli}">Adicionar</button>`);
-}
-
-function folhaPeso() {
-  abrirFolha(`<h3>Peso</h3>
-    <input class="busca" id="novoPeso" type="number" inputmode="decimal" value="${perfil.peso}">
-    <div class="sub" style="margin-bottom:14px">kg</div>
-    <button class="botao" id="salvarPeso">Salvar</button>`);
-}
-
-function folhaMetas() {
-  abrirFolha(`<h3>Suas metas</h3>
-    <div class="sub" style="margin-bottom:14px">O app não calcula metas. Os valores são os que você digitar.</div>
-    ${[['kcal', 'Calorias (kcal)'], ['p', 'Proteína (g)'], ['c', 'Carboidrato (g)'], ['g', 'Gordura (g)']]
-      .map(([k, r]) => `<div class="sub" style="margin-bottom:4px">${r}</div>
-        <input class="busca" type="number" inputmode="decimal" data-meta="${k}" value="${metas[k]}">`).join('')}
-    <button class="botao" id="salvarMetas">Salvar</button>`);
+    <button class="botao" data-confirma="${iRef}:${esc(idAli)}">Adicionar</button>`);
 }
 
 // =========================================================================
@@ -413,136 +452,135 @@ function setTela(nome) {
 }
 
 function renderTudo() {
-  renderHoje();
-  renderTreino();
-  renderDieta();
-  renderPerfil();
+  renderHoje(); renderTreino(); renderDieta(); renderPerfil();
   if (mesAberto !== null) renderMesAmpliado();
 }
 
-document.addEventListener('click', (ev) => {
-  const alvo = (sel) => ev.target.closest(sel);
+document.addEventListener('click', async (ev) => {
+  const achar = (sel) => ev.target.closest(sel);
   let el;
 
-  if ((el = alvo('.aba'))) return setTela(el.dataset.tela);
-  if (alvo('#fab')) return folhaRegistro();
-  if ((el = alvo('[data-ir]'))) return setTela(el.dataset.ir);
+  if ((el = achar('.aba'))) return setTela(el.dataset.tela);
+  if (achar('#fab')) return folhaRegistro();
+  if ((el = achar('[data-ir]'))) return setTela(el.dataset.ir);
+  if (achar('#fecharAviso') || ev.target.id === 'folhaFundo') return fecharFolha();
 
-  // ficha escolhida -> começa a sessão
-  if ((el = alvo('[data-ficha]'))) {
-    const letra = el.dataset.ficha;
-    sessao = {
-      ficha: letra,
-      exercicios: FICHAS[letra].exercicios.map((e) => ({
-        nome: e.nome,
-        series: [0, 1, 2].map(() => ({ kg: e.ultima[0], reps: e.ultima[1], feita: false })),
-      })),
-    };
-    return renderTreino();
-  }
+  if ((el = achar('[data-ficha]'))) return abrirSessao(el.dataset.ficha);
+  if (achar('#novaFicha')) return folhaNovaFicha();
 
-  if ((el = alvo('[data-feita]'))) {
+  if ((el = achar('[data-feita]'))) {
     const [ie, is] = el.dataset.feita.split(':').map(Number);
     const s = sessao.exercicios[ie].series[is];
     s.feita = !s.feita;
     return renderTreino();
   }
+  if (achar('#finalizar')) return finalizarSessao();
+  if (achar('#cancelar')) { sessao = null; return renderTreino(); }
 
-  if (alvo('#finalizar')) {
-    const feitas = sessao.exercicios.flatMap((e) => e.series).filter((s) => s.feita).length;
-    treinos.set(CHAVE_HOJE, {
-      ficha: sessao.ficha,
-      titulo: FICHAS[sessao.ficha].titulo,
-      exercicios: sessao.exercicios.length,
-      minutos: Math.max(20, feitas * 4),
-    });
-    sessao = null;
-    setTela('perfil');
-    return;
-  }
-  if (alvo('#cancelar')) { sessao = null; return renderTreino(); }
+  if ((el = achar('[data-mes]'))) return abrirMes(Number(el.dataset.mes));
+  if (achar('#fecharMes')) { mesAberto = null; return $('#mesAmpliado').classList.remove('aberto'); }
+  if ((el = achar('[data-dia]'))) { diaSelecionado = el.dataset.dia; renderMesAmpliado(); return mostrarDia(diaSelecionado); }
 
-  if ((el = alvo('[data-mes]'))) return abrirMes(Number(el.dataset.mes));
-  if (alvo('#fecharMes')) { mesAberto = null; return $('#mesAmpliado').classList.remove('aberto'); }
-  if ((el = alvo('[data-dia]'))) { diaSelecionado = el.dataset.dia; return renderMesAmpliado(); }
-
-  if ((el = alvo('[data-cor]'))) {
+  if ((el = achar('[data-cor]'))) {
     document.documentElement.style.setProperty('--cor', el.dataset.cor);
-    try { localStorage.setItem('cor', el.dataset.cor); } catch {}
+    await db.salvarConfig('cor', el.dataset.cor);
     return renderPerfil();
   }
 
-  if ((el = alvo('[data-add-refeicao]'))) return folhaAlimento(Number(el.dataset.addRefeicao));
-  if ((el = alvo('[data-alimento]'))) {
-    const [iRef, iAli] = el.dataset.alimento.split(':').map(Number);
-    return folhaPorcao(iRef, iAli);
+  if (achar('#abrirPerfil') || achar('#abrirPerfilTexto')) return folhaPerfil();
+  if (achar('#salvarPerfil')) {
+    perfil = {
+      ...perfil,
+      nome: $('#pNome').value.trim(),
+      peso: Number($('#pPeso').value) || null,
+      altura: Number($('#pAltura').value) || null,
+    };
+    await db.salvarPerfil(perfil);
+    fecharFolha();
+    return renderTudo();
   }
-  if ((el = alvo('[data-confirma]'))) {
-    const [iRef, iAli] = el.dataset.confirma.split(':').map(Number);
-    const a = ALIMENTOS[iAli];
+
+  if (achar('#novaRefeicao')) return folhaNovaRefeicao();
+  if ((el = achar('[data-ref-nome]'))) {
+    diaHoje.refeicoes.push({ nome: el.dataset.refNome, itens: [] });
+    fecharFolha();
+    return salvarDiaHoje();
+  }
+  if (achar('#salvarRefeicao')) {
+    const nome = $('#rNome').value.trim();
+    if (!nome) return;
+    diaHoje.refeicoes.push({ nome, itens: [] });
+    fecharFolha();
+    return salvarDiaHoje();
+  }
+
+  if ((el = achar('[data-add-refeicao]'))) return folhaAlimento(Number(el.dataset.addRefeicao));
+  if ((el = achar('[data-alimento]'))) {
+    const [iRef, ...resto] = el.dataset.alimento.split(':');
+    return folhaPorcao(Number(iRef), resto.join(':'));
+  }
+  if ((el = achar('[data-confirma]'))) {
+    const [iRef, ...resto] = el.dataset.confirma.split(':');
+    const a = alimentos.find((x) => String(x.id) === resto.join(':'));
     const q = Number($('#qtd').value) || 0;
+    if (!a || q <= 0) return;
     const f = q / 100;
-    refeicoes[iRef].itens.push({ nome: a.nome, g: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g_: a.g * f });
+    diaHoje.refeicoes[Number(iRef)].itens.push({
+      nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f,
+    });
     fecharFolha();
-    setTela('dieta');
-    return;
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-remover]'))) {
+    const [i, j] = el.dataset.remover.split(':').map(Number);
+    diaHoje.refeicoes[i].itens.splice(j, 1);
+    return salvarDiaHoje();
   }
 
-  if (alvo('#editarMetas')) return folhaMetas();
-  if (alvo('#salvarMetas')) {
-    document.querySelectorAll('[data-meta]').forEach((i) => { metas[i.dataset.meta] = Number(i.value) || 0; });
-    fecharFolha();
-    return renderTudo();
-  }
-
-  if (alvo('#salvarPeso')) {
-    perfil.peso = Number($('#novoPeso').value) || perfil.peso;
-    fecharFolha();
-    return renderTudo();
-  }
-
-  if ((el = alvo('[data-reg]'))) {
+  if ((el = achar('[data-reg]'))) {
     fecharFolha();
     if (el.dataset.reg === 'treino') return setTela('treino');
-    if (el.dataset.reg === 'refeicao') { setTela('dieta'); return folhaAlimento(0); }
-    if (el.dataset.reg === 'peso') return folhaPeso();
+    if (el.dataset.reg === 'perfil') { setTela('perfil'); return folhaPerfil(); }
+    if (el.dataset.reg === 'refeicao') {
+      setTela('dieta');
+      if (!diaHoje.refeicoes.length) return folhaNovaRefeicao();
+      return folhaAlimento(0);
+    }
   }
-
-  if (ev.target.id === 'folhaFundo') return fecharFolha();
 });
 
 document.addEventListener('input', (ev) => {
   const el = ev.target.closest('[data-campo]');
   if (!el || !sessao) return;
-  sessao.exercicios[+el.dataset.e].series[+el.dataset.s][el.dataset.campo] = Number(el.value);
+  const v = el.value === '' ? null : Number(el.value);
+  sessao.exercicios[+el.dataset.e].series[+el.dataset.s][el.dataset.campo] = v;
+});
+
+document.addEventListener('change', (ev) => {
+  if (ev.target.id !== 'arqFoto') return;
+  const arq = ev.target.files?.[0];
+  if (!arq) return;
+  // shortcut: guarda a foto como dataURL no tamanho original.
+  // Redimensionar antes de salvar quando as fotos de progresso entrarem (etapa 6).
+  const leitor = new FileReader();
+  leitor.onload = async () => {
+    perfil = { ...perfil, foto: leitor.result };
+    await db.salvarPerfil(perfil);
+    folhaPerfil();
+    renderPerfil();
+  };
+  leitor.readAsDataURL(arq);
 });
 
 // =========================================================================
 // Início
 // =========================================================================
 
-try {
-  const cor = localStorage.getItem('cor');
-  if (cor) document.documentElement.style.setProperty('--cor', cor);
-} catch {}
+carregar().catch((e) => {
+  console.error(e);
+  $('#tela-hoje').innerHTML = `<header class="topo"><h1>Hoje</h1></header>
+    <div class="card"><div class="vazio">Não deu para abrir o armazenamento do aparelho.
+    Em aba anônima o navegador bloqueia, e aí nada fica salvo.</div></div>`;
+});
 
-// Se o Gemini já tiver gerado a tabela TACO, o protótipo passa a usá-la.
-fetch('dados/taco.json')
-  .then((r) => (r.ok ? r.json() : null))
-  .then((taco) => {
-    if (!Array.isArray(taco) || !taco.length) return;
-    ALIMENTOS = taco.map((a) => ({
-      nome: a.nome,
-      kcal: a.por100g?.kcal ?? 0,
-      p: a.por100g?.proteina ?? 0,
-      c: a.por100g?.carboidrato ?? 0,
-      g: a.por100g?.gordura ?? 0,
-    }));
-  })
-  .catch(() => {});
-
-renderTudo();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

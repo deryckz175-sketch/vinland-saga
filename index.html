@@ -122,7 +122,15 @@
 
   /* ---- perfil ---- */
   .perfil-topo { display: flex; align-items: center; gap: 14px; padding: calc(env(safe-area-inset-top) + 18px) 0 18px; }
-  .avatar { width: 62px; height: 62px; border-radius: 50%; background: var(--surf2); display: grid; place-items: center; font-size: 26px; border: 1px solid var(--linha); }
+  .avatar { width: 62px; height: 62px; border-radius: 50%; background: var(--surf2); display: grid; place-items: center;
+            font-size: 26px; color: var(--fraco); border: 1px solid var(--linha); overflow: hidden; flex: none; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar.grande { width: 84px; height: 84px; }
+  .campo-foto { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .campo-foto .botao { width: auto; padding: 11px 16px; }
+  .escolhidos { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .marca { font: inherit; font-size: 13px; background: var(--surf2); border: 1px solid var(--linha);
+           border-radius: 999px; padding: 6px 11px; color: var(--txt); }
   .perfil-topo .nome { font-size: 20px; font-weight: 600; }
   .cores { display: flex; gap: 10px; margin-left: auto; }
   .cores button { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; }
@@ -135,12 +143,6 @@
   .serie .ok { width: 32px; height: 32px; border-radius: 9px; background: var(--surf2); display: grid; place-items: center; color: var(--fraco); justify-self: end; }
   .serie.feita .ok { background: var(--cor); color: #fff; }
   .serie-cab { display: grid; grid-template-columns: 22px 1fr 1fr 40px; gap: 8px; font-size: 11px; color: var(--fraco); text-transform: uppercase; letter-spacing: .5px; }
-
-  /* ---- barras de meta ---- */
-  .macro { margin-top: 12px; }
-  .macro .rot { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
-  .trilho { height: 6px; border-radius: 3px; background: var(--surf2); overflow: hidden; }
-  .trilho i { display: block; height: 100%; background: var(--cor); border-radius: 3px; }
 
   .busca { width: 100%; background: var(--surf2); border: 1px solid var(--linha); border-radius: 12px; padding: 13px; margin-bottom: 10px; }
 </style>
