@@ -1,0 +1,7763 @@
+[
+  {
+    "id": "taco-001",
+    "nome": "Arroz, integral, cozido",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 123.53,
+      "proteina": 2.59,
+      "carboidrato": 25.81,
+      "gordura": 1,
+      "fibra": 2.75,
+      "sodio": 1.24
+    }
+  },
+  {
+    "id": "taco-002",
+    "nome": "Arroz, integral, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 359.68,
+      "proteina": 7.32,
+      "carboidrato": 77.45,
+      "gordura": 1.86,
+      "fibra": 4.82,
+      "sodio": 1.65
+    }
+  },
+  {
+    "id": "taco-003",
+    "nome": "Arroz, tipo 1, cozido",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 128.26,
+      "proteina": 2.52,
+      "carboidrato": 28.06,
+      "gordura": 0.23,
+      "fibra": 1.56,
+      "sodio": 1.2
+    }
+  },
+  {
+    "id": "taco-004",
+    "nome": "Arroz, tipo 1, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 357.79,
+      "proteina": 7.16,
+      "carboidrato": 78.76,
+      "gordura": 0.34,
+      "fibra": 1.64,
+      "sodio": 1.02
+    }
+  },
+  {
+    "id": "taco-005",
+    "nome": "Arroz, tipo 2, cozido",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 130.12,
+      "proteina": 2.57,
+      "carboidrato": 28.19,
+      "gordura": 0.36,
+      "fibra": 1.07,
+      "sodio": 1.96
+    }
+  },
+  {
+    "id": "taco-006",
+    "nome": "Arroz, tipo 2, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 358.12,
+      "proteina": 7.24,
+      "carboidrato": 78.88,
+      "gordura": 0.28,
+      "fibra": 1.72,
+      "sodio": 0.57
+    }
+  },
+  {
+    "id": "taco-007",
+    "nome": "Aveia, flocos, crua",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 393.82,
+      "proteina": 13.92,
+      "carboidrato": 66.64,
+      "gordura": 8.5,
+      "fibra": 9.13,
+      "sodio": 4.63
+    }
+  },
+  {
+    "id": "taco-008",
+    "nome": "Biscoito, doce, maisena",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 442.82,
+      "proteina": 8.07,
+      "carboidrato": 75.23,
+      "gordura": 11.97,
+      "fibra": 2.1,
+      "sodio": 352.03
+    }
+  },
+  {
+    "id": "taco-009",
+    "nome": "Biscoito, doce, recheado com chocolate",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 471.82,
+      "proteina": 6.4,
+      "carboidrato": 70.55,
+      "gordura": 19.58,
+      "fibra": 2.96,
+      "sodio": 239.2
+    }
+  },
+  {
+    "id": "taco-010",
+    "nome": "Biscoito, doce, recheado com morango",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 471.17,
+      "proteina": 5.72,
+      "carboidrato": 71.01,
+      "gordura": 19.57,
+      "fibra": 1.53,
+      "sodio": 229.82
+    }
+  },
+  {
+    "id": "taco-011",
+    "nome": "Biscoito, doce, wafer, recheado de chocolate",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 502.46,
+      "proteina": 5.56,
+      "carboidrato": 67.54,
+      "gordura": 24.67,
+      "fibra": 1.8,
+      "sodio": 137.24
+    }
+  },
+  {
+    "id": "taco-012",
+    "nome": "Biscoito, doce, wafer, recheado de morango",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 513.45,
+      "proteina": 4.52,
+      "carboidrato": 67.35,
+      "gordura": 26.4,
+      "fibra": 0.82,
+      "sodio": 119.9
+    }
+  },
+  {
+    "id": "taco-013",
+    "nome": "Biscoito, salgado, cream cracker",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 431.73,
+      "proteina": 10.06,
+      "carboidrato": 68.73,
+      "gordura": 14.44,
+      "fibra": 2.51,
+      "sodio": 854.36
+    }
+  },
+  {
+    "id": "taco-014",
+    "nome": "Bolo, mistura para",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 418.63,
+      "proteina": 6.16,
+      "carboidrato": 84.71,
+      "gordura": 6.13,
+      "fibra": 1.7,
+      "sodio": 462.88
+    }
+  },
+  {
+    "id": "taco-015",
+    "nome": "Bolo, pronto, aipim",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 323.85,
+      "proteina": 4.42,
+      "carboidrato": 47.86,
+      "gordura": 12.75,
+      "fibra": 0.69,
+      "sodio": 111.01
+    }
+  },
+  {
+    "id": "taco-016",
+    "nome": "Bolo, pronto, chocolate",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 410.01,
+      "proteina": 6.22,
+      "carboidrato": 54.72,
+      "gordura": 18.47,
+      "fibra": 1.43,
+      "sodio": 283.3
+    }
+  },
+  {
+    "id": "taco-017",
+    "nome": "Bolo, pronto, coco",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 333.44,
+      "proteina": 5.67,
+      "carboidrato": 52.28,
+      "gordura": 11.3,
+      "fibra": 1.06,
+      "sodio": 190.34
+    }
+  },
+  {
+    "id": "taco-018",
+    "nome": "Bolo, pronto, milho",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 311.39,
+      "proteina": 4.8,
+      "carboidrato": 45.11,
+      "gordura": 12.42,
+      "fibra": 0.71,
+      "sodio": 133.81
+    }
+  },
+  {
+    "id": "taco-019",
+    "nome": "Canjica, branca, crua",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 357.6,
+      "proteina": 7.2,
+      "carboidrato": 78.06,
+      "gordura": 0.97,
+      "fibra": 5.5,
+      "sodio": 0.79
+    }
+  },
+  {
+    "id": "taco-020",
+    "nome": "Canjica, com leite integral",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 112.46,
+      "proteina": 2.36,
+      "carboidrato": 23.63,
+      "gordura": 1.24,
+      "fibra": 1.22,
+      "sodio": 27.59
+    }
+  },
+  {
+    "id": "taco-021",
+    "nome": "Cereais, milho, flocos, com sal",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 369.6,
+      "proteina": 7.29,
+      "carboidrato": 80.83,
+      "gordura": 1.6,
+      "fibra": 5.29,
+      "sodio": 271.74
+    }
+  },
+  {
+    "id": "taco-022",
+    "nome": "Cereais, milho, flocos, sem sal",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 363.34,
+      "proteina": 6.88,
+      "carboidrato": 80.45,
+      "gordura": 1.18,
+      "fibra": 1.84,
+      "sodio": 30.97
+    }
+  },
+  {
+    "id": "taco-023",
+    "nome": "Cereais, mingau, milho, infantil",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 394.43,
+      "proteina": 6.43,
+      "carboidrato": 87.27,
+      "gordura": 1.09,
+      "fibra": 3.21,
+      "sodio": 399.4
+    }
+  },
+  {
+    "id": "taco-024",
+    "nome": "Cereais, mistura para vitamina, trigo, cevada e aveia",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 381.13,
+      "proteina": 8.9,
+      "carboidrato": 81.62,
+      "gordura": 2.12,
+      "fibra": 4.98,
+      "sodio": 1163.26
+    }
+  },
+  {
+    "id": "taco-025",
+    "nome": "Cereal matinal, milho",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 365.35,
+      "proteina": 7.16,
+      "carboidrato": 83.82,
+      "gordura": 0.96,
+      "fibra": 4.12,
+      "sodio": 654.54
+    }
+  },
+  {
+    "id": "taco-026",
+    "nome": "Cereal matinal, milho, açúcar",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 376.56,
+      "proteina": 4.74,
+      "carboidrato": 88.84,
+      "gordura": 0.67,
+      "fibra": 2.11,
+      "sodio": 405.31
+    }
+  },
+  {
+    "id": "taco-027",
+    "nome": "Creme de arroz, pó",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 386,
+      "proteina": 7.03,
+      "carboidrato": 83.87,
+      "gordura": 1.23,
+      "fibra": 1.07,
+      "sodio": 1.03
+    }
+  },
+  {
+    "id": "taco-028",
+    "nome": "Creme de milho, pó",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 333.03,
+      "proteina": 4.82,
+      "carboidrato": 86.15,
+      "gordura": 1.64,
+      "fibra": 3.72,
+      "sodio": 593.79
+    }
+  },
+  {
+    "id": "taco-029",
+    "nome": "Curau, milho verde",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 78.43,
+      "proteina": 2.36,
+      "carboidrato": 13.94,
+      "gordura": 1.64,
+      "fibra": 0.46,
+      "sodio": 20.51
+    }
+  },
+  {
+    "id": "taco-030",
+    "nome": "Curau, milho verde, mistura para",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 402.29,
+      "proteina": 2.22,
+      "carboidrato": 79.82,
+      "gordura": 13.37,
+      "fibra": 2.52,
+      "sodio": 222.93
+    }
+  },
+  {
+    "id": "taco-031",
+    "nome": "Farinha, de arroz, enriquecida",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 363.06,
+      "proteina": 1.27,
+      "carboidrato": 85.5,
+      "gordura": 0.3,
+      "fibra": 0.58,
+      "sodio": 17.1
+    }
+  },
+  {
+    "id": "taco-032",
+    "nome": "Farinha, de centeio, integral",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 335.78,
+      "proteina": 12.52,
+      "carboidrato": 73.3,
+      "gordura": 1.75,
+      "fibra": 15.48,
+      "sodio": 41.38
+    }
+  },
+  {
+    "id": "taco-033",
+    "nome": "Farinha, de milho, amarela",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 350.59,
+      "proteina": 7.19,
+      "carboidrato": 79.08,
+      "gordura": 1.47,
+      "fibra": 5.49,
+      "sodio": 44.93
+    }
+  },
+  {
+    "id": "taco-034",
+    "nome": "Farinha, de rosca",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 370.58,
+      "proteina": 11.38,
+      "carboidrato": 75.79,
+      "gordura": 1.46,
+      "fibra": 4.82,
+      "sodio": 332.5
+    }
+  },
+  {
+    "id": "taco-035",
+    "nome": "Farinha, de trigo",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 360.47,
+      "proteina": 9.79,
+      "carboidrato": 75.09,
+      "gordura": 1.37,
+      "fibra": 2.35,
+      "sodio": 0.74
+    }
+  },
+  {
+    "id": "taco-036",
+    "nome": "Farinha, láctea, de cereais",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 414.85,
+      "proteina": 11.88,
+      "carboidrato": 77.77,
+      "gordura": 5.79,
+      "fibra": 1.94,
+      "sodio": 125.07
+    }
+  },
+  {
+    "id": "taco-037",
+    "nome": "Lasanha, massa fresca, cozida",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 163.76,
+      "proteina": 5.81,
+      "carboidrato": 32.52,
+      "gordura": 1.16,
+      "fibra": 1.64,
+      "sodio": 206.77
+    }
+  },
+  {
+    "id": "taco-038",
+    "nome": "Lasanha, massa fresca, crua",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 220.31,
+      "proteina": 7.01,
+      "carboidrato": 45.06,
+      "gordura": 1.34,
+      "fibra": 1.61,
+      "sodio": 666.71
+    }
+  },
+  {
+    "id": "taco-039",
+    "nome": "Macarrão, instantâneo",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 435.86,
+      "proteina": 8.79,
+      "carboidrato": 62.43,
+      "gordura": 17.24,
+      "fibra": 5.61,
+      "sodio": 1515.53
+    }
+  },
+  {
+    "id": "taco-040",
+    "nome": "Macarrão, trigo, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 371.12,
+      "proteina": 10,
+      "carboidrato": 77.94,
+      "gordura": 1.3,
+      "fibra": 2.93,
+      "sodio": 7.17
+    }
+  },
+  {
+    "id": "taco-041",
+    "nome": "Macarrão, trigo, cru, com ovos",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 370.57,
+      "proteina": 10.32,
+      "carboidrato": 76.62,
+      "gordura": 1.97,
+      "fibra": 2.3,
+      "sodio": 14.74
+    }
+  },
+  {
+    "id": "taco-042",
+    "nome": "Milho, amido, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 361.37,
+      "proteina": 0.6,
+      "carboidrato": 87.15,
+      "gordura": 0,
+      "fibra": 0.74,
+      "sodio": 8.08
+    }
+  },
+  {
+    "id": "taco-043",
+    "nome": "Milho, fubá, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 353.48,
+      "proteina": 7.21,
+      "carboidrato": 78.87,
+      "gordura": 1.9,
+      "fibra": 4.71,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-044",
+    "nome": "Milho, verde, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 138.17,
+      "proteina": 6.59,
+      "carboidrato": 28.56,
+      "gordura": 0.61,
+      "fibra": 3.92,
+      "sodio": 1.12
+    }
+  },
+  {
+    "id": "taco-045",
+    "nome": "Milho, verde, enlatado, drenado",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 97.56,
+      "proteina": 3.23,
+      "carboidrato": 17.14,
+      "gordura": 2.35,
+      "fibra": 4.64,
+      "sodio": 260.35
+    }
+  },
+  {
+    "id": "taco-046",
+    "nome": "Mingau tradicional, pó",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 373.42,
+      "proteina": 0.58,
+      "carboidrato": 89.34,
+      "gordura": 0.37,
+      "fibra": 0.88,
+      "sodio": 14.86
+    }
+  },
+  {
+    "id": "taco-047",
+    "nome": "Pamonha, barra para cozimento, pré-cozida",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 171.22,
+      "proteina": 2.55,
+      "carboidrato": 30.68,
+      "gordura": 4.85,
+      "fibra": 2.37,
+      "sodio": 131.99
+    }
+  },
+  {
+    "id": "taco-048",
+    "nome": "Pão, aveia, forma",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 343.09,
+      "proteina": 12.35,
+      "carboidrato": 59.57,
+      "gordura": 5.69,
+      "fibra": 5.98,
+      "sodio": 605.76
+    }
+  },
+  {
+    "id": "taco-049",
+    "nome": "Pão, de soja",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 308.73,
+      "proteina": 11.34,
+      "carboidrato": 56.51,
+      "gordura": 3.58,
+      "fibra": 5.71,
+      "sodio": 662.54
+    }
+  },
+  {
+    "id": "taco-050",
+    "nome": "Pão, glúten, forma",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 252.99,
+      "proteina": 11.95,
+      "carboidrato": 44.12,
+      "gordura": 2.73,
+      "fibra": 2.48,
+      "sodio": 22.05
+    }
+  },
+  {
+    "id": "taco-051",
+    "nome": "Pão, milho, forma",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 292.01,
+      "proteina": 8.3,
+      "carboidrato": 56.4,
+      "gordura": 3.11,
+      "fibra": 4.3,
+      "sodio": 506.64
+    }
+  },
+  {
+    "id": "taco-052",
+    "nome": "Pão, trigo, forma, integral",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 253.19,
+      "proteina": 9.43,
+      "carboidrato": 49.94,
+      "gordura": 3.65,
+      "fibra": 6.88,
+      "sodio": 506.1
+    }
+  },
+  {
+    "id": "taco-053",
+    "nome": "Pão, trigo, francês",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 299.81,
+      "proteina": 7.95,
+      "carboidrato": 58.65,
+      "gordura": 3.1,
+      "fibra": 2.31,
+      "sodio": 647.67
+    }
+  },
+  {
+    "id": "taco-054",
+    "nome": "Pão, trigo, sovado",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 310.96,
+      "proteina": 8.4,
+      "carboidrato": 61.45,
+      "gordura": 2.84,
+      "fibra": 2.43,
+      "sodio": 430.79
+    }
+  },
+  {
+    "id": "taco-055",
+    "nome": "Pastel, de carne, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 288.7,
+      "proteina": 10.74,
+      "carboidrato": 42.02,
+      "gordura": 8.79,
+      "fibra": 1.04,
+      "sodio": 1309.27
+    }
+  },
+  {
+    "id": "taco-056",
+    "nome": "Pastel, de carne, frito",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 388.37,
+      "proteina": 10.1,
+      "carboidrato": 43.77,
+      "gordura": 20.14,
+      "fibra": 0.99,
+      "sodio": 1039.89
+    }
+  },
+  {
+    "id": "taco-057",
+    "nome": "Pastel, de queijo, cru",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 308.47,
+      "proteina": 9.85,
+      "carboidrato": 45.95,
+      "gordura": 9.63,
+      "fibra": 1.11,
+      "sodio": 984.57
+    }
+  },
+  {
+    "id": "taco-058",
+    "nome": "Pastel, de queijo, frito",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 422.11,
+      "proteina": 8.71,
+      "carboidrato": 48.13,
+      "gordura": 22.67,
+      "fibra": 0.94,
+      "sodio": 821.38
+    }
+  },
+  {
+    "id": "taco-059",
+    "nome": "Pastel, massa, crua",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 310.2,
+      "proteina": 6.9,
+      "carboidrato": 57.38,
+      "gordura": 5.48,
+      "fibra": 1.41,
+      "sodio": 1344.2
+    }
+  },
+  {
+    "id": "taco-060",
+    "nome": "Pastel, massa, frita",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 569.67,
+      "proteina": 6.02,
+      "carboidrato": 49.34,
+      "gordura": 40.86,
+      "fibra": 1.31,
+      "sodio": 1174.67
+    }
+  },
+  {
+    "id": "taco-061",
+    "nome": "Pipoca, com óleo de soja, sem sal",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 448.33,
+      "proteina": 9.93,
+      "carboidrato": 70.31,
+      "gordura": 15.94,
+      "fibra": 14.34,
+      "sodio": 4.32
+    }
+  },
+  {
+    "id": "taco-062",
+    "nome": "Polenta, pré-cozida",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 102.74,
+      "proteina": 2.29,
+      "carboidrato": 23.31,
+      "gordura": 0.3,
+      "fibra": 2.4,
+      "sodio": 441.89
+    }
+  },
+  {
+    "id": "taco-063",
+    "nome": "Torrada, pão francês",
+    "categoria": "Cereais e derivados",
+    "por100g": {
+      "kcal": 377.42,
+      "proteina": 10.52,
+      "carboidrato": 74.56,
+      "gordura": 3.3,
+      "fibra": 3.4,
+      "sodio": 829.49
+    }
+  },
+  {
+    "id": "taco-064",
+    "nome": "Abóbora, cabotian, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 48.04,
+      "proteina": 1.44,
+      "carboidrato": 10.76,
+      "gordura": 0.73,
+      "fibra": 2.46,
+      "sodio": 1.45
+    }
+  },
+  {
+    "id": "taco-065",
+    "nome": "Abóbora, cabotian, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 38.6,
+      "proteina": 1.75,
+      "carboidrato": 8.36,
+      "gordura": 0.54,
+      "fibra": 2.17,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-066",
+    "nome": "Abóbora, menina brasileira, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.61,
+      "proteina": 0.61,
+      "carboidrato": 3.3,
+      "gordura": 0,
+      "fibra": 1.17,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-067",
+    "nome": "Abóbora, moranga, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 12.36,
+      "proteina": 0.96,
+      "carboidrato": 2.67,
+      "gordura": 0.06,
+      "fibra": 1.7,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-068",
+    "nome": "Abóbora, moranga, refogada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 29,
+      "proteina": 0.39,
+      "carboidrato": 5.98,
+      "gordura": 0.8,
+      "fibra": 1.55,
+      "sodio": 3.03
+    }
+  },
+  {
+    "id": "taco-069",
+    "nome": "Abóbora, pescoço, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 24.47,
+      "proteina": 0.67,
+      "carboidrato": 6.12,
+      "gordura": 0.12,
+      "fibra": 2.3,
+      "sodio": 0.75
+    }
+  },
+  {
+    "id": "taco-070",
+    "nome": "Abobrinha, italiana, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 15.04,
+      "proteina": 1.13,
+      "carboidrato": 2.98,
+      "gordura": 0.2,
+      "fibra": 1.59,
+      "sodio": 0.83
+    }
+  },
+  {
+    "id": "taco-071",
+    "nome": "Abobrinha, italiana, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 19.28,
+      "proteina": 1.14,
+      "carboidrato": 4.29,
+      "gordura": 0.14,
+      "fibra": 1.35,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-072",
+    "nome": "Abobrinha, italiana, refogada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 24.43,
+      "proteina": 1.07,
+      "carboidrato": 4.19,
+      "gordura": 0.82,
+      "fibra": 1.38,
+      "sodio": 2.21
+    }
+  },
+  {
+    "id": "taco-073",
+    "nome": "Abobrinha, paulista, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 30.81,
+      "proteina": 0.64,
+      "carboidrato": 7.87,
+      "gordura": 0.14,
+      "fibra": 2.61,
+      "sodio": 0.5
+    }
+  },
+  {
+    "id": "taco-074",
+    "nome": "Acelga, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 20.94,
+      "proteina": 1.44,
+      "carboidrato": 4.63,
+      "gordura": 0.11,
+      "fibra": 1.12,
+      "sodio": 1.18
+    }
+  },
+  {
+    "id": "taco-075",
+    "nome": "Agrião, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 16.58,
+      "proteina": 2.69,
+      "carboidrato": 2.25,
+      "gordura": 0.24,
+      "fibra": 2.14,
+      "sodio": 7.46
+    }
+  },
+  {
+    "id": "taco-076",
+    "nome": "Aipo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 19.09,
+      "proteina": 0.76,
+      "carboidrato": 4.27,
+      "gordura": 0.07,
+      "fibra": 0.96,
+      "sodio": 9.52
+    }
+  },
+  {
+    "id": "taco-077",
+    "nome": "Alface, americana, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 8.79,
+      "proteina": 0.61,
+      "carboidrato": 1.75,
+      "gordura": 0.13,
+      "fibra": 1.02,
+      "sodio": 7.31
+    }
+  },
+  {
+    "id": "taco-078",
+    "nome": "Alface, crespa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 10.68,
+      "proteina": 1.35,
+      "carboidrato": 1.7,
+      "gordura": 0.16,
+      "fibra": 1.83,
+      "sodio": 3.38
+    }
+  },
+  {
+    "id": "taco-079",
+    "nome": "Alface, lisa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.82,
+      "proteina": 1.69,
+      "carboidrato": 2.43,
+      "gordura": 0.12,
+      "fibra": 2.33,
+      "sodio": 4.23
+    }
+  },
+  {
+    "id": "taco-080",
+    "nome": "Alface, roxa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 12.72,
+      "proteina": 0.91,
+      "carboidrato": 2.49,
+      "gordura": 0.19,
+      "fibra": 2.01,
+      "sodio": 7.12
+    }
+  },
+  {
+    "id": "taco-081",
+    "nome": "Alfavaca, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 29.18,
+      "proteina": 2.66,
+      "carboidrato": 5.24,
+      "gordura": 0.48,
+      "fibra": 4.14,
+      "sodio": 4.55
+    }
+  },
+  {
+    "id": "taco-082",
+    "nome": "Alho, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 113.13,
+      "proteina": 7.01,
+      "carboidrato": 23.91,
+      "gordura": 0.22,
+      "fibra": 4.32,
+      "sodio": 5.36
+    }
+  },
+  {
+    "id": "taco-083",
+    "nome": "Alho-poró, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 31.51,
+      "proteina": 1.41,
+      "carboidrato": 6.88,
+      "gordura": 0.14,
+      "fibra": 2.51,
+      "sodio": 1.76
+    }
+  },
+  {
+    "id": "taco-084",
+    "nome": "Almeirão, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 18.03,
+      "proteina": 1.77,
+      "carboidrato": 3.34,
+      "gordura": 0.22,
+      "fibra": 2.59,
+      "sodio": 2.35
+    }
+  },
+  {
+    "id": "taco-085",
+    "nome": "Almeirão, refogado",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 65.08,
+      "proteina": 1.7,
+      "carboidrato": 5.7,
+      "gordura": 4.85,
+      "fibra": 3.43,
+      "sodio": 14.52
+    }
+  },
+  {
+    "id": "taco-086",
+    "nome": "Batata, baroa, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 80.12,
+      "proteina": 0.85,
+      "carboidrato": 18.95,
+      "gordura": 0.17,
+      "fibra": 1.76,
+      "sodio": 2.1
+    }
+  },
+  {
+    "id": "taco-087",
+    "nome": "Batata, baroa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 100.98,
+      "proteina": 1.05,
+      "carboidrato": 23.98,
+      "gordura": 0.17,
+      "fibra": 2.06,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-088",
+    "nome": "Batata, doce, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 76.76,
+      "proteina": 0.64,
+      "carboidrato": 18.42,
+      "gordura": 0.09,
+      "fibra": 2.21,
+      "sodio": 2.7
+    }
+  },
+  {
+    "id": "taco-089",
+    "nome": "Batata, doce, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 118.24,
+      "proteina": 1.26,
+      "carboidrato": 28.2,
+      "gordura": 0.13,
+      "fibra": 2.57,
+      "sodio": 8.77
+    }
+  },
+  {
+    "id": "taco-090",
+    "nome": "Batata, frita, tipo chips, industrializada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 542.73,
+      "proteina": 5.58,
+      "carboidrato": 51.22,
+      "gordura": 36.62,
+      "fibra": 2.46,
+      "sodio": 607.4
+    }
+  },
+  {
+    "id": "taco-091",
+    "nome": "Batata, inglesa, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 51.59,
+      "proteina": 1.16,
+      "carboidrato": 11.94,
+      "gordura": 0,
+      "fibra": 1.34,
+      "sodio": 2.29
+    }
+  },
+  {
+    "id": "taco-092",
+    "nome": "Batata, inglesa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 64.37,
+      "proteina": 1.77,
+      "carboidrato": 14.69,
+      "gordura": 0,
+      "fibra": 1.16,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-093",
+    "nome": "Batata, inglesa, frita",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 267.16,
+      "proteina": 4.97,
+      "carboidrato": 35.64,
+      "gordura": 13.11,
+      "fibra": 8.06,
+      "sodio": 1.91
+    }
+  },
+  {
+    "id": "taco-094",
+    "nome": "Batata, inglesa, sauté",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 67.89,
+      "proteina": 1.29,
+      "carboidrato": 14.09,
+      "gordura": 0.9,
+      "fibra": 1.38,
+      "sodio": 8.18
+    }
+  },
+  {
+    "id": "taco-095",
+    "nome": "Berinjela, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 18.85,
+      "proteina": 0.68,
+      "carboidrato": 4.47,
+      "gordura": 0.15,
+      "fibra": 2.52,
+      "sodio": 1.33
+    }
+  },
+  {
+    "id": "taco-096",
+    "nome": "Berinjela, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 19.63,
+      "proteina": 1.22,
+      "carboidrato": 4.43,
+      "gordura": 0.1,
+      "fibra": 2.87,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-097",
+    "nome": "Beterraba, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 32.15,
+      "proteina": 1.29,
+      "carboidrato": 7.23,
+      "gordura": 0.09,
+      "fibra": 1.88,
+      "sodio": 22.76
+    }
+  },
+  {
+    "id": "taco-098",
+    "nome": "Beterraba, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 48.83,
+      "proteina": 1.95,
+      "carboidrato": 11.11,
+      "gordura": 0.09,
+      "fibra": 3.37,
+      "sodio": 9.72
+    }
+  },
+  {
+    "id": "taco-099",
+    "nome": "Biscoito, polvilho doce",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 437.55,
+      "proteina": 1.29,
+      "carboidrato": 80.54,
+      "gordura": 12.25,
+      "fibra": 1.16,
+      "sodio": 97.8
+    }
+  },
+  {
+    "id": "taco-100",
+    "nome": "Brócolis, cozido",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 24.64,
+      "proteina": 2.13,
+      "carboidrato": 4.37,
+      "gordura": 0.46,
+      "fibra": 3.42,
+      "sodio": 2.12
+    }
+  },
+  {
+    "id": "taco-101",
+    "nome": "Brócolis, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 25.5,
+      "proteina": 3.64,
+      "carboidrato": 4.03,
+      "gordura": 0.27,
+      "fibra": 2.88,
+      "sodio": 3.33
+    }
+  },
+  {
+    "id": "taco-102",
+    "nome": "Cará, cozido",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 77.58,
+      "proteina": 1.53,
+      "carboidrato": 18.85,
+      "gordura": 0.11,
+      "fibra": 2.63,
+      "sodio": 1.01
+    }
+  },
+  {
+    "id": "taco-103",
+    "nome": "Cará, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 95.63,
+      "proteina": 2.28,
+      "carboidrato": 22.95,
+      "gordura": 0.14,
+      "fibra": 7.27,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-104",
+    "nome": "Caruru, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 34.03,
+      "proteina": 3.2,
+      "carboidrato": 5.97,
+      "gordura": 0.59,
+      "fibra": 4.47,
+      "sodio": 13.67
+    }
+  },
+  {
+    "id": "taco-105",
+    "nome": "Catalonha, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 23.89,
+      "proteina": 1.87,
+      "carboidrato": 4.75,
+      "gordura": 0.28,
+      "fibra": 2.05,
+      "sodio": 9.39
+    }
+  },
+  {
+    "id": "taco-106",
+    "nome": "Catalonha, refogada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 63.45,
+      "proteina": 1.95,
+      "carboidrato": 4.81,
+      "gordura": 4.81,
+      "fibra": 3.65,
+      "sodio": 24.72
+    }
+  },
+  {
+    "id": "taco-107",
+    "nome": "Cebola, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 39.42,
+      "proteina": 1.71,
+      "carboidrato": 8.85,
+      "gordura": 0.08,
+      "fibra": 2.19,
+      "sodio": 0.6
+    }
+  },
+  {
+    "id": "taco-108",
+    "nome": "Cebolinha, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 19.52,
+      "proteina": 1.87,
+      "carboidrato": 3.37,
+      "gordura": 0.35,
+      "fibra": 3.55,
+      "sodio": 1.6
+    }
+  },
+  {
+    "id": "taco-109",
+    "nome": "Cenoura, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 29.86,
+      "proteina": 0.85,
+      "carboidrato": 6.69,
+      "gordura": 0.22,
+      "fibra": 2.63,
+      "sodio": 7.88
+    }
+  },
+  {
+    "id": "taco-110",
+    "nome": "Cenoura, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 34.14,
+      "proteina": 1.32,
+      "carboidrato": 7.66,
+      "gordura": 0.17,
+      "fibra": 3.18,
+      "sodio": 3.33
+    }
+  },
+  {
+    "id": "taco-111",
+    "nome": "Chicória, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.84,
+      "proteina": 1.14,
+      "carboidrato": 2.85,
+      "gordura": 0.14,
+      "fibra": 2.2,
+      "sodio": 13.52
+    }
+  },
+  {
+    "id": "taco-112",
+    "nome": "Chuchu, cozido",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 18.54,
+      "proteina": 0.41,
+      "carboidrato": 4.79,
+      "gordura": 0,
+      "fibra": 1.04,
+      "sodio": 1.81
+    }
+  },
+  {
+    "id": "taco-113",
+    "nome": "Chuchu, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 16.98,
+      "proteina": 0.7,
+      "carboidrato": 4.14,
+      "gordura": 0.06,
+      "fibra": 1.28,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-114",
+    "nome": "Coentro, folhas desidratadas",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 309.07,
+      "proteina": 20.88,
+      "carboidrato": 47.96,
+      "gordura": 10.39,
+      "fibra": 37.29,
+      "sodio": 18.26
+    }
+  },
+  {
+    "id": "taco-115",
+    "nome": "Couve, manteiga, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 27.06,
+      "proteina": 2.87,
+      "carboidrato": 4.33,
+      "gordura": 0.55,
+      "fibra": 3.12,
+      "sodio": 6.17
+    }
+  },
+  {
+    "id": "taco-116",
+    "nome": "Couve, manteiga, refogada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 90.34,
+      "proteina": 1.67,
+      "carboidrato": 8.71,
+      "gordura": 6.59,
+      "fibra": 5.74,
+      "sodio": 11.45
+    }
+  },
+  {
+    "id": "taco-117",
+    "nome": "Couve-flor, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 22.56,
+      "proteina": 1.91,
+      "carboidrato": 4.52,
+      "gordura": 0.21,
+      "fibra": 2.35,
+      "sodio": 3.44
+    }
+  },
+  {
+    "id": "taco-118",
+    "nome": "Couve-flor, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 19.11,
+      "proteina": 1.24,
+      "carboidrato": 3.88,
+      "gordura": 0.27,
+      "fibra": 2.13,
+      "sodio": 1.79
+    }
+  },
+  {
+    "id": "taco-119",
+    "nome": "Espinafre, Nova Zelândia, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 16.1,
+      "proteina": 2,
+      "carboidrato": 2.57,
+      "gordura": 0.24,
+      "fibra": 2.1,
+      "sodio": 17.09
+    }
+  },
+  {
+    "id": "taco-120",
+    "nome": "Espinafre, Nova Zelândia, refogado",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 67.25,
+      "proteina": 2.72,
+      "carboidrato": 4.24,
+      "gordura": 5.43,
+      "fibra": 2.52,
+      "sodio": 47.02
+    }
+  },
+  {
+    "id": "taco-121",
+    "nome": "Farinha, de mandioca, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 360.87,
+      "proteina": 1.55,
+      "carboidrato": 87.9,
+      "gordura": 0.28,
+      "fibra": 6.39,
+      "sodio": 1.02
+    }
+  },
+  {
+    "id": "taco-122",
+    "nome": "Farinha, de mandioca, torrada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 365.27,
+      "proteina": 1.23,
+      "carboidrato": 89.19,
+      "gordura": 0.29,
+      "fibra": 6.54,
+      "sodio": 10.31
+    }
+  },
+  {
+    "id": "taco-123",
+    "nome": "Farinha, de puba",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 360.18,
+      "proteina": 1.62,
+      "carboidrato": 87.29,
+      "gordura": 0.47,
+      "fibra": 4.24,
+      "sodio": 3.61
+    }
+  },
+  {
+    "id": "taco-124",
+    "nome": "Fécula, de mandioca",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 330.85,
+      "proteina": 0.52,
+      "carboidrato": 81.15,
+      "gordura": 0.28,
+      "fibra": 0.65,
+      "sodio": 2.45
+    }
+  },
+  {
+    "id": "taco-125",
+    "nome": "Feijão, broto, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 38.72,
+      "proteina": 4.17,
+      "carboidrato": 7.76,
+      "gordura": 0.1,
+      "fibra": 1.97,
+      "sodio": 1.79
+    }
+  },
+  {
+    "id": "taco-126",
+    "nome": "Inhame, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 96.7,
+      "proteina": 2.05,
+      "carboidrato": 23.23,
+      "gordura": 0.21,
+      "fibra": 1.65,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-127",
+    "nome": "Jiló, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 27.37,
+      "proteina": 1.4,
+      "carboidrato": 6.19,
+      "gordura": 0.22,
+      "fibra": 4.83,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-128",
+    "nome": "Jurubeba, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 125.81,
+      "proteina": 4.41,
+      "carboidrato": 23.06,
+      "gordura": 3.91,
+      "fibra": 23.92,
+      "sodio": 0.77
+    }
+  },
+  {
+    "id": "taco-129",
+    "nome": "Mandioca, cozida",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 125.36,
+      "proteina": 0.57,
+      "carboidrato": 30.09,
+      "gordura": 0.3,
+      "fibra": 1.56,
+      "sodio": 0.91
+    }
+  },
+  {
+    "id": "taco-130",
+    "nome": "Mandioca, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 151.42,
+      "proteina": 1.13,
+      "carboidrato": 36.17,
+      "gordura": 0.3,
+      "fibra": 1.88,
+      "sodio": 2.15
+    }
+  },
+  {
+    "id": "taco-131",
+    "nome": "Mandioca, farofa, temperada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 405.69,
+      "proteina": 2.06,
+      "carboidrato": 80.3,
+      "gordura": 9.12,
+      "fibra": 7.82,
+      "sodio": 574.51
+    }
+  },
+  {
+    "id": "taco-132",
+    "nome": "Mandioca, frita",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 300.06,
+      "proteina": 1.38,
+      "carboidrato": 50.25,
+      "gordura": 11.2,
+      "fibra": 1.87,
+      "sodio": 8.94
+    }
+  },
+  {
+    "id": "taco-133",
+    "nome": "Manjericão, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 21.15,
+      "proteina": 1.99,
+      "carboidrato": 3.64,
+      "gordura": 0.39,
+      "fibra": 3.31,
+      "sodio": 3.89
+    }
+  },
+  {
+    "id": "taco-134",
+    "nome": "Maxixe, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.75,
+      "proteina": 1.39,
+      "carboidrato": 2.73,
+      "gordura": 0.07,
+      "fibra": 2.19,
+      "sodio": 10.99
+    }
+  },
+  {
+    "id": "taco-135",
+    "nome": "Mostarda, folha, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 18.11,
+      "proteina": 2.11,
+      "carboidrato": 3.24,
+      "gordura": 0.17,
+      "fibra": 1.89,
+      "sodio": 2.88
+    }
+  },
+  {
+    "id": "taco-136",
+    "nome": "Nhoque, batata, cozido",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 180.78,
+      "proteina": 5.86,
+      "carboidrato": 36.78,
+      "gordura": 1.94,
+      "fibra": 1.78,
+      "sodio": 7.07
+    }
+  },
+  {
+    "id": "taco-137",
+    "nome": "Nabo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 18.19,
+      "proteina": 1.2,
+      "carboidrato": 4.15,
+      "gordura": 0.05,
+      "fibra": 2.64,
+      "sodio": 2.46
+    }
+  },
+  {
+    "id": "taco-138",
+    "nome": "Palmito, juçara, em conserva",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 23.2,
+      "proteina": 1.79,
+      "carboidrato": 4.33,
+      "gordura": 0.4,
+      "fibra": 3.15,
+      "sodio": 513.82
+    }
+  },
+  {
+    "id": "taco-139",
+    "nome": "Palmito, pupunha, em conserva",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 29.43,
+      "proteina": 2.46,
+      "carboidrato": 5.51,
+      "gordura": 0.45,
+      "fibra": 2.55,
+      "sodio": 562.69
+    }
+  },
+  {
+    "id": "taco-140",
+    "nome": "Pão, de queijo, assado",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 363.08,
+      "proteina": 5.12,
+      "carboidrato": 34.24,
+      "gordura": 24.57,
+      "fibra": 0.56,
+      "sodio": 773.49
+    }
+  },
+  {
+    "id": "taco-141",
+    "nome": "Pão, de queijo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 294.54,
+      "proteina": 3.65,
+      "carboidrato": 38.51,
+      "gordura": 13.99,
+      "fibra": 0.98,
+      "sodio": 404.99
+    }
+  },
+  {
+    "id": "taco-142",
+    "nome": "Pepino, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 9.53,
+      "proteina": 0.87,
+      "carboidrato": 2.04,
+      "gordura": 0,
+      "fibra": 1.12,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-143",
+    "nome": "Pimentão, amarelo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 27.93,
+      "proteina": 1.22,
+      "carboidrato": 5.96,
+      "gordura": 0.44,
+      "fibra": 1.92,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-144",
+    "nome": "Pimentão, verde, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 21.29,
+      "proteina": 1.05,
+      "carboidrato": 4.89,
+      "gordura": 0.15,
+      "fibra": 2.56,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-145",
+    "nome": "Pimentão, vermelho, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 23.28,
+      "proteina": 1.04,
+      "carboidrato": 5.47,
+      "gordura": 0.15,
+      "fibra": 1.59,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-146",
+    "nome": "Polvilho, doce",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 351.23,
+      "proteina": 0.43,
+      "carboidrato": 86.77,
+      "gordura": 0,
+      "fibra": 0.24,
+      "sodio": 1.58
+    }
+  },
+  {
+    "id": "taco-147",
+    "nome": "Quiabo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 29.94,
+      "proteina": 1.92,
+      "carboidrato": 6.37,
+      "gordura": 0.3,
+      "fibra": 4.55,
+      "sodio": 0.89
+    }
+  },
+  {
+    "id": "taco-148",
+    "nome": "Rabanete, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.74,
+      "proteina": 1.39,
+      "carboidrato": 2.73,
+      "gordura": 0.07,
+      "fibra": 2.19,
+      "sodio": 10.99
+    }
+  },
+  {
+    "id": "taco-149",
+    "nome": "Repolho, branco, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 17.12,
+      "proteina": 0.88,
+      "carboidrato": 3.86,
+      "gordura": 0.14,
+      "fibra": 1.89,
+      "sodio": 3.64
+    }
+  },
+  {
+    "id": "taco-150",
+    "nome": "Repolho, roxo, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 30.91,
+      "proteina": 1.91,
+      "carboidrato": 7.2,
+      "gordura": 0.06,
+      "fibra": 1.97,
+      "sodio": 2.34
+    }
+  },
+  {
+    "id": "taco-151",
+    "nome": "Repolho, roxo, refogado",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 41.77,
+      "proteina": 1.8,
+      "carboidrato": 7.56,
+      "gordura": 1.24,
+      "fibra": 1.75,
+      "sodio": 3.42
+    }
+  },
+  {
+    "id": "taco-152",
+    "nome": "Rúcula, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 13.13,
+      "proteina": 1.77,
+      "carboidrato": 2.22,
+      "gordura": 0.11,
+      "fibra": 1.74,
+      "sodio": 9.42
+    }
+  },
+  {
+    "id": "taco-153",
+    "nome": "Salsa, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 33.42,
+      "proteina": 3.26,
+      "carboidrato": 5.71,
+      "gordura": 0.61,
+      "fibra": 1.85,
+      "sodio": 2.3
+    }
+  },
+  {
+    "id": "taco-154",
+    "nome": "Seleta de legumes, enlatada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 56.53,
+      "proteina": 3.42,
+      "carboidrato": 12.67,
+      "gordura": 0.35,
+      "fibra": 3.09,
+      "sodio": 398.14
+    }
+  },
+  {
+    "id": "taco-155",
+    "nome": "Serralha, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 30.4,
+      "proteina": 2.67,
+      "carboidrato": 4.95,
+      "gordura": 0.74,
+      "fibra": 3.52,
+      "sodio": 19.35
+    }
+  },
+  {
+    "id": "taco-156",
+    "nome": "Taioba, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 34.21,
+      "proteina": 2.9,
+      "carboidrato": 5.43,
+      "gordura": 0.93,
+      "fibra": 4.45,
+      "sodio": 1.16
+    }
+  },
+  {
+    "id": "taco-157",
+    "nome": "Tomate, com semente, cru",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 15.34,
+      "proteina": 1.1,
+      "carboidrato": 3.14,
+      "gordura": 0.17,
+      "fibra": 1.17,
+      "sodio": 1.02
+    }
+  },
+  {
+    "id": "taco-158",
+    "nome": "Tomate, extrato",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 60.93,
+      "proteina": 2.43,
+      "carboidrato": 14.96,
+      "gordura": 0.19,
+      "fibra": 2.8,
+      "sodio": 497.93
+    }
+  },
+  {
+    "id": "taco-159",
+    "nome": "Tomate, molho industrializado",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 38.45,
+      "proteina": 1.38,
+      "carboidrato": 7.71,
+      "gordura": 0.9,
+      "fibra": 3.12,
+      "sodio": 418.28
+    }
+  },
+  {
+    "id": "taco-160",
+    "nome": "Tomate, purê",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 27.94,
+      "proteina": 1.36,
+      "carboidrato": 6.89,
+      "gordura": 0,
+      "fibra": 1.03,
+      "sodio": 103.93
+    }
+  },
+  {
+    "id": "taco-161",
+    "nome": "Tomate, salada",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 20.55,
+      "proteina": 0.81,
+      "carboidrato": 5.12,
+      "gordura": 0,
+      "fibra": 2.27,
+      "sodio": 5.24
+    }
+  },
+  {
+    "id": "taco-162",
+    "nome": "Vagem, crua",
+    "categoria": "Verduras, hortaliças e derivados",
+    "por100g": {
+      "kcal": 24.9,
+      "proteina": 1.79,
+      "carboidrato": 5.35,
+      "gordura": 0.17,
+      "fibra": 2.38,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-163",
+    "nome": "Abacate, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 96.15,
+      "proteina": 1.24,
+      "carboidrato": 6.03,
+      "gordura": 8.4,
+      "fibra": 6.31,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-164",
+    "nome": "Abacaxi, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 48.32,
+      "proteina": 0.86,
+      "carboidrato": 12.33,
+      "gordura": 0.12,
+      "fibra": 0.99,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-165",
+    "nome": "Abacaxi, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 30.59,
+      "proteina": 0.47,
+      "carboidrato": 7.8,
+      "gordura": 0.11,
+      "fibra": 0.33,
+      "sodio": 1.24
+    }
+  },
+  {
+    "id": "taco-166",
+    "nome": "Abiu, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 62.42,
+      "proteina": 0.83,
+      "carboidrato": 14.93,
+      "gordura": 0.7,
+      "fibra": 1.7,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-167",
+    "nome": "Açaí, polpa, com xarope de guaraná e glucose",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 110.3,
+      "proteina": 0.72,
+      "carboidrato": 21.46,
+      "gordura": 3.66,
+      "fibra": 1.72,
+      "sodio": 15.1
+    }
+  },
+  {
+    "id": "taco-168",
+    "nome": "Açaí, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 58.05,
+      "proteina": 0.8,
+      "carboidrato": 6.21,
+      "gordura": 3.94,
+      "fibra": 2.55,
+      "sodio": 5.18
+    }
+  },
+  {
+    "id": "taco-169",
+    "nome": "Acerola, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 33.46,
+      "proteina": 0.91,
+      "carboidrato": 7.97,
+      "gordura": 0.21,
+      "fibra": 1.51,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-170",
+    "nome": "Acerola, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 21.94,
+      "proteina": 0.59,
+      "carboidrato": 5.54,
+      "gordura": 0,
+      "fibra": 0.7,
+      "sodio": 1.28
+    }
+  },
+  {
+    "id": "taco-171",
+    "nome": "Ameixa, calda, enlatada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 182.85,
+      "proteina": 0.41,
+      "carboidrato": 46.89,
+      "gordura": 0,
+      "fibra": 0.52,
+      "sodio": 2.7
+    }
+  },
+  {
+    "id": "taco-172",
+    "nome": "Ameixa, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 52.54,
+      "proteina": 0.77,
+      "carboidrato": 13.85,
+      "gordura": 0,
+      "fibra": 2.43,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-173",
+    "nome": "Ameixa, em calda, enlatada, drenada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 177.36,
+      "proteina": 1.02,
+      "carboidrato": 47.66,
+      "gordura": 0.28,
+      "fibra": 4.55,
+      "sodio": 2.79
+    }
+  },
+  {
+    "id": "taco-174",
+    "nome": "Atemóia, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 96.97,
+      "proteina": 0.97,
+      "carboidrato": 25.33,
+      "gordura": 0.3,
+      "fibra": 2.14,
+      "sodio": 0.79
+    }
+  },
+  {
+    "id": "taco-175",
+    "nome": "Banana, da terra, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 128.02,
+      "proteina": 1.43,
+      "carboidrato": 33.67,
+      "gordura": 0.24,
+      "fibra": 1.53,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-176",
+    "nome": "Banana, doce em barra",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 280.11,
+      "proteina": 2.17,
+      "carboidrato": 75.67,
+      "gordura": 0.05,
+      "fibra": 3.83,
+      "sodio": 9.88
+    }
+  },
+  {
+    "id": "taco-177",
+    "nome": "Banana, figo, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 105.08,
+      "proteina": 1.13,
+      "carboidrato": 27.8,
+      "gordura": 0.14,
+      "fibra": 2.8,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-178",
+    "nome": "Banana, maçã, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 86.81,
+      "proteina": 1.75,
+      "carboidrato": 22.34,
+      "gordura": 0.06,
+      "fibra": 2.59,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-179",
+    "nome": "Banana, nanica, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 91.53,
+      "proteina": 1.4,
+      "carboidrato": 23.85,
+      "gordura": 0.12,
+      "fibra": 1.95,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-180",
+    "nome": "Banana, ouro, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 112.37,
+      "proteina": 1.48,
+      "carboidrato": 29.34,
+      "gordura": 0.21,
+      "fibra": 1.95,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-181",
+    "nome": "Banana, pacova, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 77.91,
+      "proteina": 1.23,
+      "carboidrato": 20.31,
+      "gordura": 0.08,
+      "fibra": 2.03,
+      "sodio": 0.94
+    }
+  },
+  {
+    "id": "taco-182",
+    "nome": "Banana, prata, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 98.25,
+      "proteina": 1.27,
+      "carboidrato": 25.96,
+      "gordura": 0.07,
+      "fibra": 2.04,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-183",
+    "nome": "Cacau, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 74.29,
+      "proteina": 0.95,
+      "carboidrato": 19.41,
+      "gordura": 0.14,
+      "fibra": 2.19,
+      "sodio": 0.7
+    }
+  },
+  {
+    "id": "taco-184",
+    "nome": "Cajá-Manga, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.58,
+      "proteina": 1.28,
+      "carboidrato": 11.43,
+      "gordura": 0,
+      "fibra": 2.58,
+      "sodio": 1.44
+    }
+  },
+  {
+    "id": "taco-185",
+    "nome": "Cajá, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 26.33,
+      "proteina": 0.59,
+      "carboidrato": 6.37,
+      "gordura": 0.17,
+      "fibra": 1.36,
+      "sodio": 6.95
+    }
+  },
+  {
+    "id": "taco-186",
+    "nome": "Caju, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 43.07,
+      "proteina": 0.97,
+      "carboidrato": 10.29,
+      "gordura": 0.33,
+      "fibra": 1.68,
+      "sodio": 2.97
+    }
+  },
+  {
+    "id": "taco-187",
+    "nome": "Caju, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.57,
+      "proteina": 0.48,
+      "carboidrato": 9.35,
+      "gordura": 0.15,
+      "fibra": 0.81,
+      "sodio": 4.16
+    }
+  },
+  {
+    "id": "taco-188",
+    "nome": "Caju, suco concentrado, envasado",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.11,
+      "proteina": 0.4,
+      "carboidrato": 10.73,
+      "gordura": 0.2,
+      "fibra": 0.63,
+      "sodio": 45.04
+    }
+  },
+  {
+    "id": "taco-189",
+    "nome": "Caqui, chocolate, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 71.35,
+      "proteina": 0.36,
+      "carboidrato": 19.33,
+      "gordura": 0.07,
+      "fibra": 6.52,
+      "sodio": 2.18
+    }
+  },
+  {
+    "id": "taco-190",
+    "nome": "Carambola, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.74,
+      "proteina": 0.87,
+      "carboidrato": 11.48,
+      "gordura": 0.18,
+      "fibra": 2.03,
+      "sodio": 4.09
+    }
+  },
+  {
+    "id": "taco-191",
+    "nome": "Ciriguela, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 75.59,
+      "proteina": 1.4,
+      "carboidrato": 18.86,
+      "gordura": 0.36,
+      "fibra": 3.9,
+      "sodio": 1.68
+    }
+  },
+  {
+    "id": "taco-192",
+    "nome": "Cupuaçu, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 49.42,
+      "proteina": 1.16,
+      "carboidrato": 10.43,
+      "gordura": 0.95,
+      "fibra": 3.12,
+      "sodio": 3.2
+    }
+  },
+  {
+    "id": "taco-193",
+    "nome": "Cupuaçu, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 48.8,
+      "proteina": 0.84,
+      "carboidrato": 11.39,
+      "gordura": 0.59,
+      "fibra": 1.59,
+      "sodio": 0.69
+    }
+  },
+  {
+    "id": "taco-194",
+    "nome": "Figo, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 41.45,
+      "proteina": 0.97,
+      "carboidrato": 10.25,
+      "gordura": 0.16,
+      "fibra": 1.79,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-195",
+    "nome": "Figo, enlatado, em calda",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 184.36,
+      "proteina": 0.56,
+      "carboidrato": 50.34,
+      "gordura": 0.15,
+      "fibra": 1.98,
+      "sodio": 6.87
+    }
+  },
+  {
+    "id": "taco-196",
+    "nome": "Fruta-pão, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 67.05,
+      "proteina": 1.08,
+      "carboidrato": 17.17,
+      "gordura": 0.19,
+      "fibra": 5.55,
+      "sodio": 0.8
+    }
+  },
+  {
+    "id": "taco-197",
+    "nome": "Goiaba, branca, com casca, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 51.74,
+      "proteina": 0.9,
+      "carboidrato": 12.4,
+      "gordura": 0.49,
+      "fibra": 6.33,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-198",
+    "nome": "Goiaba, doce em pasta",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 268.96,
+      "proteina": 0.58,
+      "carboidrato": 74.12,
+      "gordura": 0,
+      "fibra": 3.73,
+      "sodio": 3.7
+    }
+  },
+  {
+    "id": "taco-199",
+    "nome": "Goiaba, doce, cascão",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 285.59,
+      "proteina": 0.41,
+      "carboidrato": 78.7,
+      "gordura": 0.1,
+      "fibra": 4.37,
+      "sodio": 11.03
+    }
+  },
+  {
+    "id": "taco-200",
+    "nome": "Goiaba, vermelha, com casca, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 54.17,
+      "proteina": 1.09,
+      "carboidrato": 13.01,
+      "gordura": 0.44,
+      "fibra": 6.22,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-201",
+    "nome": "Graviola, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 61.62,
+      "proteina": 0.85,
+      "carboidrato": 15.84,
+      "gordura": 0.21,
+      "fibra": 1.91,
+      "sodio": 4.16
+    }
+  },
+  {
+    "id": "taco-202",
+    "nome": "Graviola, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 38.27,
+      "proteina": 0.57,
+      "carboidrato": 9.78,
+      "gordura": 0.14,
+      "fibra": 1.19,
+      "sodio": 3.05
+    }
+  },
+  {
+    "id": "taco-203",
+    "nome": "Jabuticaba, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 58.05,
+      "proteina": 0.61,
+      "carboidrato": 15.26,
+      "gordura": 0.13,
+      "fibra": 2.3,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-204",
+    "nome": "Jaca, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 87.92,
+      "proteina": 1.4,
+      "carboidrato": 22.5,
+      "gordura": 0.27,
+      "fibra": 2.39,
+      "sodio": 1.8
+    }
+  },
+  {
+    "id": "taco-205",
+    "nome": "Jambo, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 26.91,
+      "proteina": 0.89,
+      "carboidrato": 6.49,
+      "gordura": 0.07,
+      "fibra": 5.07,
+      "sodio": 21.66
+    }
+  },
+  {
+    "id": "taco-206",
+    "nome": "Jamelão, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 41.01,
+      "proteina": 0.55,
+      "carboidrato": 10.63,
+      "gordura": 0.11,
+      "fibra": 1.78,
+      "sodio": 1.37
+    }
+  },
+  {
+    "id": "taco-207",
+    "nome": "Kiwi, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 51.14,
+      "proteina": 1.34,
+      "carboidrato": 11.5,
+      "gordura": 0.63,
+      "fibra": 2.65,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-208",
+    "nome": "Laranja, baía, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.44,
+      "proteina": 0.98,
+      "carboidrato": 11.47,
+      "gordura": 0.1,
+      "fibra": 1.12,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-209",
+    "nome": "Laranja, baía, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.65,
+      "proteina": 0.65,
+      "carboidrato": 8.7,
+      "gordura": 0,
+      "fibra": 0,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-210",
+    "nome": "Laranja, da terra, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 51.47,
+      "proteina": 1.08,
+      "carboidrato": 12.86,
+      "gordura": 0.19,
+      "fibra": 3.98,
+      "sodio": 0.83
+    }
+  },
+  {
+    "id": "taco-211",
+    "nome": "Laranja, da terra, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 40.96,
+      "proteina": 0.67,
+      "carboidrato": 9.57,
+      "gordura": 0.14,
+      "fibra": 1.03,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-212",
+    "nome": "Laranja, lima, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.7,
+      "proteina": 1.06,
+      "carboidrato": 11.53,
+      "gordura": 0.08,
+      "fibra": 1.78,
+      "sodio": 1.11
+    }
+  },
+  {
+    "id": "taco-213",
+    "nome": "Laranja, lima, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 39.34,
+      "proteina": 0.71,
+      "carboidrato": 9.17,
+      "gordura": 0.12,
+      "fibra": 0.42,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-214",
+    "nome": "Laranja, pêra, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.77,
+      "proteina": 1.04,
+      "carboidrato": 8.95,
+      "gordura": 0.13,
+      "fibra": 0.77,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-215",
+    "nome": "Laranja, pêra, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 32.71,
+      "proteina": 0.74,
+      "carboidrato": 7.55,
+      "gordura": 0.07,
+      "fibra": 0,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-216",
+    "nome": "Laranja, valência, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 46.11,
+      "proteina": 0.77,
+      "carboidrato": 11.72,
+      "gordura": 0.16,
+      "fibra": 1.73,
+      "sodio": 0.63
+    }
+  },
+  {
+    "id": "taco-217",
+    "nome": "Laranja, valência, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.2,
+      "proteina": 0.48,
+      "carboidrato": 8.55,
+      "gordura": 0.12,
+      "fibra": 0.42,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-218",
+    "nome": "Limão, cravo, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 14.1,
+      "proteina": 0.33,
+      "carboidrato": 5.25,
+      "gordura": 0,
+      "fibra": 0,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-219",
+    "nome": "Limão, galego, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 22.23,
+      "proteina": 0.57,
+      "carboidrato": 7.32,
+      "gordura": 0.07,
+      "fibra": 0,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-220",
+    "nome": "Limão, tahiti, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 31.82,
+      "proteina": 0.94,
+      "carboidrato": 11.08,
+      "gordura": 0.14,
+      "fibra": 1.18,
+      "sodio": 1.25
+    }
+  },
+  {
+    "id": "taco-221",
+    "nome": "Maçã, Argentina, com casca, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 62.53,
+      "proteina": 0.23,
+      "carboidrato": 16.59,
+      "gordura": 0.25,
+      "fibra": 2.03,
+      "sodio": 1.32
+    }
+  },
+  {
+    "id": "taco-222",
+    "nome": "Maçã, Fuji, com casca, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 55.52,
+      "proteina": 0.29,
+      "carboidrato": 15.15,
+      "gordura": 0,
+      "fibra": 1.35,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-223",
+    "nome": "Macaúba, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 404.28,
+      "proteina": 2.08,
+      "carboidrato": 13.95,
+      "gordura": 40.66,
+      "fibra": 13.44,
+      "sodio": 0.65
+    }
+  },
+  {
+    "id": "taco-224",
+    "nome": "Mamão, doce em calda, drenado",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 195.63,
+      "proteina": 0.19,
+      "carboidrato": 54,
+      "gordura": 0.07,
+      "fibra": 1.31,
+      "sodio": 2.91
+    }
+  },
+  {
+    "id": "taco-225",
+    "nome": "Mamão, Formosa, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 45.34,
+      "proteina": 0.82,
+      "carboidrato": 11.55,
+      "gordura": 0.12,
+      "fibra": 1.81,
+      "sodio": 3.26
+    }
+  },
+  {
+    "id": "taco-226",
+    "nome": "Mamão, Papaia, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 40.16,
+      "proteina": 0.46,
+      "carboidrato": 10.44,
+      "gordura": 0.12,
+      "fibra": 1.04,
+      "sodio": 1.63
+    }
+  },
+  {
+    "id": "taco-227",
+    "nome": "Mamão verde, doce em calda, drenado",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 209.38,
+      "proteina": 0.32,
+      "carboidrato": 57.64,
+      "gordura": 0.1,
+      "fibra": 1.23,
+      "sodio": 4.74
+    }
+  },
+  {
+    "id": "taco-228",
+    "nome": "Manga, Haden, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 63.5,
+      "proteina": 0.41,
+      "carboidrato": 16.66,
+      "gordura": 0.26,
+      "fibra": 1.58,
+      "sodio": 0.55
+    }
+  },
+  {
+    "id": "taco-229",
+    "nome": "Manga, Palmer, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 72.49,
+      "proteina": 0.41,
+      "carboidrato": 19.35,
+      "gordura": 0.17,
+      "fibra": 1.63,
+      "sodio": 1.86
+    }
+  },
+  {
+    "id": "taco-230",
+    "nome": "Manga, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 48.31,
+      "proteina": 0.38,
+      "carboidrato": 12.52,
+      "gordura": 0.23,
+      "fibra": 1.07,
+      "sodio": 6.73
+    }
+  },
+  {
+    "id": "taco-231",
+    "nome": "Manga, Tommy Atkins, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 50.69,
+      "proteina": 0.86,
+      "carboidrato": 12.77,
+      "gordura": 0.22,
+      "fibra": 2.07,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-232",
+    "nome": "Maracujá, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 68.44,
+      "proteina": 1.99,
+      "carboidrato": 12.26,
+      "gordura": 2.1,
+      "fibra": 1.14,
+      "sodio": 1.58
+    }
+  },
+  {
+    "id": "taco-233",
+    "nome": "Maracujá, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 38.76,
+      "proteina": 0.81,
+      "carboidrato": 9.6,
+      "gordura": 0.18,
+      "fibra": 0.51,
+      "sodio": 8.1
+    }
+  },
+  {
+    "id": "taco-234",
+    "nome": "Maracujá, suco concentrado, envasado",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 41.97,
+      "proteina": 0.77,
+      "carboidrato": 9.64,
+      "gordura": 0.19,
+      "fibra": 0.35,
+      "sodio": 21.69
+    }
+  },
+  {
+    "id": "taco-235",
+    "nome": "Melancia, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 32.61,
+      "proteina": 0.88,
+      "carboidrato": 8.14,
+      "gordura": 0,
+      "fibra": 0.12,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-236",
+    "nome": "Melão, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 29.37,
+      "proteina": 0.68,
+      "carboidrato": 7.53,
+      "gordura": 0,
+      "fibra": 0.25,
+      "sodio": 11.17
+    }
+  },
+  {
+    "id": "taco-237",
+    "nome": "Mexerica, Murcote, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 57.59,
+      "proteina": 0.88,
+      "carboidrato": 14.86,
+      "gordura": 0.13,
+      "fibra": 3.07,
+      "sodio": 1.17
+    }
+  },
+  {
+    "id": "taco-238",
+    "nome": "Mexerica, Rio, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.87,
+      "proteina": 0.65,
+      "carboidrato": 9.34,
+      "gordura": 0.13,
+      "fibra": 2.73,
+      "sodio": 1.82
+    }
+  },
+  {
+    "id": "taco-239",
+    "nome": "Morango, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 30.15,
+      "proteina": 0.89,
+      "carboidrato": 6.82,
+      "gordura": 0.31,
+      "fibra": 1.72,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-240",
+    "nome": "Nêspera, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 42.54,
+      "proteina": 0.31,
+      "carboidrato": 11.53,
+      "gordura": 0,
+      "fibra": 2.96,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-241",
+    "nome": "Pequi, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 204.97,
+      "proteina": 2.34,
+      "carboidrato": 12.97,
+      "gordura": 17.97,
+      "fibra": 19.04,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-242",
+    "nome": "Pêra, Park, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 60.59,
+      "proteina": 0.24,
+      "carboidrato": 16.07,
+      "gordura": 0.23,
+      "fibra": 2.98,
+      "sodio": 0.98
+    }
+  },
+  {
+    "id": "taco-243",
+    "nome": "Pêra, Williams, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 53.31,
+      "proteina": 0.57,
+      "carboidrato": 14.02,
+      "gordura": 0.11,
+      "fibra": 3.01,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-244",
+    "nome": "Pêssego, Aurora, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.33,
+      "proteina": 0.83,
+      "carboidrato": 9.32,
+      "gordura": 0,
+      "fibra": 1.42,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-245",
+    "nome": "Pêssego, enlatado, em calda",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 63.14,
+      "proteina": 0.71,
+      "carboidrato": 16.88,
+      "gordura": 0,
+      "fibra": 1.02,
+      "sodio": 3.2
+    }
+  },
+  {
+    "id": "taco-246",
+    "nome": "Pinha, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 88.47,
+      "proteina": 1.49,
+      "carboidrato": 22.45,
+      "gordura": 0.32,
+      "fibra": 3.36,
+      "sodio": 1.34
+    }
+  },
+  {
+    "id": "taco-247",
+    "nome": "Pitanga, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 41.42,
+      "proteina": 0.93,
+      "carboidrato": 10.24,
+      "gordura": 0.17,
+      "fibra": 3.24,
+      "sodio": 1.7
+    }
+  },
+  {
+    "id": "taco-248",
+    "nome": "Pitanga, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 19.11,
+      "proteina": 0.29,
+      "carboidrato": 4.76,
+      "gordura": 0.12,
+      "fibra": 0.74,
+      "sodio": 5.03
+    }
+  },
+  {
+    "id": "taco-249",
+    "nome": "Romã, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 55.74,
+      "proteina": 0.4,
+      "carboidrato": 15.11,
+      "gordura": 0,
+      "fibra": 0.44,
+      "sodio": 0.59
+    }
+  },
+  {
+    "id": "taco-250",
+    "nome": "Tamarindo, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 275.7,
+      "proteina": 3.21,
+      "carboidrato": 72.53,
+      "gordura": 0.46,
+      "fibra": 6.45,
+      "sodio": 0.36
+    }
+  },
+  {
+    "id": "taco-251",
+    "nome": "Tangerina, Poncã, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 37.83,
+      "proteina": 0.85,
+      "carboidrato": 9.61,
+      "gordura": 0.07,
+      "fibra": 0.94,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-252",
+    "nome": "Tangerina, Poncã, suco",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 36.11,
+      "proteina": 0.52,
+      "carboidrato": 8.8,
+      "gordura": 0,
+      "fibra": 0,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-253",
+    "nome": "Tucumã, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 262.02,
+      "proteina": 2.09,
+      "carboidrato": 26.47,
+      "gordura": 19.08,
+      "fibra": 12.65,
+      "sodio": 3.89
+    }
+  },
+  {
+    "id": "taco-254",
+    "nome": "Umbu, cru",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 37.02,
+      "proteina": 0.84,
+      "carboidrato": 9.4,
+      "gordura": 0,
+      "fibra": 1.98,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-255",
+    "nome": "Umbu, polpa, congelada",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 33.94,
+      "proteina": 0.51,
+      "carboidrato": 8.79,
+      "gordura": 0.07,
+      "fibra": 1.34,
+      "sodio": 5.77
+    }
+  },
+  {
+    "id": "taco-256",
+    "nome": "Uva, Itália, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 52.87,
+      "proteina": 0.75,
+      "carboidrato": 13.57,
+      "gordura": 0.2,
+      "fibra": 0.92,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-257",
+    "nome": "Uva, Rubi, crua",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 49.06,
+      "proteina": 0.61,
+      "carboidrato": 12.7,
+      "gordura": 0.16,
+      "fibra": 0.93,
+      "sodio": 7.92
+    }
+  },
+  {
+    "id": "taco-258",
+    "nome": "Uva, suco concentrado, envasado",
+    "categoria": "Frutas e derivados",
+    "por100g": {
+      "kcal": 57.66,
+      "proteina": 0,
+      "carboidrato": 14.71,
+      "gordura": 0,
+      "fibra": 0.23,
+      "sodio": 9.58
+    }
+  },
+  {
+    "id": "taco-259",
+    "nome": "Azeite, de dendê",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-260",
+    "nome": "Azeite, de oliva, extra virgem",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-261",
+    "nome": "Manteiga, com sal",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 725.97,
+      "proteina": 0.41,
+      "carboidrato": 0.06,
+      "gordura": 82.36,
+      "fibra": null,
+      "sodio": 578.69
+    }
+  },
+  {
+    "id": "taco-262",
+    "nome": "Manteiga, sem sal",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 757.54,
+      "proteina": 0.4,
+      "carboidrato": 0,
+      "gordura": 86.04,
+      "fibra": null,
+      "sodio": 3.85
+    }
+  },
+  {
+    "id": "taco-263",
+    "nome": "Margarina, com óleo hidrogenado, com sal (65% de lipídeos)",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 596.12,
+      "proteina": 0,
+      "carboidrato": 0,
+      "gordura": 67.43,
+      "fibra": null,
+      "sodio": 894.04
+    }
+  },
+  {
+    "id": "taco-264",
+    "nome": "Margarina, com óleo hidrogenado, sem sal (80% de lipídeos)",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 722.53,
+      "proteina": 0,
+      "carboidrato": 0,
+      "gordura": 81.73,
+      "fibra": null,
+      "sodio": 77.89
+    }
+  },
+  {
+    "id": "taco-265",
+    "nome": "Margarina, com óleo interesterificado, com sal (65%de lipídeos)",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 594.45,
+      "proteina": 0,
+      "carboidrato": 0,
+      "gordura": 67.25,
+      "fibra": null,
+      "sodio": 560.8
+    }
+  },
+  {
+    "id": "taco-266",
+    "nome": "Margarina, com óleo interesterificado, sem sal (65% de lipídeos)",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 593.14,
+      "proteina": 0,
+      "carboidrato": 0,
+      "gordura": 67.1,
+      "fibra": null,
+      "sodio": 33.19
+    }
+  },
+  {
+    "id": "taco-267",
+    "nome": "Óleo, de babaçu",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-268",
+    "nome": "Óleo, de canola",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-269",
+    "nome": "Óleo, de girassol",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-270",
+    "nome": "Óleo, de milho",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-271",
+    "nome": "Óleo, de pequi",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-272",
+    "nome": "Óleo, de soja",
+    "categoria": "Gorduras e óleos",
+    "por100g": {
+      "kcal": 884,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": 100,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-273",
+    "nome": "Abadejo, filé, congelado, assado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 111.62,
+      "proteina": 23.53,
+      "carboidrato": 0,
+      "gordura": 1.24,
+      "fibra": null,
+      "sodio": 334.39
+    }
+  },
+  {
+    "id": "taco-274",
+    "nome": "Abadejo, filé, congelado,cozido",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 91.1,
+      "proteina": 19.35,
+      "carboidrato": 0,
+      "gordura": 0.94,
+      "fibra": null,
+      "sodio": 189.34
+    }
+  },
+  {
+    "id": "taco-275",
+    "nome": "Abadejo, filé, congelado, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 59.11,
+      "proteina": 13.08,
+      "carboidrato": 0,
+      "gordura": 0.36,
+      "fibra": null,
+      "sodio": 78.52
+    }
+  },
+  {
+    "id": "taco-276",
+    "nome": "Abadejo, filé, congelado, grelhado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 129.64,
+      "proteina": 27.61,
+      "carboidrato": 0,
+      "gordura": 1.3,
+      "fibra": null,
+      "sodio": 305.09
+    }
+  },
+  {
+    "id": "taco-277",
+    "nome": "Atum, conserva em óleo",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 165.91,
+      "proteina": 26.19,
+      "carboidrato": 0,
+      "gordura": 6,
+      "fibra": null,
+      "sodio": 362.15
+    }
+  },
+  {
+    "id": "taco-278",
+    "nome": "Atum, fresco, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 117.5,
+      "proteina": 25.68,
+      "carboidrato": 0,
+      "gordura": 0.87,
+      "fibra": null,
+      "sodio": 30.3
+    }
+  },
+  {
+    "id": "taco-279",
+    "nome": "Bacalhau, salgado, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 135.89,
+      "proteina": 29.04,
+      "carboidrato": 0,
+      "gordura": 1.32,
+      "fibra": null,
+      "sodio": 13585.06
+    }
+  },
+  {
+    "id": "taco-280",
+    "nome": "Bacalhau, salgado, refogado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 139.66,
+      "proteina": 23.98,
+      "carboidrato": 1.22,
+      "gordura": 3.61,
+      "fibra": null,
+      "sodio": 1256.28
+    }
+  },
+  {
+    "id": "taco-281",
+    "nome": "Cação, posta, com farinha de trigo, frita",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 208.33,
+      "proteina": 24.95,
+      "carboidrato": 3.1,
+      "gordura": 9.95,
+      "fibra": 0.54,
+      "sodio": 160.03
+    }
+  },
+  {
+    "id": "taco-282",
+    "nome": "Cação, posta, cozida",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 116.01,
+      "proteina": 25.59,
+      "carboidrato": 0,
+      "gordura": 0.75,
+      "fibra": null,
+      "sodio": 114.91
+    }
+  },
+  {
+    "id": "taco-283",
+    "nome": "Cação, posta, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 83.33,
+      "proteina": 17.85,
+      "carboidrato": 0,
+      "gordura": 0.79,
+      "fibra": null,
+      "sodio": 176.02
+    }
+  },
+  {
+    "id": "taco-284",
+    "nome": "Camarão, Rio Grande, grande, cozido",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 90.01,
+      "proteina": 18.97,
+      "carboidrato": 0,
+      "gordura": 1,
+      "fibra": null,
+      "sodio": 366.55
+    }
+  },
+  {
+    "id": "taco-285",
+    "nome": "Camarão, Rio Grande, grande, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 47.18,
+      "proteina": 9.99,
+      "carboidrato": 0,
+      "gordura": 0.5,
+      "fibra": null,
+      "sodio": 201.13
+    }
+  },
+  {
+    "id": "taco-286",
+    "nome": "Camarão, Sete Barbas, sem cabeça, com casca, frito",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 231.25,
+      "proteina": 18.39,
+      "carboidrato": 2.88,
+      "gordura": 15.62,
+      "fibra": null,
+      "sodio": 99.06
+    }
+  },
+  {
+    "id": "taco-287",
+    "nome": "Caranguejo, cozido",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 82.72,
+      "proteina": 18.48,
+      "carboidrato": 0,
+      "gordura": 0.42,
+      "fibra": null,
+      "sodio": 360.11
+    }
+  },
+  {
+    "id": "taco-288",
+    "nome": "Corimba, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 128.16,
+      "proteina": 17.37,
+      "carboidrato": -0.03,
+      "gordura": 5.99,
+      "fibra": null,
+      "sodio": 47.01
+    }
+  },
+  {
+    "id": "taco-289",
+    "nome": "Corimbatá, assado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 261.45,
+      "proteina": 19.9,
+      "carboidrato": 0,
+      "gordura": 19.57,
+      "fibra": null,
+      "sodio": 40.43
+    }
+  },
+  {
+    "id": "taco-290",
+    "nome": "Corimbatá, cozido",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 238.7,
+      "proteina": 20.13,
+      "carboidrato": 0,
+      "gordura": 16.93,
+      "fibra": null,
+      "sodio": 37.17
+    }
+  },
+  {
+    "id": "taco-291",
+    "nome": "Corvina de água doce, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 101.01,
+      "proteina": 18.92,
+      "carboidrato": 0,
+      "gordura": 2.24,
+      "fibra": null,
+      "sodio": 45.09
+    }
+  },
+  {
+    "id": "taco-292",
+    "nome": "Corvina do mar, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 94,
+      "proteina": 18.57,
+      "carboidrato": 0,
+      "gordura": 1.58,
+      "fibra": null,
+      "sodio": 67.97
+    }
+  },
+  {
+    "id": "taco-293",
+    "nome": "Corvina grande, assada",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 146.53,
+      "proteina": 26.77,
+      "carboidrato": 0,
+      "gordura": 3.57,
+      "fibra": null,
+      "sodio": 85.35
+    }
+  },
+  {
+    "id": "taco-294",
+    "nome": "Corvina grande, cozida",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 100.08,
+      "proteina": 23.44,
+      "carboidrato": 0,
+      "gordura": 2.56,
+      "fibra": null,
+      "sodio": 68.39
+    }
+  },
+  {
+    "id": "taco-295",
+    "nome": "Dourada de água doce, fresca",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 131.21,
+      "proteina": 18.81,
+      "carboidrato": 0,
+      "gordura": 5.64,
+      "fibra": null,
+      "sodio": 40.3
+    }
+  },
+  {
+    "id": "taco-296",
+    "nome": "Lambari, congelado, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 130.84,
+      "proteina": 16.81,
+      "carboidrato": 0,
+      "gordura": 6.55,
+      "fibra": null,
+      "sodio": 47.92
+    }
+  },
+  {
+    "id": "taco-297",
+    "nome": "Lambari, congelado, frito",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 326.87,
+      "proteina": 28.43,
+      "carboidrato": 0,
+      "gordura": 22.78,
+      "fibra": null,
+      "sodio": 64.55
+    }
+  },
+  {
+    "id": "taco-298",
+    "nome": "Lambari, fresco, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 151.6,
+      "proteina": 15.65,
+      "carboidrato": 0,
+      "gordura": 9.4,
+      "fibra": null,
+      "sodio": 41.11
+    }
+  },
+  {
+    "id": "taco-299",
+    "nome": "Manjuba, com farinha de trigo, frita",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 343.55,
+      "proteina": 23.45,
+      "carboidrato": 10.24,
+      "gordura": 22.59,
+      "fibra": 0.36,
+      "sodio": 36.52
+    }
+  },
+  {
+    "id": "taco-300",
+    "nome": "Manjuba, frita",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 349.33,
+      "proteina": 30.14,
+      "carboidrato": 0,
+      "gordura": 24.46,
+      "fibra": null,
+      "sodio": 40.61
+    }
+  },
+  {
+    "id": "taco-301",
+    "nome": "Merluza, filé, assado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 121.91,
+      "proteina": 26.6,
+      "carboidrato": 0,
+      "gordura": 0.92,
+      "fibra": null,
+      "sodio": 119.95
+    }
+  },
+  {
+    "id": "taco-302",
+    "nome": "Merluza, filé, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 89.13,
+      "proteina": 16.61,
+      "carboidrato": 0,
+      "gordura": 2.02,
+      "fibra": null,
+      "sodio": 79.5
+    }
+  },
+  {
+    "id": "taco-303",
+    "nome": "Merluza, filé, frito",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 191.63,
+      "proteina": 26.93,
+      "carboidrato": 0,
+      "gordura": 8.5,
+      "fibra": null,
+      "sodio": 89.96
+    }
+  },
+  {
+    "id": "taco-304",
+    "nome": "Pescada, branca, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 110.88,
+      "proteina": 16.26,
+      "carboidrato": 0,
+      "gordura": 4.59,
+      "fibra": null,
+      "sodio": 76.17
+    }
+  },
+  {
+    "id": "taco-305",
+    "nome": "Pescada, branca, frita",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 223.04,
+      "proteina": 27.36,
+      "carboidrato": 0,
+      "gordura": 11.78,
+      "fibra": null,
+      "sodio": 107.23
+    }
+  },
+  {
+    "id": "taco-306",
+    "nome": "Pescada, filé, com farinha de trigo, frito",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 283.43,
+      "proteina": 21.44,
+      "carboidrato": 5.03,
+      "gordura": 19.11,
+      "fibra": 0,
+      "sodio": 90.51
+    }
+  },
+  {
+    "id": "taco-307",
+    "nome": "Pescada, filé, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 107.21,
+      "proteina": 16.65,
+      "carboidrato": 0,
+      "gordura": 4,
+      "fibra": null,
+      "sodio": 77.5
+    }
+  },
+  {
+    "id": "taco-308",
+    "nome": "Pescada, filé, frito",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 154.27,
+      "proteina": 28.59,
+      "carboidrato": 0,
+      "gordura": 3.57,
+      "fibra": null,
+      "sodio": 114.91
+    }
+  },
+  {
+    "id": "taco-309",
+    "nome": "Pescada, filé, molho escabeche",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 141.96,
+      "proteina": 11.75,
+      "carboidrato": 5.02,
+      "gordura": 8.02,
+      "fibra": 0.78,
+      "sodio": 51.29
+    }
+  },
+  {
+    "id": "taco-310",
+    "nome": "Pescadinha, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 76.41,
+      "proteina": 15.48,
+      "carboidrato": 0,
+      "gordura": 1.14,
+      "fibra": null,
+      "sodio": 120.34
+    }
+  },
+  {
+    "id": "taco-311",
+    "nome": "Pintado, assado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 191.56,
+      "proteina": 36.45,
+      "carboidrato": 0,
+      "gordura": 3.98,
+      "fibra": null,
+      "sodio": 80.95
+    }
+  },
+  {
+    "id": "taco-312",
+    "nome": "Pintado, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 91.08,
+      "proteina": 18.56,
+      "carboidrato": 0,
+      "gordura": 1.31,
+      "fibra": null,
+      "sodio": 43.34
+    }
+  },
+  {
+    "id": "taco-313",
+    "nome": "Pintado, grelhado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 152.19,
+      "proteina": 30.8,
+      "carboidrato": 0,
+      "gordura": 2.29,
+      "fibra": null,
+      "sodio": 53.09
+    }
+  },
+  {
+    "id": "taco-314",
+    "nome": "Porquinho, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 93.02,
+      "proteina": 20.49,
+      "carboidrato": 0,
+      "gordura": 0.61,
+      "fibra": null,
+      "sodio": 66.73
+    }
+  },
+  {
+    "id": "taco-315",
+    "nome": "Salmão, filé, com pele, fresco,  grelhado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 228.73,
+      "proteina": 23.92,
+      "carboidrato": 0,
+      "gordura": 14.04,
+      "fibra": null,
+      "sodio": 85.14
+    }
+  },
+  {
+    "id": "taco-316",
+    "nome": "Salmão, sem pele, fresco, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 169.78,
+      "proteina": 19.25,
+      "carboidrato": 0,
+      "gordura": 9.71,
+      "fibra": null,
+      "sodio": 64.24
+    }
+  },
+  {
+    "id": "taco-317",
+    "nome": "Salmão, sem pele, fresco, grelhado",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 242.71,
+      "proteina": 26.14,
+      "carboidrato": 0,
+      "gordura": 14.53,
+      "fibra": null,
+      "sodio": 95.81
+    }
+  },
+  {
+    "id": "taco-318",
+    "nome": "Sardinha, assada",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 164.35,
+      "proteina": 32.18,
+      "carboidrato": 0,
+      "gordura": 2.99,
+      "fibra": null,
+      "sodio": 74.47
+    }
+  },
+  {
+    "id": "taco-319",
+    "nome": "Sardinha, conserva em óleo",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 284.98,
+      "proteina": 15.94,
+      "carboidrato": 0,
+      "gordura": 24.05,
+      "fibra": null,
+      "sodio": 665.84
+    }
+  },
+  {
+    "id": "taco-320",
+    "nome": "Sardinha, frita",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 257.04,
+      "proteina": 33.38,
+      "carboidrato": 0,
+      "gordura": 12.69,
+      "fibra": null,
+      "sodio": 60.1
+    }
+  },
+  {
+    "id": "taco-321",
+    "nome": "Sardinha, inteira, crua",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 113.9,
+      "proteina": 21.08,
+      "carboidrato": 0,
+      "gordura": 2.65,
+      "fibra": null,
+      "sodio": 60.39
+    }
+  },
+  {
+    "id": "taco-322",
+    "nome": "Tucunaré, filé, congelado, cru",
+    "categoria": "Pescados e frutos do mar",
+    "por100g": {
+      "kcal": 87.69,
+      "proteina": 17.96,
+      "carboidrato": -0.05,
+      "gordura": 1.22,
+      "fibra": null,
+      "sodio": 56.55
+    }
+  },
+  {
+    "id": "taco-323",
+    "nome": "Apresuntado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 128.86,
+      "proteina": 13.45,
+      "carboidrato": 2.86,
+      "gordura": 6.69,
+      "fibra": null,
+      "sodio": 942.93
+    }
+  },
+  {
+    "id": "taco-324",
+    "nome": "Caldo de carne, tablete",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 240.62,
+      "proteina": 7.82,
+      "carboidrato": 15.05,
+      "gordura": 16.57,
+      "fibra": 0.58,
+      "sodio": 22179.67
+    }
+  },
+  {
+    "id": "taco-325",
+    "nome": "Caldo de galinha, tablete",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 251.45,
+      "proteina": 6.28,
+      "carboidrato": 10.65,
+      "gordura": 20.42,
+      "fibra": 11.81,
+      "sodio": 22299.9
+    }
+  },
+  {
+    "id": "taco-326",
+    "nome": "Carne, bovina, acém, moído, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 212.42,
+      "proteina": 26.69,
+      "carboidrato": 0,
+      "gordura": 10.92,
+      "fibra": null,
+      "sodio": 52.36
+    }
+  },
+  {
+    "id": "taco-327",
+    "nome": "Carne, bovina, acém, moído, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 136.56,
+      "proteina": 19.42,
+      "carboidrato": 0,
+      "gordura": 5.95,
+      "fibra": null,
+      "sodio": 48.61
+    }
+  },
+  {
+    "id": "taco-328",
+    "nome": "Carne, bovina, acém, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 214.61,
+      "proteina": 27.27,
+      "carboidrato": 0,
+      "gordura": 10.88,
+      "fibra": null,
+      "sodio": 56.17
+    }
+  },
+  {
+    "id": "taco-329",
+    "nome": "Carne, bovina, acém, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 144.03,
+      "proteina": 20.82,
+      "carboidrato": 0,
+      "gordura": 6.11,
+      "fibra": null,
+      "sodio": 49.85
+    }
+  },
+  {
+    "id": "taco-330",
+    "nome": "Carne, bovina, almôndegas, cruas",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 189.26,
+      "proteina": 12.31,
+      "carboidrato": 9.79,
+      "gordura": 11.2,
+      "fibra": null,
+      "sodio": 621.25
+    }
+  },
+  {
+    "id": "taco-331",
+    "nome": "Carne, bovina, almôndegas, fritas",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 271.81,
+      "proteina": 18.16,
+      "carboidrato": 14.29,
+      "gordura": 15.78,
+      "fibra": null,
+      "sodio": 1030.26
+    }
+  },
+  {
+    "id": "taco-332",
+    "nome": "Carne, bovina, bucho, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 133.02,
+      "proteina": 21.64,
+      "carboidrato": 0,
+      "gordura": 4.5,
+      "fibra": null,
+      "sodio": 38.2
+    }
+  },
+  {
+    "id": "taco-333",
+    "nome": "Carne, bovina, bucho, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 137.3,
+      "proteina": 20.53,
+      "carboidrato": 0,
+      "gordura": 5.5,
+      "fibra": null,
+      "sodio": 45
+    }
+  },
+  {
+    "id": "taco-334",
+    "nome": "Carne, bovina, capa de contra-filé, com gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 216.91,
+      "proteina": 19.2,
+      "carboidrato": 0,
+      "gordura": 14.96,
+      "fibra": null,
+      "sodio": 57.54
+    }
+  },
+  {
+    "id": "taco-335",
+    "nome": "Carne, bovina, capa de contra-filé, com gordura, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 311.7,
+      "proteina": 30.69,
+      "carboidrato": 0,
+      "gordura": 20.03,
+      "fibra": null,
+      "sodio": 80.51
+    }
+  },
+  {
+    "id": "taco-336",
+    "nome": "Carne, bovina, capa de contra-filé, sem gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 131.06,
+      "proteina": 21.54,
+      "carboidrato": 0,
+      "gordura": 4.33,
+      "fibra": null,
+      "sodio": 79.17
+    }
+  },
+  {
+    "id": "taco-337",
+    "nome": "Carne, bovina, capa de contra-filé, sem gordura, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 239.44,
+      "proteina": 35.06,
+      "carboidrato": -0.01,
+      "gordura": 9.95,
+      "fibra": null,
+      "sodio": 82.75
+    }
+  },
+  {
+    "id": "taco-338",
+    "nome": "Carne, bovina, charque, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 262.78,
+      "proteina": 36.36,
+      "carboidrato": 0,
+      "gordura": 11.92,
+      "fibra": null,
+      "sodio": 1442.7
+    }
+  },
+  {
+    "id": "taco-339",
+    "nome": "Carne, bovina, charque, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 248.86,
+      "proteina": 22.71,
+      "carboidrato": 0,
+      "gordura": 16.84,
+      "fibra": null,
+      "sodio": 5875.03
+    }
+  },
+  {
+    "id": "taco-340",
+    "nome": "Carne, bovina, contra-filé, à milanesa",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 351.59,
+      "proteina": 20.61,
+      "carboidrato": 12.17,
+      "gordura": 24,
+      "fibra": 0.37,
+      "sodio": 77.09
+    }
+  },
+  {
+    "id": "taco-341",
+    "nome": "Carne, bovina, contra-filé de costela, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 202.44,
+      "proteina": 19.8,
+      "carboidrato": 0,
+      "gordura": 13.07,
+      "fibra": null,
+      "sodio": 38.52
+    }
+  },
+  {
+    "id": "taco-342",
+    "nome": "Carne, bovina, contra-filé de costela, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 274.91,
+      "proteina": 29.88,
+      "carboidrato": 0,
+      "gordura": 16.33,
+      "fibra": null,
+      "sodio": 50.88
+    }
+  },
+  {
+    "id": "taco-343",
+    "nome": "Carne, bovina, contra-filé, com gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 205.86,
+      "proteina": 21.15,
+      "carboidrato": 0,
+      "gordura": 12.81,
+      "fibra": null,
+      "sodio": 44.13
+    }
+  },
+  {
+    "id": "taco-344",
+    "nome": "Carne, bovina, contra-filé, com gordura, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 278.05,
+      "proteina": 32.4,
+      "carboidrato": 0,
+      "gordura": 15.49,
+      "fibra": null,
+      "sodio": 57.07
+    }
+  },
+  {
+    "id": "taco-345",
+    "nome": "Carne, bovina, contra-filé, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 156.62,
+      "proteina": 24,
+      "carboidrato": 0,
+      "gordura": 6,
+      "fibra": null,
+      "sodio": 52.89
+    }
+  },
+  {
+    "id": "taco-346",
+    "nome": "Carne, bovina, contra-filé, sem gordura, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 193.69,
+      "proteina": 35.88,
+      "carboidrato": 0,
+      "gordura": 4.49,
+      "fibra": null,
+      "sodio": 57.51
+    }
+  },
+  {
+    "id": "taco-347",
+    "nome": "Carne, bovina, costela, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 373.04,
+      "proteina": 28.81,
+      "carboidrato": 0,
+      "gordura": 27.72,
+      "fibra": null,
+      "sodio": 91.86
+    }
+  },
+  {
+    "id": "taco-348",
+    "nome": "Carne, bovina, costela, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 357.72,
+      "proteina": 16.71,
+      "carboidrato": 0,
+      "gordura": 31.75,
+      "fibra": null,
+      "sodio": 70
+    }
+  },
+  {
+    "id": "taco-349",
+    "nome": "Carne, bovina, coxão duro, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 216.62,
+      "proteina": 31.88,
+      "carboidrato": 0,
+      "gordura": 8.92,
+      "fibra": null,
+      "sodio": 41.1
+    }
+  },
+  {
+    "id": "taco-350",
+    "nome": "Carne, bovina, coxão duro, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 147.97,
+      "proteina": 21.51,
+      "carboidrato": 0,
+      "gordura": 6.22,
+      "fibra": null,
+      "sodio": 48.55
+    }
+  },
+  {
+    "id": "taco-351",
+    "nome": "Carne, bovina, coxão mole, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 218.68,
+      "proteina": 32.38,
+      "carboidrato": 0,
+      "gordura": 8.91,
+      "fibra": null,
+      "sodio": 43.5
+    }
+  },
+  {
+    "id": "taco-352",
+    "nome": "Carne, bovina, coxão mole, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 169.07,
+      "proteina": 21.23,
+      "carboidrato": 0,
+      "gordura": 8.69,
+      "fibra": null,
+      "sodio": 60.53
+    }
+  },
+  {
+    "id": "taco-353",
+    "nome": "Carne, bovina, cupim, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 330.1,
+      "proteina": 28.63,
+      "carboidrato": 0,
+      "gordura": 23.04,
+      "fibra": null,
+      "sodio": 71.59
+    }
+  },
+  {
+    "id": "taco-354",
+    "nome": "Carne, bovina, cupim, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 221.4,
+      "proteina": 19.54,
+      "carboidrato": 0,
+      "gordura": 15.3,
+      "fibra": null,
+      "sodio": 46.86
+    }
+  },
+  {
+    "id": "taco-355",
+    "nome": "Carne, bovina, fígado, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 141.05,
+      "proteina": 20.71,
+      "carboidrato": 1.11,
+      "gordura": 5.36,
+      "fibra": null,
+      "sodio": 75.92
+    }
+  },
+  {
+    "id": "taco-356",
+    "nome": "Carne, bovina, fígado, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 225.03,
+      "proteina": 29.86,
+      "carboidrato": 4.2,
+      "gordura": 9.01,
+      "fibra": null,
+      "sodio": 82.19
+    }
+  },
+  {
+    "id": "taco-357",
+    "nome": "Carne, bovina, filé mingnon, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 142.86,
+      "proteina": 21.6,
+      "carboidrato": 0,
+      "gordura": 5.61,
+      "fibra": null,
+      "sodio": 48.86
+    }
+  },
+  {
+    "id": "taco-358",
+    "nome": "Carne, bovina, filé mingnon, sem gordura, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 219.7,
+      "proteina": 32.8,
+      "carboidrato": 0,
+      "gordura": 8.83,
+      "fibra": null,
+      "sodio": 57.91
+    }
+  },
+  {
+    "id": "taco-359",
+    "nome": "Carne, bovina, flanco, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 195.58,
+      "proteina": 29.38,
+      "carboidrato": 0,
+      "gordura": 7.77,
+      "fibra": null,
+      "sodio": 41.68
+    }
+  },
+  {
+    "id": "taco-360",
+    "nome": "Carne, bovina, flanco, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 141.46,
+      "proteina": 20,
+      "carboidrato": 0,
+      "gordura": 6.22,
+      "fibra": null,
+      "sodio": 54.22
+    }
+  },
+  {
+    "id": "taco-361",
+    "nome": "Carne, bovina, fraldinha, com gordura, cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 338.45,
+      "proteina": 24.24,
+      "carboidrato": 0,
+      "gordura": 26.05,
+      "fibra": null,
+      "sodio": 38.78
+    }
+  },
+  {
+    "id": "taco-362",
+    "nome": "Carne, bovina, fraldinha, com gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 220.72,
+      "proteina": 17.58,
+      "carboidrato": 0,
+      "gordura": 16.15,
+      "fibra": null,
+      "sodio": 51.2
+    }
+  },
+  {
+    "id": "taco-363",
+    "nome": "Carne, bovina, lagarto, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 222.47,
+      "proteina": 32.86,
+      "carboidrato": 0,
+      "gordura": 9.11,
+      "fibra": null,
+      "sodio": 47.54
+    }
+  },
+  {
+    "id": "taco-364",
+    "nome": "Carne, bovina, lagarto, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 134.86,
+      "proteina": 20.54,
+      "carboidrato": 0,
+      "gordura": 5.23,
+      "fibra": null,
+      "sodio": 53.56
+    }
+  },
+  {
+    "id": "taco-365",
+    "nome": "Carne, bovina, língua, cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 314.9,
+      "proteina": 21.37,
+      "carboidrato": 0,
+      "gordura": 24.8,
+      "fibra": null,
+      "sodio": 59.06
+    }
+  },
+  {
+    "id": "taco-366",
+    "nome": "Carne, bovina, língua, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 215.25,
+      "proteina": 17.09,
+      "carboidrato": 0,
+      "gordura": 15.77,
+      "fibra": null,
+      "sodio": 73.05
+    }
+  },
+  {
+    "id": "taco-367",
+    "nome": "Carne, bovina, maminha, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 152.77,
+      "proteina": 20.93,
+      "carboidrato": 0,
+      "gordura": 7.03,
+      "fibra": null,
+      "sodio": 37.42
+    }
+  },
+  {
+    "id": "taco-368",
+    "nome": "Carne, bovina, maminha, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 153.09,
+      "proteina": 30.74,
+      "carboidrato": 0,
+      "gordura": 2.42,
+      "fibra": null,
+      "sodio": 58.12
+    }
+  },
+  {
+    "id": "taco-369",
+    "nome": "Carne, bovina, miolo de alcatra, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 162.87,
+      "proteina": 21.61,
+      "carboidrato": 0,
+      "gordura": 7.83,
+      "fibra": null,
+      "sodio": 43.05
+    }
+  },
+  {
+    "id": "taco-370",
+    "nome": "Carne, bovina, miolo de alcatra, sem gordura, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 241.36,
+      "proteina": 31.93,
+      "carboidrato": 0,
+      "gordura": 11.64,
+      "fibra": null,
+      "sodio": 51.62
+    }
+  },
+  {
+    "id": "taco-371",
+    "nome": "Carne, bovina, músculo, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 193.8,
+      "proteina": 31.23,
+      "carboidrato": 0,
+      "gordura": 6.7,
+      "fibra": null,
+      "sodio": 61.79
+    }
+  },
+  {
+    "id": "taco-372",
+    "nome": "Carne, bovina, músculo, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 141.58,
+      "proteina": 21.56,
+      "carboidrato": 0,
+      "gordura": 5.49,
+      "fibra": null,
+      "sodio": 66.08
+    }
+  },
+  {
+    "id": "taco-373",
+    "nome": "Carne, bovina, paleta, com gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 158.71,
+      "proteina": 21.41,
+      "carboidrato": 0,
+      "gordura": 7.46,
+      "fibra": null,
+      "sodio": 64.9
+    }
+  },
+  {
+    "id": "taco-374",
+    "nome": "Carne, bovina, paleta, sem gordura, cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 193.65,
+      "proteina": 29.72,
+      "carboidrato": 0,
+      "gordura": 7.4,
+      "fibra": null,
+      "sodio": 57.62
+    }
+  },
+  {
+    "id": "taco-375",
+    "nome": "Carne, bovina, paleta, sem gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 140.94,
+      "proteina": 21.03,
+      "carboidrato": 0,
+      "gordura": 5.67,
+      "fibra": null,
+      "sodio": 65.86
+    }
+  },
+  {
+    "id": "taco-376",
+    "nome": "Carne, bovina, patinho, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 133.47,
+      "proteina": 21.72,
+      "carboidrato": 0,
+      "gordura": 4.51,
+      "fibra": null,
+      "sodio": 49.13
+    }
+  },
+  {
+    "id": "taco-377",
+    "nome": "Carne, bovina, patinho, sem gordura, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 219.26,
+      "proteina": 35.9,
+      "carboidrato": 0,
+      "gordura": 7.31,
+      "fibra": null,
+      "sodio": 60.29
+    }
+  },
+  {
+    "id": "taco-378",
+    "nome": "Carne, bovina, peito, sem gordura, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 338.47,
+      "proteina": 22.25,
+      "carboidrato": 0,
+      "gordura": 26.99,
+      "fibra": null,
+      "sodio": 55.71
+    }
+  },
+  {
+    "id": "taco-379",
+    "nome": "Carne, bovina, peito, sem gordura, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 259.28,
+      "proteina": 17.56,
+      "carboidrato": 0,
+      "gordura": 20.43,
+      "fibra": null,
+      "sodio": 63.76
+    }
+  },
+  {
+    "id": "taco-380",
+    "nome": "Carne, bovina, picanha, com gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 212.88,
+      "proteina": 18.82,
+      "carboidrato": 0,
+      "gordura": 14.69,
+      "fibra": null,
+      "sodio": 37.62
+    }
+  },
+  {
+    "id": "taco-381",
+    "nome": "Carne, bovina, picanha, com gordura, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 288.77,
+      "proteina": 26.42,
+      "carboidrato": 0,
+      "gordura": 19.51,
+      "fibra": null,
+      "sodio": 60
+    }
+  },
+  {
+    "id": "taco-382",
+    "nome": "Carne, bovina, picanha, sem gordura, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 133.52,
+      "proteina": 21.25,
+      "carboidrato": 0,
+      "gordura": 4.74,
+      "fibra": null,
+      "sodio": 61.15
+    }
+  },
+  {
+    "id": "taco-383",
+    "nome": "Carne, bovina, picanha, sem gordura, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 238.47,
+      "proteina": 31.91,
+      "carboidrato": 0,
+      "gordura": 11.33,
+      "fibra": null,
+      "sodio": 60.66
+    }
+  },
+  {
+    "id": "taco-384",
+    "nome": "Carne, bovina, seca, cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 312.8,
+      "proteina": 26.93,
+      "carboidrato": 0,
+      "gordura": 21.93,
+      "fibra": null,
+      "sodio": 1943.18
+    }
+  },
+  {
+    "id": "taco-385",
+    "nome": "Carne, bovina, seca, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 312.75,
+      "proteina": 19.66,
+      "carboidrato": 0,
+      "gordura": 25.37,
+      "fibra": null,
+      "sodio": 4439.55
+    }
+  },
+  {
+    "id": "taco-386",
+    "nome": "Coxinha de frango, frita",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 283.05,
+      "proteina": 9.61,
+      "carboidrato": 34.52,
+      "gordura": 11.84,
+      "fibra": 4.97,
+      "sodio": 532.13
+    }
+  },
+  {
+    "id": "taco-387",
+    "nome": "Croquete, de carne, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 245.77,
+      "proteina": 12.04,
+      "carboidrato": 13.95,
+      "gordura": 15.56,
+      "fibra": null,
+      "sodio": 710.64
+    }
+  },
+  {
+    "id": "taco-388",
+    "nome": "Croquete, de carne, frito",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 346.74,
+      "proteina": 16.86,
+      "carboidrato": 18.15,
+      "gordura": 22.67,
+      "fibra": null,
+      "sodio": 916.41
+    }
+  },
+  {
+    "id": "taco-389",
+    "nome": "Empada de frango, pré-cozida, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 358.19,
+      "proteina": 6.94,
+      "carboidrato": 47.49,
+      "gordura": 15.61,
+      "fibra": 2.16,
+      "sodio": 524.93
+    }
+  },
+  {
+    "id": "taco-390",
+    "nome": "Empada, de frango, pré-cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 377.48,
+      "proteina": 7.34,
+      "carboidrato": 35.53,
+      "gordura": 22.89,
+      "fibra": 2.22,
+      "sodio": 770.73
+    }
+  },
+  {
+    "id": "taco-391",
+    "nome": "Frango, asa, com pele, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 213.19,
+      "proteina": 18.1,
+      "carboidrato": 0,
+      "gordura": 15.07,
+      "fibra": null,
+      "sodio": 96.3
+    }
+  },
+  {
+    "id": "taco-392",
+    "nome": "Frango, caipira, inteiro, com pele, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 242.89,
+      "proteina": 23.88,
+      "carboidrato": 0,
+      "gordura": 15.62,
+      "fibra": null,
+      "sodio": 56.09
+    }
+  },
+  {
+    "id": "taco-393",
+    "nome": "Frango, caipira, inteiro, sem pele, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 195.76,
+      "proteina": 29.58,
+      "carboidrato": 0,
+      "gordura": 7.7,
+      "fibra": null,
+      "sodio": 53.24
+    }
+  },
+  {
+    "id": "taco-394",
+    "nome": "Frango, coração, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 221.5,
+      "proteina": 12.58,
+      "carboidrato": 0,
+      "gordura": 18.6,
+      "fibra": null,
+      "sodio": 95.06
+    }
+  },
+  {
+    "id": "taco-395",
+    "nome": "Frango, coração, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 207.27,
+      "proteina": 22.44,
+      "carboidrato": 0.61,
+      "gordura": 12.1,
+      "fibra": null,
+      "sodio": 128.24
+    }
+  },
+  {
+    "id": "taco-396",
+    "nome": "Frango, coxa, com pele, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 215.12,
+      "proteina": 28.49,
+      "carboidrato": 0.06,
+      "gordura": 10.36,
+      "fibra": null,
+      "sodio": 94.84
+    }
+  },
+  {
+    "id": "taco-397",
+    "nome": "Frango, coxa, com pele, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 161.47,
+      "proteina": 17.09,
+      "carboidrato": 0,
+      "gordura": 9.81,
+      "fibra": null,
+      "sodio": 94.96
+    }
+  },
+  {
+    "id": "taco-398",
+    "nome": "Frango, coxa, sem pele, cozida",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 167.43,
+      "proteina": 26.86,
+      "carboidrato": 0,
+      "gordura": 5.85,
+      "fibra": null,
+      "sodio": 64.34
+    }
+  },
+  {
+    "id": "taco-399",
+    "nome": "Frango, coxa, sem pele, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 119.95,
+      "proteina": 17.81,
+      "carboidrato": 0.02,
+      "gordura": 4.86,
+      "fibra": null,
+      "sodio": 98.37
+    }
+  },
+  {
+    "id": "taco-400",
+    "nome": "Frango, fígado, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 106.48,
+      "proteina": 17.59,
+      "carboidrato": -0.02,
+      "gordura": 3.49,
+      "fibra": null,
+      "sodio": 82.43
+    }
+  },
+  {
+    "id": "taco-401",
+    "nome": "Frango, filé, à milanesa",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 220.87,
+      "proteina": 28.46,
+      "carboidrato": 7.51,
+      "gordura": 7.79,
+      "fibra": 1.13,
+      "sodio": 122.33
+    }
+  },
+  {
+    "id": "taco-402",
+    "nome": "Frango, inteiro, com pele, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 226.32,
+      "proteina": 16.44,
+      "carboidrato": 0,
+      "gordura": 17.31,
+      "fibra": null,
+      "sodio": 62.88
+    }
+  },
+  {
+    "id": "taco-403",
+    "nome": "Frango, inteiro, sem pele, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 187.34,
+      "proteina": 28.03,
+      "carboidrato": 0,
+      "gordura": 7.5,
+      "fibra": null,
+      "sodio": 70.27
+    }
+  },
+  {
+    "id": "taco-404",
+    "nome": "Frango, inteiro, sem pele, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 170.39,
+      "proteina": 24.99,
+      "carboidrato": 0,
+      "gordura": 7.06,
+      "fibra": null,
+      "sodio": 50.89
+    }
+  },
+  {
+    "id": "taco-405",
+    "nome": "Frango, inteiro, sem pele, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 129.1,
+      "proteina": 20.59,
+      "carboidrato": 0,
+      "gordura": 4.57,
+      "fibra": null,
+      "sodio": 72.96
+    }
+  },
+  {
+    "id": "taco-406",
+    "nome": "Frango, peito, com pele, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 211.68,
+      "proteina": 33.42,
+      "carboidrato": 0,
+      "gordura": 7.65,
+      "fibra": null,
+      "sodio": 55.7
+    }
+  },
+  {
+    "id": "taco-407",
+    "nome": "Frango, peito, com pele, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 149.47,
+      "proteina": 20.78,
+      "carboidrato": 0,
+      "gordura": 6.73,
+      "fibra": null,
+      "sodio": 62.31
+    }
+  },
+  {
+    "id": "taco-408",
+    "nome": "Frango, peito, sem pele, cozido",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 162.87,
+      "proteina": 31.47,
+      "carboidrato": 0,
+      "gordura": 3.16,
+      "fibra": null,
+      "sodio": 36.17
+    }
+  },
+  {
+    "id": "taco-409",
+    "nome": "Frango, peito, sem pele, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 119.16,
+      "proteina": 21.53,
+      "carboidrato": 0,
+      "gordura": 3.02,
+      "fibra": null,
+      "sodio": 56.14
+    }
+  },
+  {
+    "id": "taco-410",
+    "nome": "Frango, peito, sem pele, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 159.19,
+      "proteina": 32.03,
+      "carboidrato": 0,
+      "gordura": 2.48,
+      "fibra": null,
+      "sodio": 50.25
+    }
+  },
+  {
+    "id": "taco-411",
+    "nome": "Frango, sobrecoxa, com pele, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 259.6,
+      "proteina": 28.7,
+      "carboidrato": 0,
+      "gordura": 15.19,
+      "fibra": null,
+      "sodio": 95.94
+    }
+  },
+  {
+    "id": "taco-412",
+    "nome": "Frango, sobrecoxa, com pele, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 254.53,
+      "proteina": 15.46,
+      "carboidrato": 0,
+      "gordura": 20.9,
+      "fibra": null,
+      "sodio": 68.27
+    }
+  },
+  {
+    "id": "taco-413",
+    "nome": "Frango, sobrecoxa, sem pele, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 232.88,
+      "proteina": 29.18,
+      "carboidrato": 0,
+      "gordura": 12.01,
+      "fibra": null,
+      "sodio": 106.08
+    }
+  },
+  {
+    "id": "taco-414",
+    "nome": "Frango, sobrecoxa, sem pele, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 161.8,
+      "proteina": 17.57,
+      "carboidrato": 0,
+      "gordura": 9.62,
+      "fibra": null,
+      "sodio": 79.75
+    }
+  },
+  {
+    "id": "taco-415",
+    "nome": "Hambúrguer, bovino, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 214.84,
+      "proteina": 13.16,
+      "carboidrato": 4.15,
+      "gordura": 16.18,
+      "fibra": null,
+      "sodio": 869.46
+    }
+  },
+  {
+    "id": "taco-416",
+    "nome": "Hambúrguer, bovino, frito",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 258.28,
+      "proteina": 19.97,
+      "carboidrato": 6.32,
+      "gordura": 17.01,
+      "fibra": null,
+      "sodio": 1251.8
+    }
+  },
+  {
+    "id": "taco-417",
+    "nome": "Hambúrguer, bovino, grelhado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 209.83,
+      "proteina": 13.16,
+      "carboidrato": 11.33,
+      "gordura": 12.43,
+      "fibra": null,
+      "sodio": 1090.33
+    }
+  },
+  {
+    "id": "taco-418",
+    "nome": "Lingüiça, frango, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 218.11,
+      "proteina": 14.24,
+      "carboidrato": 0,
+      "gordura": 17.44,
+      "fibra": null,
+      "sodio": 1125.81
+    }
+  },
+  {
+    "id": "taco-419",
+    "nome": "Lingüiça, frango, frita",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 245.46,
+      "proteina": 18.32,
+      "carboidrato": 0,
+      "gordura": 18.54,
+      "fibra": null,
+      "sodio": 1373.89
+    }
+  },
+  {
+    "id": "taco-420",
+    "nome": "Lingüiça, frango, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 243.66,
+      "proteina": 18.19,
+      "carboidrato": 0,
+      "gordura": 18.4,
+      "fibra": null,
+      "sodio": 1351.49
+    }
+  },
+  {
+    "id": "taco-421",
+    "nome": "Lingüiça, porco, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 227.2,
+      "proteina": 16.06,
+      "carboidrato": 0,
+      "gordura": 17.58,
+      "fibra": null,
+      "sodio": 1175.72
+    }
+  },
+  {
+    "id": "taco-422",
+    "nome": "Lingüiça, porco, frita",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 279.54,
+      "proteina": 20.45,
+      "carboidrato": 0,
+      "gordura": 21.31,
+      "fibra": null,
+      "sodio": 1431.59
+    }
+  },
+  {
+    "id": "taco-423",
+    "nome": "Lingüiça, porco, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 296.49,
+      "proteina": 23.17,
+      "carboidrato": 0,
+      "gordura": 21.9,
+      "fibra": null,
+      "sodio": 1455.86
+    }
+  },
+  {
+    "id": "taco-424",
+    "nome": "Mortadela",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 268.82,
+      "proteina": 11.95,
+      "carboidrato": 5.82,
+      "gordura": 21.65,
+      "fibra": null,
+      "sodio": 1212.17
+    }
+  },
+  {
+    "id": "taco-425",
+    "nome": "Peru, congelado, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 163.07,
+      "proteina": 26.2,
+      "carboidrato": 0,
+      "gordura": 5.68,
+      "fibra": null,
+      "sodio": 627.88
+    }
+  },
+  {
+    "id": "taco-426",
+    "nome": "Peru, congelado, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 93.72,
+      "proteina": 18.08,
+      "carboidrato": 0,
+      "gordura": 1.83,
+      "fibra": null,
+      "sodio": 710.68
+    }
+  },
+  {
+    "id": "taco-427",
+    "nome": "Porco, bisteca, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 164.12,
+      "proteina": 21.5,
+      "carboidrato": 0,
+      "gordura": 8.02,
+      "fibra": null,
+      "sodio": 54.29
+    }
+  },
+  {
+    "id": "taco-428",
+    "nome": "Porco, bisteca, frita",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 311.17,
+      "proteina": 33.75,
+      "carboidrato": 0,
+      "gordura": 18.52,
+      "fibra": null,
+      "sodio": 63.03
+    }
+  },
+  {
+    "id": "taco-429",
+    "nome": "Porco, bisteca, grelhada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 280.08,
+      "proteina": 28.89,
+      "carboidrato": 0,
+      "gordura": 17.38,
+      "fibra": null,
+      "sodio": 51.45
+    }
+  },
+  {
+    "id": "taco-430",
+    "nome": "Porco, costela, assada",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 402.17,
+      "proteina": 30.22,
+      "carboidrato": 0,
+      "gordura": 30.28,
+      "fibra": null,
+      "sodio": 62.68
+    }
+  },
+  {
+    "id": "taco-431",
+    "nome": "Porco, costela, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 255.61,
+      "proteina": 18,
+      "carboidrato": 0,
+      "gordura": 19.82,
+      "fibra": null,
+      "sodio": 87.98
+    }
+  },
+  {
+    "id": "taco-432",
+    "nome": "Porco, lombo, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 210.23,
+      "proteina": 35.73,
+      "carboidrato": 0,
+      "gordura": 6.4,
+      "fibra": null,
+      "sodio": 38.92
+    }
+  },
+  {
+    "id": "taco-433",
+    "nome": "Porco, lombo, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 175.63,
+      "proteina": 22.6,
+      "carboidrato": 0,
+      "gordura": 8.77,
+      "fibra": null,
+      "sodio": 53.07
+    }
+  },
+  {
+    "id": "taco-434",
+    "nome": "Porco, orelha, salgada, crua",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 258.49,
+      "proteina": 18.52,
+      "carboidrato": 0,
+      "gordura": 19.89,
+      "fibra": null,
+      "sodio": 615.6
+    }
+  },
+  {
+    "id": "taco-435",
+    "nome": "Porco, pernil, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 262.26,
+      "proteina": 32.13,
+      "carboidrato": 0,
+      "gordura": 13.86,
+      "fibra": null,
+      "sodio": 62.41
+    }
+  },
+  {
+    "id": "taco-436",
+    "nome": "Porco, pernil, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 186.06,
+      "proteina": 20.13,
+      "carboidrato": 0,
+      "gordura": 11.1,
+      "fibra": null,
+      "sodio": 101.89
+    }
+  },
+  {
+    "id": "taco-437",
+    "nome": "Porco, rabo, salgado, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 377.42,
+      "proteina": 15.58,
+      "carboidrato": 0,
+      "gordura": 34.47,
+      "fibra": null,
+      "sodio": 1157.67
+    }
+  },
+  {
+    "id": "taco-438",
+    "nome": "Presunto, com capa de gordura",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 127.85,
+      "proteina": 14.37,
+      "carboidrato": 1.4,
+      "gordura": 6.77,
+      "fibra": null,
+      "sodio": 1020.77
+    }
+  },
+  {
+    "id": "taco-439",
+    "nome": "Presunto, sem capa de gordura",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 93.74,
+      "proteina": 14.29,
+      "carboidrato": 2.15,
+      "gordura": 2.71,
+      "fibra": null,
+      "sodio": 1039.19
+    }
+  },
+  {
+    "id": "taco-440",
+    "nome": "Quibe, assado",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 136.23,
+      "proteina": 14.59,
+      "carboidrato": 12.86,
+      "gordura": 2.68,
+      "fibra": 1.9,
+      "sodio": 39.89
+    }
+  },
+  {
+    "id": "taco-441",
+    "nome": "Quibe, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 109.49,
+      "proteina": 12.35,
+      "carboidrato": 10.77,
+      "gordura": 1.67,
+      "fibra": 1.65,
+      "sodio": 38.77
+    }
+  },
+  {
+    "id": "taco-442",
+    "nome": "Quibe, frito",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 253.83,
+      "proteina": 14.89,
+      "carboidrato": 12.34,
+      "gordura": 15.8,
+      "fibra": null,
+      "sodio": 835.83
+    }
+  },
+  {
+    "id": "taco-443",
+    "nome": "Salame",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 397.84,
+      "proteina": 25.81,
+      "carboidrato": 2.91,
+      "gordura": 30.64,
+      "fibra": null,
+      "sodio": 1574.17
+    }
+  },
+  {
+    "id": "taco-444",
+    "nome": "Toucinho, cru",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 592.53,
+      "proteina": 11.48,
+      "carboidrato": 0,
+      "gordura": 60.26,
+      "fibra": null,
+      "sodio": 49.59
+    }
+  },
+  {
+    "id": "taco-445",
+    "nome": "Toucinho, frito",
+    "categoria": "Carnes e derivados",
+    "por100g": {
+      "kcal": 696.56,
+      "proteina": 27.28,
+      "carboidrato": 0,
+      "gordura": 64.31,
+      "fibra": null,
+      "sodio": 124.85
+    }
+  },
+  {
+    "id": "taco-446",
+    "nome": "Bebida láctea, pêssego",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 55.16,
+      "proteina": 2.13,
+      "carboidrato": 7.57,
+      "gordura": 1.91,
+      "fibra": 0.29,
+      "sodio": 46.26
+    }
+  },
+  {
+    "id": "taco-447",
+    "nome": "Creme de Leite",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 221.48,
+      "proteina": 1.51,
+      "carboidrato": 4.51,
+      "gordura": 22.48,
+      "fibra": null,
+      "sodio": 51.72
+    }
+  },
+  {
+    "id": "taco-448",
+    "nome": "Iogurte, natural",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 51.49,
+      "proteina": 4.06,
+      "carboidrato": 1.92,
+      "gordura": 3.04,
+      "fibra": null,
+      "sodio": 51.62
+    }
+  },
+  {
+    "id": "taco-449",
+    "nome": "Iogurte, natural, desnatado",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 41.49,
+      "proteina": 3.83,
+      "carboidrato": 5.77,
+      "gordura": 0.32,
+      "fibra": null,
+      "sodio": 59.64
+    }
+  },
+  {
+    "id": "taco-450",
+    "nome": "Iogurte, sabor abacaxi",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-451",
+    "nome": "Iogurte, sabor morango",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 69.57,
+      "proteina": 2.71,
+      "carboidrato": 9.69,
+      "gordura": 2.33,
+      "fibra": 0.22,
+      "sodio": 37.66
+    }
+  },
+  {
+    "id": "taco-452",
+    "nome": "Iogurte, sabor pêssego",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 67.85,
+      "proteina": 2.53,
+      "carboidrato": 9.43,
+      "gordura": 2.34,
+      "fibra": 0.72,
+      "sodio": 36.96
+    }
+  },
+  {
+    "id": "taco-453",
+    "nome": "Leite, condensado",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 312.57,
+      "proteina": 7.67,
+      "carboidrato": 57,
+      "gordura": 6.74,
+      "fibra": null,
+      "sodio": 93.8
+    }
+  },
+  {
+    "id": "taco-454",
+    "nome": "Leite, de cabra",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 66.42,
+      "proteina": 3.07,
+      "carboidrato": 5.25,
+      "gordura": 3.75,
+      "fibra": null,
+      "sodio": 73.95
+    }
+  },
+  {
+    "id": "taco-455",
+    "nome": "Leite, de vaca, achocolatado",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 82.82,
+      "proteina": 2.1,
+      "carboidrato": 14.16,
+      "gordura": 2.17,
+      "fibra": 0.65,
+      "sodio": 71.74
+    }
+  },
+  {
+    "id": "taco-456",
+    "nome": "Leite, de vaca, desnatado, pó",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 361.61,
+      "proteina": 34.69,
+      "carboidrato": 53.04,
+      "gordura": 0.93,
+      "fibra": null,
+      "sodio": 431.67
+    }
+  },
+  {
+    "id": "taco-457",
+    "nome": "Leite, de vaca, desnatado, UHT",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": 51.14
+    }
+  },
+  {
+    "id": "taco-458",
+    "nome": "Leite, de vaca, integral",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": 63.76
+    }
+  },
+  {
+    "id": "taco-459",
+    "nome": "Leite, de vaca, integral, pó",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 496.65,
+      "proteina": 25.42,
+      "carboidrato": 39.18,
+      "gordura": 26.9,
+      "fibra": null,
+      "sodio": 323.2
+    }
+  },
+  {
+    "id": "taco-460",
+    "nome": "Leite, fermentado",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 69.62,
+      "proteina": 1.89,
+      "carboidrato": 15.67,
+      "gordura": 0.1,
+      "fibra": null,
+      "sodio": 33.43
+    }
+  },
+  {
+    "id": "taco-461",
+    "nome": "Queijo, minas, frescal",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 264.27,
+      "proteina": 17.41,
+      "carboidrato": 3.24,
+      "gordura": 20.18,
+      "fibra": null,
+      "sodio": 31.23
+    }
+  },
+  {
+    "id": "taco-462",
+    "nome": "Queijo, minas, meia cura",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 320.72,
+      "proteina": 21.21,
+      "carboidrato": 3.57,
+      "gordura": 24.61,
+      "fibra": null,
+      "sodio": 501.17
+    }
+  },
+  {
+    "id": "taco-463",
+    "nome": "Queijo, mozarela",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 329.87,
+      "proteina": 22.65,
+      "carboidrato": 3.05,
+      "gordura": 25.18,
+      "fibra": null,
+      "sodio": 581.36
+    }
+  },
+  {
+    "id": "taco-464",
+    "nome": "Queijo, parmesão",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 452.96,
+      "proteina": 35.55,
+      "carboidrato": 1.66,
+      "gordura": 33.53,
+      "fibra": null,
+      "sodio": 1844.08
+    }
+  },
+  {
+    "id": "taco-465",
+    "nome": "Queijo, pasteurizado",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 303.08,
+      "proteina": 9.36,
+      "carboidrato": 5.68,
+      "gordura": 27.44,
+      "fibra": null,
+      "sodio": 780.43
+    }
+  },
+  {
+    "id": "taco-466",
+    "nome": "Queijo, petit suisse, morango",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 121.11,
+      "proteina": 5.79,
+      "carboidrato": 18.46,
+      "gordura": 2.84,
+      "fibra": null,
+      "sodio": 412.47
+    }
+  },
+  {
+    "id": "taco-467",
+    "nome": "Queijo, prato",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 359.88,
+      "proteina": 22.66,
+      "carboidrato": 1.88,
+      "gordura": 29.11,
+      "fibra": null,
+      "sodio": 579.77
+    }
+  },
+  {
+    "id": "taco-468",
+    "nome": "Queijo, requeijão, cremoso",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 256.58,
+      "proteina": 9.63,
+      "carboidrato": 2.43,
+      "gordura": 23.44,
+      "fibra": null,
+      "sodio": 557.92
+    }
+  },
+  {
+    "id": "taco-469",
+    "nome": "Queijo, ricota",
+    "categoria": "Leite e derivados",
+    "por100g": {
+      "kcal": 139.73,
+      "proteina": 12.6,
+      "carboidrato": 3.79,
+      "gordura": 8.11,
+      "fibra": null,
+      "sodio": 282.58
+    }
+  },
+  {
+    "id": "taco-470",
+    "nome": "Bebida isotônica, sabores variados",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 25.61,
+      "proteina": 0,
+      "carboidrato": 6.4,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 44.08
+    }
+  },
+  {
+    "id": "taco-471",
+    "nome": "Café, infusão 10%",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 9.07,
+      "proteina": 0.71,
+      "carboidrato": 1.48,
+      "gordura": 0.07,
+      "fibra": null,
+      "sodio": 1.03
+    }
+  },
+  {
+    "id": "taco-472",
+    "nome": "Cana, aguardente 1",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 215.66,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": 3.15
+    }
+  },
+  {
+    "id": "taco-473",
+    "nome": "Cana, caldo de",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 65.34,
+      "proteina": 0,
+      "carboidrato": 18.15,
+      "gordura": 0,
+      "fibra": 0.14,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-474",
+    "nome": "Cerveja, pilsen 2",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 40.72,
+      "proteina": 0.56,
+      "carboidrato": 3.32,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 4.23
+    }
+  },
+  {
+    "id": "taco-475",
+    "nome": "Chá, erva-doce, infusão 5%",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 1.4,
+      "proteina": 0,
+      "carboidrato": 0.39,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 0.63
+    }
+  },
+  {
+    "id": "taco-476",
+    "nome": "Chá, mate, infusão 5%",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 2.73,
+      "proteina": 0,
+      "carboidrato": 0.64,
+      "gordura": 0.05,
+      "fibra": null,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-477",
+    "nome": "Chá, preto, infusão 5%",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 2.25,
+      "proteina": 0,
+      "carboidrato": 0.63,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-478",
+    "nome": "Coco, água de",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 21.51,
+      "proteina": 0,
+      "carboidrato": 5.28,
+      "gordura": 0,
+      "fibra": 0.13,
+      "sodio": 1.78
+    }
+  },
+  {
+    "id": "taco-479",
+    "nome": "Refrigerante, tipo água tônica",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 30.78,
+      "proteina": 0,
+      "carboidrato": 7.95,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 8.29
+    }
+  },
+  {
+    "id": "taco-480",
+    "nome": "Refrigerante, tipo cola",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 33.51,
+      "proteina": 0,
+      "carboidrato": 8.66,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 7.12
+    }
+  },
+  {
+    "id": "taco-481",
+    "nome": "Refrigerante, tipo guaraná",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 38.7,
+      "proteina": 0,
+      "carboidrato": 10,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 9.01
+    }
+  },
+  {
+    "id": "taco-482",
+    "nome": "Refrigerante, tipo laranja",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 45.63,
+      "proteina": 0,
+      "carboidrato": 11.79,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 9.27
+    }
+  },
+  {
+    "id": "taco-483",
+    "nome": "Refrigerante, tipo limão",
+    "categoria": "Bebidas (alcoólicas e não alcoólicas)",
+    "por100g": {
+      "kcal": 39.72,
+      "proteina": 0,
+      "carboidrato": 10.26,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 8.8
+    }
+  },
+  {
+    "id": "taco-484",
+    "nome": "Omelete, de queijo",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 268.01,
+      "proteina": 15.57,
+      "carboidrato": 0.44,
+      "gordura": 22.01,
+      "fibra": null,
+      "sodio": 216.05
+    }
+  },
+  {
+    "id": "taco-485",
+    "nome": "Ovo, de codorna, inteiro, cru",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 176.89,
+      "proteina": 13.69,
+      "carboidrato": 0.77,
+      "gordura": 12.68,
+      "fibra": null,
+      "sodio": 128.99
+    }
+  },
+  {
+    "id": "taco-486",
+    "nome": "Ovo, de galinha, clara, cozida/10minutos",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 59.44,
+      "proteina": 13.45,
+      "carboidrato": 0,
+      "gordura": 0.09,
+      "fibra": null,
+      "sodio": 180.54
+    }
+  },
+  {
+    "id": "taco-487",
+    "nome": "Ovo, de galinha, gema, cozida/10minutos",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 352.67,
+      "proteina": 15.9,
+      "carboidrato": 1.56,
+      "gordura": 30.78,
+      "fibra": null,
+      "sodio": 44.91
+    }
+  },
+  {
+    "id": "taco-488",
+    "nome": "Ovo, de galinha, inteiro, cozido/10minutos",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 145.7,
+      "proteina": 13.29,
+      "carboidrato": 0.61,
+      "gordura": 9.48,
+      "fibra": null,
+      "sodio": 145.9
+    }
+  },
+  {
+    "id": "taco-489",
+    "nome": "Ovo, de galinha, inteiro, cru",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 143.11,
+      "proteina": 13.03,
+      "carboidrato": 1.64,
+      "gordura": 8.9,
+      "fibra": null,
+      "sodio": 167.91
+    }
+  },
+  {
+    "id": "taco-490",
+    "nome": "Ovo, de galinha, inteiro, frito",
+    "categoria": "Ovos e derivados",
+    "por100g": {
+      "kcal": 240.19,
+      "proteina": 15.62,
+      "carboidrato": 1.19,
+      "gordura": 18.59,
+      "fibra": null,
+      "sodio": 166.11
+    }
+  },
+  {
+    "id": "taco-491",
+    "nome": "Achocolatado, pó",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 401.02,
+      "proteina": 4.2,
+      "carboidrato": 91.18,
+      "gordura": 2.17,
+      "fibra": 3.89,
+      "sodio": 64.79
+    }
+  },
+  {
+    "id": "taco-492",
+    "nome": "Açúcar, cristal",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 386.85,
+      "proteina": 0.32,
+      "carboidrato": 99.61,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-493",
+    "nome": "Açúcar, mascavo",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 368.55,
+      "proteina": 0.76,
+      "carboidrato": 94.45,
+      "gordura": 0.09,
+      "fibra": null,
+      "sodio": 25.2
+    }
+  },
+  {
+    "id": "taco-494",
+    "nome": "Açúcar, refinado",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 386.57,
+      "proteina": 0.32,
+      "carboidrato": 99.54,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 12.16
+    }
+  },
+  {
+    "id": "taco-495",
+    "nome": "Chocolate, ao leite",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 539.59,
+      "proteina": 7.22,
+      "carboidrato": 59.58,
+      "gordura": 30.27,
+      "fibra": 2.17,
+      "sodio": 77.1
+    }
+  },
+  {
+    "id": "taco-496",
+    "nome": "Chocolate, ao leite, com castanha do Pará",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 558.88,
+      "proteina": 7.41,
+      "carboidrato": 55.38,
+      "gordura": 34.19,
+      "fibra": 2.46,
+      "sodio": 64.05
+    }
+  },
+  {
+    "id": "taco-497",
+    "nome": "Chocolate, ao leite, dietético",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 556.82,
+      "proteina": 6.9,
+      "carboidrato": 56.32,
+      "gordura": 33.77,
+      "fibra": 2.85,
+      "sodio": 84.71
+    }
+  },
+  {
+    "id": "taco-498",
+    "nome": "Chocolate, meio amargo",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 474.92,
+      "proteina": 4.86,
+      "carboidrato": 62.42,
+      "gordura": 29.86,
+      "fibra": 4.94,
+      "sodio": 8.87
+    }
+  },
+  {
+    "id": "taco-499",
+    "nome": "Cocada branca",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 448.85,
+      "proteina": 1.12,
+      "carboidrato": 81.38,
+      "gordura": 13.59,
+      "fibra": 3.57,
+      "sodio": 28.99
+    }
+  },
+  {
+    "id": "taco-500",
+    "nome": "Doce, de abóbora, cremoso",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 198.94,
+      "proteina": 0.92,
+      "carboidrato": 54.61,
+      "gordura": 0.21,
+      "fibra": 2.28,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-501",
+    "nome": "Doce, de leite, cremoso",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 306.31,
+      "proteina": 5.48,
+      "carboidrato": 59.49,
+      "gordura": 5.99,
+      "fibra": null,
+      "sodio": 120.09
+    }
+  },
+  {
+    "id": "taco-502",
+    "nome": "Geléia, mocotó, natural",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 106.09,
+      "proteina": 2.13,
+      "carboidrato": 24.23,
+      "gordura": 0.07,
+      "fibra": null,
+      "sodio": 42.68
+    }
+  },
+  {
+    "id": "taco-503",
+    "nome": "Glicose de milho",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 292.12,
+      "proteina": 0,
+      "carboidrato": 79.38,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 58.93
+    }
+  },
+  {
+    "id": "taco-504",
+    "nome": "Maria mole",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 301.24,
+      "proteina": 3.81,
+      "carboidrato": 73.55,
+      "gordura": 0.19,
+      "fibra": 0.67,
+      "sodio": 15.31
+    }
+  },
+  {
+    "id": "taco-505",
+    "nome": "Maria mole, coco queimado",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 306.63,
+      "proteina": 3.93,
+      "carboidrato": 75.06,
+      "gordura": 0.09,
+      "fibra": 0.64,
+      "sodio": 14.29
+    }
+  },
+  {
+    "id": "taco-506",
+    "nome": "Marmelada",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 257.24,
+      "proteina": 0.4,
+      "carboidrato": 70.76,
+      "gordura": 0.14,
+      "fibra": 4.07,
+      "sodio": 10.88
+    }
+  },
+  {
+    "id": "taco-507",
+    "nome": "Mel, de abelha",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 309.24,
+      "proteina": 0,
+      "carboidrato": 84.03,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 6.04
+    }
+  },
+  {
+    "id": "taco-508",
+    "nome": "Melado",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 296.51,
+      "proteina": 0,
+      "carboidrato": 76.62,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 4.01
+    }
+  },
+  {
+    "id": "taco-509",
+    "nome": "Quindim",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 411.35,
+      "proteina": 4.74,
+      "carboidrato": 46.3,
+      "gordura": 24.43,
+      "fibra": 3.22,
+      "sodio": 27.37
+    }
+  },
+  {
+    "id": "taco-510",
+    "nome": "Rapadura",
+    "categoria": "Produtos açucarados",
+    "por100g": {
+      "kcal": 351.96,
+      "proteina": 0.99,
+      "carboidrato": 90.79,
+      "gordura": 0.07,
+      "fibra": null,
+      "sodio": 21.71
+    }
+  },
+  {
+    "id": "taco-511",
+    "nome": "Café, pó, torrado",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 418.62,
+      "proteina": 14.7,
+      "carboidrato": 65.75,
+      "gordura": 11.95,
+      "fibra": 51.23,
+      "sodio": 1.13
+    }
+  },
+  {
+    "id": "taco-512",
+    "nome": "Capuccino, pó",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 417.41,
+      "proteina": 11.31,
+      "carboidrato": 73.61,
+      "gordura": 8.63,
+      "fibra": 2.44,
+      "sodio": 382.29
+    }
+  },
+  {
+    "id": "taco-513",
+    "nome": "Fermento em pó, químico",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 89.72,
+      "proteina": 0.48,
+      "carboidrato": 43.91,
+      "gordura": 0.07,
+      "fibra": null,
+      "sodio": 10052.41
+    }
+  },
+  {
+    "id": "taco-514",
+    "nome": "Fermento, biológico, levedura, tablete",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 89.79,
+      "proteina": 16.96,
+      "carboidrato": 7.7,
+      "gordura": 1.52,
+      "fibra": 4.17,
+      "sodio": 39.61
+    }
+  },
+  {
+    "id": "taco-515",
+    "nome": "Gelatina, sabores variados, pó",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 380.22,
+      "proteina": 8.89,
+      "carboidrato": 89.22,
+      "gordura": 0,
+      "fibra": null,
+      "sodio": 234.92
+    }
+  },
+  {
+    "id": "taco-516",
+    "nome": "Sal, dietético",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": 23431.52
+    }
+  },
+  {
+    "id": "taco-517",
+    "nome": "Sal, grosso",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": 39943.2
+    }
+  },
+  {
+    "id": "taco-518",
+    "nome": "Shoyu",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 60.93,
+      "proteina": 3.31,
+      "carboidrato": 11.65,
+      "gordura": 0.33,
+      "fibra": null,
+      "sodio": 5024.21
+    }
+  },
+  {
+    "id": "taco-519",
+    "nome": "Tempero a base de sal",
+    "categoria": "Miscelâneas",
+    "por100g": {
+      "kcal": 21.33,
+      "proteina": 2.67,
+      "carboidrato": 2.07,
+      "gordura": 0.26,
+      "fibra": 0.56,
+      "sodio": 32560
+    }
+  },
+  {
+    "id": "taco-520",
+    "nome": "Azeitona, preta, conserva",
+    "categoria": "Outros alimentos industrializados",
+    "por100g": {
+      "kcal": 194.15,
+      "proteina": 1.16,
+      "carboidrato": 5.54,
+      "gordura": 20.35,
+      "fibra": 4.56,
+      "sodio": 1566.66
+    }
+  },
+  {
+    "id": "taco-521",
+    "nome": "Azeitona, verde, conserva",
+    "categoria": "Outros alimentos industrializados",
+    "por100g": {
+      "kcal": 136.94,
+      "proteina": 0.95,
+      "carboidrato": 4.1,
+      "gordura": 14.22,
+      "fibra": 3.85,
+      "sodio": 1347.18
+    }
+  },
+  {
+    "id": "taco-522",
+    "nome": "Chantilly, spray, com gordura vegetal",
+    "categoria": "Outros alimentos industrializados",
+    "por100g": {
+      "kcal": 314.96,
+      "proteina": 0.53,
+      "carboidrato": 16.86,
+      "gordura": 27.27,
+      "fibra": null,
+      "sodio": 109.7
+    }
+  },
+  {
+    "id": "taco-523",
+    "nome": "Leite, de coco",
+    "categoria": "Outros alimentos industrializados",
+    "por100g": {
+      "kcal": 166.16,
+      "proteina": 1.01,
+      "carboidrato": 2.19,
+      "gordura": 18.36,
+      "fibra": 0.68,
+      "sodio": 44.29
+    }
+  },
+  {
+    "id": "taco-524",
+    "nome": "Maionese, tradicional com ovos",
+    "categoria": "Outros alimentos industrializados",
+    "por100g": {
+      "kcal": 302.15,
+      "proteina": 0.58,
+      "carboidrato": 7.9,
+      "gordura": 30.5,
+      "fibra": null,
+      "sodio": 786.83
+    }
+  },
+  {
+    "id": "taco-525",
+    "nome": "Acarajé",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 289.21,
+      "proteina": 8.35,
+      "carboidrato": 19.11,
+      "gordura": 19.93,
+      "fibra": 9.36,
+      "sodio": 304.89
+    }
+  },
+  {
+    "id": "taco-526",
+    "nome": "Arroz carreteiro",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 153.77,
+      "proteina": 10.83,
+      "carboidrato": 11.58,
+      "gordura": 7.12,
+      "fibra": 1.5,
+      "sodio": 1621.73
+    }
+  },
+  {
+    "id": "taco-527",
+    "nome": "Baião de dois, arroz e feijão-de-corda",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 135.68,
+      "proteina": 6.24,
+      "carboidrato": 20.42,
+      "gordura": 3.23,
+      "fibra": 5.07,
+      "sodio": 93.3
+    }
+  },
+  {
+    "id": "taco-528",
+    "nome": "Barreado",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 164.98,
+      "proteina": 18.27,
+      "carboidrato": 0.24,
+      "gordura": 9.53,
+      "fibra": 0.15,
+      "sodio": 47.63
+    }
+  },
+  {
+    "id": "taco-529",
+    "nome": "Bife à cavalo, com contra filé",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 291.23,
+      "proteina": 23.66,
+      "carboidrato": 0,
+      "gordura": 21.15,
+      "fibra": null,
+      "sodio": 82.87
+    }
+  },
+  {
+    "id": "taco-530",
+    "nome": "Bolinho de arroz",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 273.51,
+      "proteina": 8.04,
+      "carboidrato": 41.68,
+      "gordura": 8.29,
+      "fibra": 2.74,
+      "sodio": 58.86
+    }
+  },
+  {
+    "id": "taco-531",
+    "nome": "Camarão à baiana",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 100.78,
+      "proteina": 7.94,
+      "carboidrato": 3.17,
+      "gordura": 5.97,
+      "fibra": 0.39,
+      "sodio": 84.79
+    }
+  },
+  {
+    "id": "taco-532",
+    "nome": "Charuto, de repolho",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 78.23,
+      "proteina": 6.78,
+      "carboidrato": 10.13,
+      "gordura": 1.12,
+      "fibra": 1.46,
+      "sodio": 12.1
+    }
+  },
+  {
+    "id": "taco-533",
+    "nome": "Cuscuz, de milho, cozido com sal",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 113.46,
+      "proteina": 2.16,
+      "carboidrato": 25.28,
+      "gordura": 0.68,
+      "fibra": 2.05,
+      "sodio": 247.67
+    }
+  },
+  {
+    "id": "taco-534",
+    "nome": "Cuscuz, paulista",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 142.12,
+      "proteina": 2.56,
+      "carboidrato": 22.51,
+      "gordura": 4.65,
+      "fibra": 2.43,
+      "sodio": 235.71
+    }
+  },
+  {
+    "id": "taco-535",
+    "nome": "Cuxá, molho",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 80.09,
+      "proteina": 5.64,
+      "carboidrato": 5.74,
+      "gordura": 3.59,
+      "fibra": 3.02,
+      "sodio": 1344.29
+    }
+  },
+  {
+    "id": "taco-536",
+    "nome": "Dobradinha",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 124.5,
+      "proteina": 19.77,
+      "carboidrato": 0,
+      "gordura": 4.44,
+      "fibra": null,
+      "sodio": 28.77
+    }
+  },
+  {
+    "id": "taco-537",
+    "nome": "Estrogonofe de carne",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 173.14,
+      "proteina": 15.03,
+      "carboidrato": 2.98,
+      "gordura": 10.8,
+      "fibra": null,
+      "sodio": 122.85
+    }
+  },
+  {
+    "id": "taco-538",
+    "nome": "Estrogonofe de frango",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 156.81,
+      "proteina": 17.55,
+      "carboidrato": 2.59,
+      "gordura": 7.96,
+      "fibra": null,
+      "sodio": 99.46
+    }
+  },
+  {
+    "id": "taco-539",
+    "nome": "Feijão tropeiro mineiro",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 151.56,
+      "proteina": 10.17,
+      "carboidrato": 19.58,
+      "gordura": 6.79,
+      "fibra": 3.57,
+      "sodio": 365.07
+    }
+  },
+  {
+    "id": "taco-540",
+    "nome": "Feijoada",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 116.93,
+      "proteina": 8.67,
+      "carboidrato": 11.64,
+      "gordura": 6.48,
+      "fibra": 5.09,
+      "sodio": 278.22
+    }
+  },
+  {
+    "id": "taco-541",
+    "nome": "Frango, com açafrão",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 112.78,
+      "proteina": 9.7,
+      "carboidrato": 4.06,
+      "gordura": 6.17,
+      "fibra": 0.22,
+      "sodio": 28.81
+    }
+  },
+  {
+    "id": "taco-542",
+    "nome": "Macarrão, molho bolognesa",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 119.53,
+      "proteina": 4.93,
+      "carboidrato": 22.52,
+      "gordura": 0.89,
+      "fibra": 0.78,
+      "sodio": 8.94
+    }
+  },
+  {
+    "id": "taco-543",
+    "nome": "Maniçoba",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 134.22,
+      "proteina": 9.96,
+      "carboidrato": 3.42,
+      "gordura": 8.7,
+      "fibra": 2.16,
+      "sodio": 406.7
+    }
+  },
+  {
+    "id": "taco-544",
+    "nome": "Quibebe",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 86.35,
+      "proteina": 8.56,
+      "carboidrato": 6.64,
+      "gordura": 2.67,
+      "fibra": 1.67,
+      "sodio": 246.61
+    }
+  },
+  {
+    "id": "taco-545",
+    "nome": "Salada, de legumes, com maionese",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 96.1,
+      "proteina": 1.05,
+      "carboidrato": 8.92,
+      "gordura": 7.04,
+      "fibra": 2.22,
+      "sodio": 228.43
+    }
+  },
+  {
+    "id": "taco-546",
+    "nome": "Salada, de legumes, cozida no vapor",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 35.41,
+      "proteina": 2.01,
+      "carboidrato": 7.09,
+      "gordura": 0.31,
+      "fibra": 2.51,
+      "sodio": 2.51
+    }
+  },
+  {
+    "id": "taco-547",
+    "nome": "Salpicão, de frango",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 147.86,
+      "proteina": 13.93,
+      "carboidrato": 4.57,
+      "gordura": 7.84,
+      "fibra": 0.41,
+      "sodio": 248.35
+    }
+  },
+  {
+    "id": "taco-548",
+    "nome": "Sarapatel",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 122.98,
+      "proteina": 18.47,
+      "carboidrato": 1.09,
+      "gordura": 4.42,
+      "fibra": null,
+      "sodio": 215.62
+    }
+  },
+  {
+    "id": "taco-549",
+    "nome": "Tabule",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 57.45,
+      "proteina": 2.05,
+      "carboidrato": 10.58,
+      "gordura": 1.21,
+      "fibra": 2.08,
+      "sodio": 1.19
+    }
+  },
+  {
+    "id": "taco-550",
+    "nome": "Tacacá",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 46.89,
+      "proteina": 6.96,
+      "carboidrato": 3.39,
+      "gordura": 0.36,
+      "fibra": 0.21,
+      "sodio": 1349.06
+    }
+  },
+  {
+    "id": "taco-551",
+    "nome": "Tapioca, com manteiga",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 347.83,
+      "proteina": 0.09,
+      "carboidrato": 63.59,
+      "gordura": 10.91,
+      "fibra": 0,
+      "sodio": 157.52
+    }
+  },
+  {
+    "id": "taco-552",
+    "nome": "Tucupi, com pimenta-de-cheiro",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 27.18,
+      "proteina": 2.06,
+      "carboidrato": 4.74,
+      "gordura": 0.28,
+      "fibra": 0.23,
+      "sodio": 5.13
+    }
+  },
+  {
+    "id": "taco-553",
+    "nome": "Vaca atolada",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 144.9,
+      "proteina": 5.12,
+      "carboidrato": 10.06,
+      "gordura": 9.32,
+      "fibra": 2.34,
+      "sodio": 25.63
+    }
+  },
+  {
+    "id": "taco-554",
+    "nome": "Vatapá",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 254.89,
+      "proteina": 6,
+      "carboidrato": 9.75,
+      "gordura": 23.23,
+      "fibra": 1.7,
+      "sodio": 879.85
+    }
+  },
+  {
+    "id": "taco-555",
+    "nome": "Virado à paulista",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 306.95,
+      "proteina": 10.18,
+      "carboidrato": 14.11,
+      "gordura": 25.59,
+      "fibra": 2.16,
+      "sodio": 345.53
+    }
+  },
+  {
+    "id": "taco-556",
+    "nome": "Yakisoba",
+    "categoria": "Alimentos preparados",
+    "por100g": {
+      "kcal": 112.8,
+      "proteina": 7.52,
+      "carboidrato": 18.25,
+      "gordura": 2.61,
+      "fibra": 1.06,
+      "sodio": 793.76
+    }
+  },
+  {
+    "id": "taco-557",
+    "nome": "Amendoim, grão, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 544.05,
+      "proteina": 27.19,
+      "carboidrato": 20.31,
+      "gordura": 43.85,
+      "fibra": 8.04,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-558",
+    "nome": "Amendoim, torrado, salgado",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 605.78,
+      "proteina": 22.48,
+      "carboidrato": 18.7,
+      "gordura": 53.96,
+      "fibra": 7.76,
+      "sodio": 375.73
+    }
+  },
+  {
+    "id": "taco-559",
+    "nome": "Ervilha, em vagem",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 88.09,
+      "proteina": 7.45,
+      "carboidrato": 14.23,
+      "gordura": 0.47,
+      "fibra": 9.72,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-560",
+    "nome": "Ervilha, enlatada, drenada",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 73.84,
+      "proteina": 4.6,
+      "carboidrato": 13.44,
+      "gordura": 0.38,
+      "fibra": 5.08,
+      "sodio": 372.11
+    }
+  },
+  {
+    "id": "taco-561",
+    "nome": "Feijão, carioca, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 76.42,
+      "proteina": 4.78,
+      "carboidrato": 13.59,
+      "gordura": 0.54,
+      "fibra": 8.51,
+      "sodio": 1.76
+    }
+  },
+  {
+    "id": "taco-562",
+    "nome": "Feijão, carioca, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 329.03,
+      "proteina": 19.98,
+      "carboidrato": 61.22,
+      "gordura": 1.26,
+      "fibra": 18.42,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-563",
+    "nome": "Feijão, fradinho, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 78.01,
+      "proteina": 5.09,
+      "carboidrato": 13.5,
+      "gordura": 0.64,
+      "fibra": 7.47,
+      "sodio": 0.98
+    }
+  },
+  {
+    "id": "taco-564",
+    "nome": "Feijão, fradinho, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 339.16,
+      "proteina": 20.21,
+      "carboidrato": 61.24,
+      "gordura": 2.37,
+      "fibra": 23.59,
+      "sodio": 10.31
+    }
+  },
+  {
+    "id": "taco-565",
+    "nome": "Feijão, jalo, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 92.74,
+      "proteina": 6.14,
+      "carboidrato": 16.5,
+      "gordura": 0.51,
+      "fibra": 13.87,
+      "sodio": 0.52
+    }
+  },
+  {
+    "id": "taco-566",
+    "nome": "Feijão, jalo, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 327.91,
+      "proteina": 20.1,
+      "carboidrato": 61.48,
+      "gordura": 0.95,
+      "fibra": 30.32,
+      "sodio": 24.58
+    }
+  },
+  {
+    "id": "taco-567",
+    "nome": "Feijão, preto, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 77.03,
+      "proteina": 4.48,
+      "carboidrato": 14.01,
+      "gordura": 0.54,
+      "fibra": 8.4,
+      "sodio": 1.85
+    }
+  },
+  {
+    "id": "taco-568",
+    "nome": "Feijão, preto, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 323.57,
+      "proteina": 21.34,
+      "carboidrato": 58.75,
+      "gordura": 1.24,
+      "fibra": 21.83,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-569",
+    "nome": "Feijão, rajado, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 84.7,
+      "proteina": 5.54,
+      "carboidrato": 15.27,
+      "gordura": 0.4,
+      "fibra": 9.32,
+      "sodio": 0.69
+    }
+  },
+  {
+    "id": "taco-570",
+    "nome": "Feijão, rajado, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 325.84,
+      "proteina": 17.27,
+      "carboidrato": 62.93,
+      "gordura": 1.17,
+      "fibra": 24.01,
+      "sodio": 13.65
+    }
+  },
+  {
+    "id": "taco-571",
+    "nome": "Feijão, rosinha, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 67.87,
+      "proteina": 4.54,
+      "carboidrato": 11.82,
+      "gordura": 0.48,
+      "fibra": 4.76,
+      "sodio": 2.08
+    }
+  },
+  {
+    "id": "taco-572",
+    "nome": "Feijão, rosinha, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 336.96,
+      "proteina": 20.92,
+      "carboidrato": 62.22,
+      "gordura": 1.33,
+      "fibra": 20.63,
+      "sodio": 24.11
+    }
+  },
+  {
+    "id": "taco-573",
+    "nome": "Feijão, roxo, cozido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 76.89,
+      "proteina": 5.72,
+      "carboidrato": 12.91,
+      "gordura": 0.54,
+      "fibra": 11.51,
+      "sodio": 1.46
+    }
+  },
+  {
+    "id": "taco-574",
+    "nome": "Feijão, roxo, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 331.41,
+      "proteina": 22.17,
+      "carboidrato": 59.99,
+      "gordura": 1.24,
+      "fibra": 33.84,
+      "sodio": 9.76
+    }
+  },
+  {
+    "id": "taco-575",
+    "nome": "Grão-de-bico, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 354.7,
+      "proteina": 21.23,
+      "carboidrato": 57.88,
+      "gordura": 5.43,
+      "fibra": 12.36,
+      "sodio": 5.19
+    }
+  },
+  {
+    "id": "taco-576",
+    "nome": "Guandu, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 344.13,
+      "proteina": 18.96,
+      "carboidrato": 64,
+      "gordura": 2.13,
+      "fibra": 21.31,
+      "sodio": 1.62
+    }
+  },
+  {
+    "id": "taco-577",
+    "nome": "Lentilha, cozida",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 92.64,
+      "proteina": 6.31,
+      "carboidrato": 16.3,
+      "gordura": 0.52,
+      "fibra": 7.86,
+      "sodio": 1.18
+    }
+  },
+  {
+    "id": "taco-578",
+    "nome": "Lentilha, crua",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 339.14,
+      "proteina": 23.15,
+      "carboidrato": 62,
+      "gordura": 0.77,
+      "fibra": 16.94,
+      "sodio": 0
+    }
+  },
+  {
+    "id": "taco-579",
+    "nome": "Paçoca, amendoim",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 486.93,
+      "proteina": 16,
+      "carboidrato": 52.38,
+      "gordura": 26.08,
+      "fibra": 7.32,
+      "sodio": 166.84
+    }
+  },
+  {
+    "id": "taco-580",
+    "nome": "Pé-de-moleque, amendoim",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 503.19,
+      "proteina": 13.16,
+      "carboidrato": 54.73,
+      "gordura": 28.05,
+      "fibra": 3.39,
+      "sodio": 16.35
+    }
+  },
+  {
+    "id": "taco-581",
+    "nome": "Soja, farinha",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 403.96,
+      "proteina": 36.03,
+      "carboidrato": 38.44,
+      "gordura": 14.63,
+      "fibra": 20.18,
+      "sodio": 5.75
+    }
+  },
+  {
+    "id": "taco-582",
+    "nome": "Soja, extrato solúvel, natural, fluido",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 39.1,
+      "proteina": 2.38,
+      "carboidrato": 4.28,
+      "gordura": 1.61,
+      "fibra": 0.37,
+      "sodio": 56.53
+    }
+  },
+  {
+    "id": "taco-583",
+    "nome": "Soja, extrato solúvel, pó",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 458.9,
+      "proteina": 35.69,
+      "carboidrato": 28.48,
+      "gordura": 26.18,
+      "fibra": 7.31,
+      "sodio": 83.47
+    }
+  },
+  {
+    "id": "taco-584",
+    "nome": "Soja, queijo (tofu)",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 64.49,
+      "proteina": 6.55,
+      "carboidrato": 2.13,
+      "gordura": 3.95,
+      "fibra": 0.75,
+      "sodio": 1.21
+    }
+  },
+  {
+    "id": "taco-585",
+    "nome": "Tremoço, cru",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 381.28,
+      "proteina": 33.58,
+      "carboidrato": 43.79,
+      "gordura": 10.34,
+      "fibra": 32.31,
+      "sodio": 3.29
+    }
+  },
+  {
+    "id": "taco-586",
+    "nome": "Tremoço, em conserva",
+    "categoria": "Leguminosas e derivados",
+    "por100g": {
+      "kcal": 120.64,
+      "proteina": 11.11,
+      "carboidrato": 12.39,
+      "gordura": 3.78,
+      "fibra": 14.44,
+      "sodio": 1808.76
+    }
+  },
+  {
+    "id": "taco-587",
+    "nome": "Amêndoa, torrada, salgada",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 580.75,
+      "proteina": 18.55,
+      "carboidrato": 29.55,
+      "gordura": 47.32,
+      "fibra": 11.64,
+      "sodio": 278.52
+    }
+  },
+  {
+    "id": "taco-588",
+    "nome": "Castanha-de-caju, torrada, salgada",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 570.17,
+      "proteina": 18.51,
+      "carboidrato": 29.13,
+      "gordura": 46.28,
+      "fibra": 3.66,
+      "sodio": 125
+    }
+  },
+  {
+    "id": "taco-589",
+    "nome": "Castanha-do-Brasil, crua",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 642.96,
+      "proteina": 14.54,
+      "carboidrato": 15.08,
+      "gordura": 63.46,
+      "fibra": 7.93,
+      "sodio": 0.65
+    }
+  },
+  {
+    "id": "taco-590",
+    "nome": "Coco, cru",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 406.49,
+      "proteina": 3.69,
+      "carboidrato": 10.4,
+      "gordura": 41.98,
+      "fibra": 5.38,
+      "sodio": 15.32
+    }
+  },
+  {
+    "id": "taco-591",
+    "nome": "Coco,  verde, cru",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": null,
+      "proteina": null,
+      "carboidrato": null,
+      "gordura": null,
+      "fibra": null,
+      "sodio": null
+    }
+  },
+  {
+    "id": "taco-592",
+    "nome": "Farinha, de mesocarpo de babaçu, crua",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 328.77,
+      "proteina": 1.41,
+      "carboidrato": 79.17,
+      "gordura": 0.2,
+      "fibra": 17.86,
+      "sodio": 12.46
+    }
+  },
+  {
+    "id": "taco-593",
+    "nome": "Gergelim, semente",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 583.55,
+      "proteina": 21.16,
+      "carboidrato": 21.62,
+      "gordura": 50.43,
+      "fibra": 11.87,
+      "sodio": 2.58
+    }
+  },
+  {
+    "id": "taco-594",
+    "nome": "Linhaça, semente",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 495.1,
+      "proteina": 14.08,
+      "carboidrato": 43.31,
+      "gordura": 32.25,
+      "fibra": 33.5,
+      "sodio": 8.67
+    }
+  },
+  {
+    "id": "taco-595",
+    "nome": "Pinhão, cozido",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 174.37,
+      "proteina": 2.98,
+      "carboidrato": 43.92,
+      "gordura": 0.75,
+      "fibra": 15.6,
+      "sodio": 0.86
+    }
+  },
+  {
+    "id": "taco-596",
+    "nome": "Pupunha, cozida",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 218.53,
+      "proteina": 2.52,
+      "carboidrato": 29.57,
+      "gordura": 12.76,
+      "fibra": 4.25,
+      "sodio": 0.91
+    }
+  },
+  {
+    "id": "taco-597",
+    "nome": "Noz, crua",
+    "categoria": "Nozes e sementes",
+    "por100g": {
+      "kcal": 620.06,
+      "proteina": 13.97,
+      "carboidrato": 18.36,
+      "gordura": 59.36,
+      "fibra": 7.25,
+      "sodio": 4.57
+    }
+  }
+]

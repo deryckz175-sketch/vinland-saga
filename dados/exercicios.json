@@ -1,0 +1,996 @@
+[
+  {
+    "id": "ex-001",
+    "nome": "Supino reto com barra",
+    "grupo": "Peito",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-002",
+    "nome": "Supino inclinado com barra",
+    "grupo": "Peito",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-003",
+    "nome": "Supino declinado com barra",
+    "grupo": "Peito",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-004",
+    "nome": "Supino reto com halteres",
+    "grupo": "Peito",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-005",
+    "nome": "Supino inclinado com halteres",
+    "grupo": "Peito",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-006",
+    "nome": "Supino na máquina",
+    "grupo": "Peito",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-007",
+    "nome": "Crucifixo com halteres",
+    "grupo": "Peito",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-008",
+    "nome": "Crucifixo inclinado com halteres",
+    "grupo": "Peito",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-009",
+    "nome": "Crucifixo na polia",
+    "grupo": "Peito",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-010",
+    "nome": "Crossover na polia alta",
+    "grupo": "Peito",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-011",
+    "nome": "Crossover na polia baixa",
+    "grupo": "Peito",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-012",
+    "nome": "Peck deck",
+    "grupo": "Peito",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-013",
+    "nome": "Flexão de braço",
+    "grupo": "Peito",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-014",
+    "nome": "Flexão de braço com pés elevados",
+    "grupo": "Peito",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-015",
+    "nome": "Barra fixa pronada",
+    "grupo": "Costas",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-016",
+    "nome": "Barra fixa supinada",
+    "grupo": "Costas",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-017",
+    "nome": "Puxada frente na polia",
+    "grupo": "Costas",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-018",
+    "nome": "Puxada supinada na polia",
+    "grupo": "Costas",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-019",
+    "nome": "Puxada com triângulo",
+    "grupo": "Costas",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-020",
+    "nome": "Pulldown com braços estendidos",
+    "grupo": "Costas",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-021",
+    "nome": "Remada curvada com barra",
+    "grupo": "Costas",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-022",
+    "nome": "Remada curvada com halteres",
+    "grupo": "Costas",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-023",
+    "nome": "Remada unilateral com halter",
+    "grupo": "Costas",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-024",
+    "nome": "Remada cavalinho",
+    "grupo": "Costas",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-025",
+    "nome": "Remada baixa na polia",
+    "grupo": "Costas",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-026",
+    "nome": "Remada na máquina",
+    "grupo": "Costas",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-027",
+    "nome": "Encolhimento com barra",
+    "grupo": "Costas",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-028",
+    "nome": "Encolhimento com halteres",
+    "grupo": "Costas",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-029",
+    "nome": "Desenvolvimento militar com barra",
+    "grupo": "Ombros",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-030",
+    "nome": "Desenvolvimento com halteres",
+    "grupo": "Ombros",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-031",
+    "nome": "Desenvolvimento Arnold",
+    "grupo": "Ombros",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-032",
+    "nome": "Desenvolvimento na máquina",
+    "grupo": "Ombros",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-033",
+    "nome": "Elevação lateral com halteres",
+    "grupo": "Ombros",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-034",
+    "nome": "Elevação lateral na polia",
+    "grupo": "Ombros",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-035",
+    "nome": "Elevação lateral na máquina",
+    "grupo": "Ombros",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-036",
+    "nome": "Elevação frontal com halteres",
+    "grupo": "Ombros",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-037",
+    "nome": "Elevação frontal com barra",
+    "grupo": "Ombros",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-038",
+    "nome": "Crucifixo inverso com halteres",
+    "grupo": "Ombros",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-039",
+    "nome": "Crucifixo inverso na máquina",
+    "grupo": "Ombros",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-040",
+    "nome": "Face pull na polia",
+    "grupo": "Ombros",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-041",
+    "nome": "Remada alta com barra",
+    "grupo": "Ombros",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-042",
+    "nome": "Rosca direta com barra",
+    "grupo": "Bíceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-043",
+    "nome": "Rosca direta com barra W",
+    "grupo": "Bíceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-044",
+    "nome": "Rosca alternada com halteres",
+    "grupo": "Bíceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-045",
+    "nome": "Rosca martelo",
+    "grupo": "Bíceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-046",
+    "nome": "Rosca concentrada",
+    "grupo": "Bíceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-047",
+    "nome": "Rosca inclinada com halteres",
+    "grupo": "Bíceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-048",
+    "nome": "Rosca scott com barra",
+    "grupo": "Bíceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-049",
+    "nome": "Rosca scott na máquina",
+    "grupo": "Bíceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-050",
+    "nome": "Rosca na polia baixa",
+    "grupo": "Bíceps",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-051",
+    "nome": "Rosca 21",
+    "grupo": "Bíceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-052",
+    "nome": "Tríceps na polia alta com barra",
+    "grupo": "Tríceps",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-053",
+    "nome": "Tríceps na polia com corda",
+    "grupo": "Tríceps",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-054",
+    "nome": "Tríceps unilateral na polia",
+    "grupo": "Tríceps",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-055",
+    "nome": "Tríceps testa com barra W",
+    "grupo": "Tríceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-056",
+    "nome": "Tríceps francês com halter",
+    "grupo": "Tríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-057",
+    "nome": "Tríceps coice com halter",
+    "grupo": "Tríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-058",
+    "nome": "Tríceps na máquina",
+    "grupo": "Tríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-059",
+    "nome": "Supino fechado",
+    "grupo": "Tríceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-060",
+    "nome": "Mergulho nas paralelas",
+    "grupo": "Tríceps",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-061",
+    "nome": "Mergulho no banco",
+    "grupo": "Tríceps",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-062",
+    "nome": "Rosca de punho com barra",
+    "grupo": "Antebraço",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-063",
+    "nome": "Rosca de punho inversa",
+    "grupo": "Antebraço",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-064",
+    "nome": "Rosca inversa com barra",
+    "grupo": "Antebraço",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-065",
+    "nome": "Caminhada do fazendeiro",
+    "grupo": "Antebraço",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-066",
+    "nome": "Pegada em rolo",
+    "grupo": "Antebraço",
+    "equipamento": "nenhum",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-067",
+    "nome": "Abdominal supra no solo",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-068",
+    "nome": "Abdominal infra no solo",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-069",
+    "nome": "Abdominal oblíquo no solo",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-070",
+    "nome": "Abdominal bicicleta",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-071",
+    "nome": "Abdominal na polia alta",
+    "grupo": "Abdômen",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-072",
+    "nome": "Abdominal na máquina",
+    "grupo": "Abdômen",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-073",
+    "nome": "Elevação de pernas na barra",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-074",
+    "nome": "Elevação de joelhos na paralela",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-075",
+    "nome": "Prancha",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-076",
+    "nome": "Prancha lateral",
+    "grupo": "Abdômen",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-077",
+    "nome": "Rodinha abdominal",
+    "grupo": "Abdômen",
+    "equipamento": "nenhum",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-078",
+    "nome": "Russian twist",
+    "grupo": "Abdômen",
+    "equipamento": "nenhum",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-079",
+    "nome": "Agachamento livre com barra",
+    "grupo": "Quadríceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-080",
+    "nome": "Agachamento frontal",
+    "grupo": "Quadríceps",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-081",
+    "nome": "Agachamento no Smith",
+    "grupo": "Quadríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-082",
+    "nome": "Agachamento hack",
+    "grupo": "Quadríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-083",
+    "nome": "Agachamento búlgaro",
+    "grupo": "Quadríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-084",
+    "nome": "Agachamento goblet",
+    "grupo": "Quadríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-085",
+    "nome": "Agachamento sumô com halter",
+    "grupo": "Quadríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-086",
+    "nome": "Leg press 45",
+    "grupo": "Quadríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-087",
+    "nome": "Leg press horizontal",
+    "grupo": "Quadríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-088",
+    "nome": "Cadeira extensora",
+    "grupo": "Quadríceps",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-089",
+    "nome": "Afundo com halteres",
+    "grupo": "Quadríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-090",
+    "nome": "Passada com halteres",
+    "grupo": "Quadríceps",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-091",
+    "nome": "Levantamento terra romeno",
+    "grupo": "Posterior",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-092",
+    "nome": "Stiff com barra",
+    "grupo": "Posterior",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-093",
+    "nome": "Stiff com halteres",
+    "grupo": "Posterior",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-094",
+    "nome": "Mesa flexora",
+    "grupo": "Posterior",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-095",
+    "nome": "Cadeira flexora",
+    "grupo": "Posterior",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-096",
+    "nome": "Flexora em pé",
+    "grupo": "Posterior",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-097",
+    "nome": "Bom dia com barra",
+    "grupo": "Posterior",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-098",
+    "nome": "Elevação pélvica com barra",
+    "grupo": "Glúteo",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-099",
+    "nome": "Elevação de quadril no solo",
+    "grupo": "Glúteo",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-100",
+    "nome": "Glúteo na polia",
+    "grupo": "Glúteo",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-101",
+    "nome": "Glúteo na máquina",
+    "grupo": "Glúteo",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-102",
+    "nome": "Coice na polia",
+    "grupo": "Glúteo",
+    "equipamento": "cabo",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-103",
+    "nome": "Abdução de quadril na máquina",
+    "grupo": "Glúteo",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-104",
+    "nome": "Abdução de quadril com elástico",
+    "grupo": "Glúteo",
+    "equipamento": "elastico",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-105",
+    "nome": "Passada lateral com elástico",
+    "grupo": "Glúteo",
+    "equipamento": "elastico",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-106",
+    "nome": "Panturrilha em pé na máquina",
+    "grupo": "Panturrilha",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-107",
+    "nome": "Panturrilha sentado na máquina",
+    "grupo": "Panturrilha",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-108",
+    "nome": "Panturrilha no leg press",
+    "grupo": "Panturrilha",
+    "equipamento": "maquina",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-109",
+    "nome": "Panturrilha em pé com halteres",
+    "grupo": "Panturrilha",
+    "equipamento": "halter",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-110",
+    "nome": "Panturrilha unilateral",
+    "grupo": "Panturrilha",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-111",
+    "nome": "Levantamento terra",
+    "grupo": "Corpo inteiro",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-112",
+    "nome": "Clean com barra",
+    "grupo": "Corpo inteiro",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-113",
+    "nome": "Arranco com barra",
+    "grupo": "Corpo inteiro",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-114",
+    "nome": "Thruster com barra",
+    "grupo": "Corpo inteiro",
+    "equipamento": "barra",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-115",
+    "nome": "Swing com kettlebell",
+    "grupo": "Corpo inteiro",
+    "equipamento": "kettlebell",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-116",
+    "nome": "Turkish get-up",
+    "grupo": "Corpo inteiro",
+    "equipamento": "kettlebell",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-117",
+    "nome": "Burpee",
+    "grupo": "Corpo inteiro",
+    "equipamento": "peso-corporal",
+    "tipo": "musculacao"
+  },
+  {
+    "id": "ex-118",
+    "nome": "Caminhada na esteira",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-119",
+    "nome": "Corrida na esteira",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-120",
+    "nome": "Caminhada na rua",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-121",
+    "nome": "Corrida na rua",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-122",
+    "nome": "Bicicleta ergométrica",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-123",
+    "nome": "Bicicleta na rua",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-124",
+    "nome": "Spinning",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-125",
+    "nome": "Escada simulador",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-126",
+    "nome": "Escada de verdade",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-127",
+    "nome": "Elíptico",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-128",
+    "nome": "Remo ergômetro",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-129",
+    "nome": "Air bike",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-130",
+    "nome": "Pular corda",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-131",
+    "nome": "Natação",
+    "grupo": "Corpo inteiro",
+    "equipamento": "nenhum",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-132",
+    "nome": "Subida de rampa na esteira",
+    "grupo": "Corpo inteiro",
+    "equipamento": "maquina",
+    "tipo": "cardio"
+  },
+  {
+    "id": "ex-133",
+    "nome": "Alongamento de isquiotibiais",
+    "grupo": "Posterior",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-134",
+    "nome": "Alongamento de quadríceps em pé",
+    "grupo": "Quadríceps",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-135",
+    "nome": "Alongamento de panturrilha na parede",
+    "grupo": "Panturrilha",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-136",
+    "nome": "Alongamento de peitoral na porta",
+    "grupo": "Peito",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-137",
+    "nome": "Alongamento de ombro cruzado",
+    "grupo": "Ombros",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-138",
+    "nome": "Mobilidade de quadril 90/90",
+    "grupo": "Glúteo",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-139",
+    "nome": "Mobilidade torácica deitado",
+    "grupo": "Costas",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-140",
+    "nome": "Gato e camelo",
+    "grupo": "Costas",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-141",
+    "nome": "Rotação torácica em quatro apoios",
+    "grupo": "Costas",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  },
+  {
+    "id": "ex-142",
+    "nome": "Alongamento do pombo",
+    "grupo": "Glúteo",
+    "equipamento": "nenhum",
+    "tipo": "mobilidade"
+  }
+]
