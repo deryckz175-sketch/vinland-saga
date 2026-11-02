@@ -1,10 +1,10 @@
-import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga } from './datas.js';
+import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga, somaDias } from './datas.js';
 import * as db from './db.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
 } from './treino.js';
-import { itensComidos, refeicoesDoPlano, comQuantidade } from './dieta.js';
+import { itensComidos, montarDia, comQuantidade } from './dieta.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -16,6 +16,7 @@ let perfil = { id: 'eu', nome: '', peso: null, altura: null, foto: null };
 let fichas = [];
 let diasTreino = new Set();
 let diaHoje = { data: CHAVE_HOJE, refeicoes: [], agua: 0 };
+let diaDieta = diaHoje; // o dia aberto na aba Dieta: hoje, ou um passado que ele voltou para corrigir
 let sessao = null;
 let sessoes = [];    // treinos já gravados, do mais novo para o mais velho
 let recordes = {};   // exercício -> { kg, reps, data }
@@ -46,6 +47,7 @@ async function carregar() {
   ]);
   // As quatro refeições do dia já vêm postas; o usuário acrescenta outras se quiser.
   if (!diaHoje.refeicoes.length) diaHoje.refeicoes = REFEICOES_PADRAO.map((nome) => ({ nome, itens: [] }));
+  diaDieta = diaHoje;
   gradeDe = (await db.config('gradeDe')) || 'treino';
 
   // Retoma um treino que ficou aberto: o app pode ter sido encerrado no meio.
@@ -66,7 +68,7 @@ async function carregarCatalogos() {
     // O service worker serve os dados pelo cache: mudou o arquivo, muda o ?v aqui e no sw.js.
     fetch('dados/plano-alimentar.json?v=2').then((r) => (r.ok ? r.json() : null)).catch(() => null),
   ]);
-  if (p) { plano = p; await aplicarPlano(); montarDiaDoPlano(); }
+  if (p) { plano = p; await aplicarPlano(); montarDia(diaHoje, plano); }
   catalogo = ex;
   alimentos = [
     ...meus,
@@ -92,17 +94,6 @@ async function aplicarPlano() {
   await db.salvarConfig('planoImportado', plano.origem || true);
   salvas = await db.todos(db.LOJAS.salvas);
   renderTudo();
-}
-
-/**
- * O dia começa com a dieta dele, por marcar. O que já tinha sido registrado à
- * mão fica junto, e as refeições vazias saem. A marca impede remontar o dia:
- * ele pode ter alterado ou tirado alguma coisa.
- */
-function montarDiaDoPlano() {
-  if (diaHoje.doPlano) return;
-  diaHoje.refeicoes = [...refeicoesDoPlano(plano), ...diaHoje.refeicoes.filter((r) => r.itens.length)];
-  diaHoje.doPlano = true;
 }
 
 /**
@@ -554,11 +545,26 @@ async function salvarCardio(id) {
 // Dieta
 // =========================================================================
 
+/** Abre um dia na aba Dieta. Dia passado monta igual ao de hoje e só grava se ele mexer. */
+async function abrirDiaDieta(chave) {
+  diaDieta = chave === CHAVE_HOJE ? diaHoje : montarDia(await db.dia(chave), plano);
+  setTela('dieta');
+}
+
 function renderDieta() {
-  const m = macrosDoDia();
-  const refs = diaHoje.refeicoes;
+  const refs = diaDieta.refeicoes;
+  const m = somaMacros(itensComidos(refs));
+  const k = diaDieta.data;
+  const ehHoje = k === CHAVE_HOJE;
   $('#tela-dieta').innerHTML = `
-    <header class="topo"><h1>Dieta</h1><div class="data">Hoje</div></header>
+    <header class="topo"><h1>Dieta</h1>
+      <div class="navega-dia">
+        <button class="chip" data-dia-dieta="${somaDias(k, -1)}" aria-label="Dia anterior">‹</button>
+        <span class="data ${ehHoje ? '' : 'destaque'}">${ehHoje ? 'Hoje' : dataLonga(k, ANO)}</span>
+        ${ehHoje ? '' : `<button class="chip" data-dia-dieta="${somaDias(k, 1)}" aria-label="Dia seguinte">›</button>
+          <button class="chip" data-dia-dieta="${CHAVE_HOJE}">hoje</button>`}
+      </div>
+    </header>
 
     <div class="card">
       <div class="linha-item">
@@ -570,13 +576,13 @@ function renderDieta() {
 
     ${refs.length
       ? refs.map(cartaoRefeicao).join('')
-      : '<div class="card"><div class="vazio">Nenhuma refeição hoje.</div></div>'}
+      : `<div class="card"><div class="vazio">Nenhuma refeição ${ehHoje ? 'hoje' : 'neste dia'}.</div></div>`}
 
     <div class="card">
       <h2>Água</h2>
       <div class="linha-item">
-        <div><div class="num-grande ${diaHoje.agua ? 'destaque' : ''}">${(diaHoje.agua / 1000).toFixed(1).replace('.', ',')}</div>
-          <div class="sub" style="margin-top:6px">litros hoje</div></div>
+        <div><div class="num-grande ${diaDieta.agua ? 'destaque' : ''}">${(diaDieta.agua / 1000).toFixed(1).replace('.', ',')}</div>
+          <div class="sub" style="margin-top:6px">litros ${ehHoje ? 'hoje' : 'neste dia'}</div></div>
         <div class="ex-pe" style="margin:0">
           <button class="chip" data-agua="-250">−</button>
           <button class="chip" data-agua="250">+ copo</button>
@@ -619,7 +625,7 @@ function cartaoRefeicao(r, i) {
 
 /** Onde ele muda o que comeu: outra quantidade, ou tirar da refeição. */
 function folhaItem(i, j) {
-  const it = diaHoje.refeicoes[i].itens[j];
+  const it = diaDieta.refeicoes[i].itens[j];
   abrirFolha(`<h3>${esc(it.nome)}</h3>
     <label class="rot" for="qtd">Quanto você comeu (g)</label>
     <input class="busca" id="qtd" type="text" inputmode="decimal" autocomplete="off" value="${virgula(it.g_)}">
@@ -627,8 +633,8 @@ function folhaItem(i, j) {
     <button class="botao fraco" data-remover="${i}:${j}">Tirar da refeição</button>`);
 }
 
-async function salvarDiaHoje() {
-  await db.salvarDia(diaHoje);
+async function salvarDiaDieta() {
+  await db.salvarDia(diaDieta);
   diasDieta = await db.diasComDieta();
   renderTudo();
 }
@@ -644,7 +650,7 @@ function folhaRepetirSalva(iRef) {
 }
 
 function folhaSalvarRefeicao(iRef) {
-  const r = diaHoje.refeicoes[iRef];
+  const r = diaDieta.refeicoes[iRef];
   abrirFolha(`<h3>Salvar para repetir</h3>
     <div class="sub" style="margin-bottom:12px">${r.itens.length} itens de ${esc(r.nome)}.</div>
     <label class="rot" for="sNome">Nome</label>
@@ -746,10 +752,9 @@ function renderMesAmpliado() {
 async function mostrarDia(k) {
   const [sessoes, d] = await Promise.all([db.sessoesDoDia(k), db.dia(k)]);
   const m = somaMacros(itensComidos(d.refeicoes));
-  const [, mm, dd] = k.split('-');
   const alvo = $('#detalheDia');
   if (!alvo) return;
-  alvo.innerHTML = `<h2>${dd} de ${MESES[+mm - 1].toLowerCase()}</h2>
+  alvo.innerHTML = `<h2>${dataLonga(k, ANO)}</h2>
     ${sessoes.length
       ? sessoes.map((s) => `<div class="linha-item"><div><div>${esc(s.nome)}</div>
           <div class="sub">${s.tipo === 'cardio' ? s.minutos + ' min' : s.exercicios.length + ' exercício' + (s.exercicios.length === 1 ? '' : 's')}</div></div>
@@ -757,7 +762,8 @@ async function mostrarDia(k) {
       : '<div class="linha-item"><div class="sub">Sem treino.</div></div>'}
     ${m.kcal
       ? `<div class="linha-item"><div>Dieta</div><div class="sub">${m.kcal.toFixed(0)} kcal</div></div>`
-      : '<div class="linha-item"><div class="sub">Sem refeições.</div></div>'}`;
+      : '<div class="linha-item"><div class="sub">Sem refeições concluídas.</div></div>'}
+    ${k <= CHAVE_HOJE ? `<button class="botao fraco" data-abrir-dieta="${k}">Abrir a dieta deste dia</button>` : ''}`;
 }
 
 // =========================================================================
@@ -844,7 +850,7 @@ function folhaNovaFicha() {
 }
 
 function folhaNovaRefeicao() {
-  const sugestoes = plano ? [] : REFEICOES_PADRAO.filter((n) => !diaHoje.refeicoes.some((r) => r.nome === n));
+  const sugestoes = plano ? [] : REFEICOES_PADRAO.filter((n) => !diaDieta.refeicoes.some((r) => r.nome === n));
   abrirFolha(`<h3>Adicionar refeição</h3>
     ${sugestoes.map((n) => `<button class="opcao" data-ref-nome="${esc(n)}"><div>${esc(n)}</div></button>`).join('')}
     <label class="rot" for="rNome">${sugestoes.length ? 'Ou um nome seu' : 'Nome'}</label>
@@ -853,7 +859,7 @@ function folhaNovaRefeicao() {
 }
 
 function folhaAlimento(iRef) {
-  abrirFolha(`<h3>Adicionar em ${esc(diaHoje.refeicoes[iRef].nome)}</h3>
+  abrirFolha(`<h3>Adicionar em ${esc(diaDieta.refeicoes[iRef].nome)}</h3>
     <input class="busca" id="buscaAlimento" placeholder="Buscar alimento" autocomplete="off">
     <div id="resultados"></div>`);
   const lista = () => {
@@ -884,6 +890,8 @@ function folhaPorcao(iRef, idAli) {
 
 function setTela(nome) {
   telaAtual = nome;
+  // Sair da aba volta para hoje: marcar refeição no dia errado sem perceber é o pior erro aqui.
+  if (nome !== 'dieta') diaDieta = diaHoje;
   document.querySelectorAll('.tela').forEach((t) => t.classList.toggle('ativa', t.id === `tela-${nome}`));
   document.querySelectorAll('.aba').forEach((b) => b.classList.toggle('ativa', b.dataset.tela === nome));
   renderTudo();
@@ -1021,6 +1029,12 @@ document.addEventListener('click', async (ev) => {
 
   if ((el = achar('[data-mes]'))) return abrirMes(Number(el.dataset.mes));
   if (achar('#fecharMes')) { mesAberto = null; return $('#mesAmpliado').classList.remove('aberto'); }
+  if ((el = achar('[data-abrir-dieta]'))) {
+    mesAberto = null;
+    $('#mesAmpliado').classList.remove('aberto');
+    return abrirDiaDieta(el.dataset.abrirDieta);
+  }
+  if ((el = achar('[data-dia-dieta]'))) return abrirDiaDieta(el.dataset.diaDieta);
   if ((el = achar('[data-dia]'))) { diaSelecionado = el.dataset.dia; renderMesAmpliado(); return mostrarDia(diaSelecionado); }
 
   if ((el = achar('[data-cor]'))) {
@@ -1044,17 +1058,17 @@ document.addEventListener('click', async (ev) => {
 
   if (achar('#novaRefeicao')) return folhaNovaRefeicao();
   if ((el = achar('[data-ref-nome]'))) {
-    diaHoje.refeicoes.push({ nome: el.dataset.refNome, itens: [], feita: true });
+    diaDieta.refeicoes.push({ nome: el.dataset.refNome, itens: [], feita: true });
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if (achar('#salvarRefeicao')) {
     const nome = $('#rNome').value.trim();
     if (!nome) return;
     // O que ele mesmo acrescenta já conta; só a dieta começa por marcar.
-    diaHoje.refeicoes.push({ nome, itens: [], feita: true });
+    diaDieta.refeicoes.push({ nome, itens: [], feita: true });
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
 
   if ((el = achar('[data-add-refeicao]'))) return folhaAlimento(Number(el.dataset.addRefeicao));
@@ -1068,16 +1082,16 @@ document.addEventListener('click', async (ev) => {
     const q = lerNumero($('#qtd').value);
     if (!a || !(q > 0)) return;
     const f = q / 100;
-    diaHoje.refeicoes[Number(iRef)].itens.push({
+    diaDieta.refeicoes[Number(iRef)].itens.push({
       nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f,
     });
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-concluir]'))) {
-    const r = diaHoje.refeicoes[Number(el.dataset.concluir)];
+    const r = diaDieta.refeicoes[Number(el.dataset.concluir)];
     r.feita = r.feita === false;
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-item]'))) {
     const [i, j] = el.dataset.item.split(':').map(Number);
@@ -1087,42 +1101,42 @@ document.addEventListener('click', async (ev) => {
     const [i, j] = el.dataset.salvarItem.split(':').map(Number);
     const q = lerNumero($('#qtd').value);
     if (!(q > 0)) return;
-    const itens = diaHoje.refeicoes[i].itens;
+    const itens = diaDieta.refeicoes[i].itens;
     itens[j] = comQuantidade(itens[j], q);
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-remover]'))) {
     const [i, j] = el.dataset.remover.split(':').map(Number);
-    diaHoje.refeicoes[i].itens.splice(j, 1);
+    diaDieta.refeicoes[i].itens.splice(j, 1);
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-opcao]'))) {
     const [i, k] = el.dataset.opcao.split(':').map(Number);
-    diaHoje.refeicoes[i].itens = plano.refeicoes[k].itens.map((x) => ({ ...x }));
-    return salvarDiaHoje();
+    diaDieta.refeicoes[i].itens = plano.refeicoes[k].itens.map((x) => ({ ...x }));
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-voltar-plano]'))) {
-    const r = diaHoje.refeicoes[Number(el.dataset.voltarPlano)];
+    const r = diaDieta.refeicoes[Number(el.dataset.voltarPlano)];
     r.itens = plano.refeicoes.find((p) => p.nome === r.nome).itens.map((x) => ({ ...x }));
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-agua]'))) {
-    diaHoje.agua = Math.max(0, (diaHoje.agua || 0) + Number(el.dataset.agua));
-    return salvarDiaHoje();
+    diaDieta.agua = Math.max(0, (diaDieta.agua || 0) + Number(el.dataset.agua));
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-repetir]'))) return folhaRepetirSalva(Number(el.dataset.repetir));
   if ((el = achar('[data-usar-salva]'))) {
     const [iRef, id] = el.dataset.usarSalva.split(':');
     const s = salvas.find((x) => String(x.id) === id);
-    if (s) diaHoje.refeicoes[Number(iRef)].itens.push(...s.itens.map((i) => ({ ...i })));
+    if (s) diaDieta.refeicoes[Number(iRef)].itens.push(...s.itens.map((i) => ({ ...i })));
     fecharFolha();
-    return salvarDiaHoje();
+    return salvarDiaDieta();
   }
   if ((el = achar('[data-salvar-ref]'))) return folhaSalvarRefeicao(Number(el.dataset.salvarRef));
   if ((el = achar('[data-confirma-salvar]'))) {
-    const r = diaHoje.refeicoes[Number(el.dataset.confirmaSalvar)];
+    const r = diaDieta.refeicoes[Number(el.dataset.confirmaSalvar)];
     await db.gravar(db.LOJAS.salvas, { nome: $('#sNome').value.trim() || r.nome, itens: r.itens.map((i) => ({ ...i })) });
     salvas = await db.todos(db.LOJAS.salvas);
     fecharFolha();

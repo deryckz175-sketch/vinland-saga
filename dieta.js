@@ -19,6 +19,18 @@ export function refeicoesDoPlano(plano) {
   }));
 }
 
+/**
+ * Dá ao dia a dieta dele, por marcar. O que já tinha sido registrado à mão fica
+ * junto, e as refeições vazias saem. A marca impede remontar o dia: ele pode ter
+ * alterado ou tirado alguma coisa.
+ */
+export function montarDia(dia, plano) {
+  if (!plano || dia.doPlano) return dia;
+  dia.refeicoes = [...refeicoesDoPlano(plano), ...dia.refeicoes.filter((r) => r.itens.length)];
+  dia.doPlano = true;
+  return dia;
+}
+
 /** O mesmo alimento em outra quantidade: os macros acompanham na mesma proporção. */
 export function comQuantidade(item, g) {
   const f = g / item.g_;

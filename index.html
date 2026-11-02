@@ -84,9 +84,6 @@
   .d.verde { background: #28c76f; }
   .d.amarelo { background: #f5c518; }
   .d.vermelho { background: #e5342b; }
-  .cal button.verde { background: #28c76f; color: #06240f; font-weight: 600; }
-  .cal button.amarelo { background: #f5c518; color: #3a2f00; font-weight: 600; }
-  .cal button.vermelho { background: #e5342b; color: #fff; font-weight: 600; }
   .d.hoje { box-shadow: inset 0 0 0 1.5px var(--cor); }
   .mes.futuro { opacity: .3; }
 
@@ -101,6 +98,10 @@
   .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
   .cal button { aspect-ratio: 1; border-radius: 10px; background: var(--surf2); font-size: 14px; color: var(--fraco); display: grid; place-items: center; }
   .cal button.on { background: var(--cor); color: #fff; font-weight: 600; }
+  /* Depois do .on: mesma especificidade, e a cor de aderência tem que ganhar. */
+  .cal button.verde { background: #28c76f; color: #06240f; font-weight: 600; }
+  .cal button.amarelo { background: #f5c518; color: #3a2f00; font-weight: 600; }
+  .cal button.vermelho { background: #e5342b; color: #fff; font-weight: 600; }
   .cal button.hoje { box-shadow: inset 0 0 0 2px var(--cor); color: var(--txt); }
   .cal button.sel { outline: 2px solid var(--txt); outline-offset: 2px; }
   .cal .espaco { visibility: hidden; }
@@ -181,6 +182,10 @@
   .ex-cab { display: flex; align-items: center; gap: 8px; }
   .ex-cab h2 { flex: 1; min-width: 0; margin: 0; }
   .ex-pe { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .navega-dia { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .navega-dia .chip { padding: 8px 14px; color: var(--txt); }
+  header.topo .navega-dia .data { margin: 0; }
+  header.topo .navega-dia .data.destaque { color: var(--cor); font-weight: 600; }
   .refeicao .ex-cab { margin-bottom: 12px; }
   .concluir { flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--surf2);
               border: 1px solid var(--fraco); display: grid; place-items: center; font-weight: 700; color: transparent; }

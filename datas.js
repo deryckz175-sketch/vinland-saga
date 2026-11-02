@@ -26,6 +26,12 @@ export function dataLonga(chave, anoRef) {
   return +a === anoRef ? base : `${base} de ${a}`;
 }
 
+/** A chave n dias depois de outra. Conta pelo calendário, então vira mês e ano certo. */
+export function somaDias(chave, n) {
+  const [a, m, d] = chave.split('-').map(Number);
+  return chaveDia(new Date(a, m - 1, d + n));
+}
+
 export function somaMacros(itens) {
   return itens.reduce((t, i) => ({
     kcal: t.kcal + (i.kcal || 0),

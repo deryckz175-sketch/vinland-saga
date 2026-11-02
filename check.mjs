@@ -1,11 +1,11 @@
 // Checagem das funções de data. Rodar: node check.mjs
 import assert from 'node:assert/strict';
-import { chaveDia, diasDoMes, somaMacros, dataLonga, MESES } from './datas.js';
+import { chaveDia, diasDoMes, somaMacros, dataLonga, somaDias, MESES } from './datas.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
 } from './treino.js';
-import { itensComidos, refeicoesDoPlano, comQuantidade } from './dieta.js';
+import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia } from './dieta.js';
 import { readFileSync } from 'node:fs';
 
 assert.equal(chaveDia(new Date(2026, 10, 1)), '2026-11-01');
@@ -165,5 +165,42 @@ assert.deepEqual(itensComidos(undefined), []);
 
 assert.deepEqual(comQuantidade({ nome: 'A', g_: 100, kcal: 40, p: 1, c: 2, g: 3 }, 150),
   { nome: 'A', g_: 150, kcal: 60, p: 1.5, c: 3, g: 4.5 });
+
+// ---- dias passados na dieta ----
+
+assert.equal(somaDias('2026-11-02', -1), '2026-11-01');
+assert.equal(somaDias('2026-11-01', -1), '2026-10-31', 'vira o mês');
+assert.equal(somaDias('2026-01-01', -1), '2025-12-31', 'vira o ano');
+assert.equal(somaDias('2026-12-31', 1), '2027-01-01');
+assert.equal(somaDias('2028-02-28', 1), '2028-02-29', 'ano bissexto');
+assert.equal(somaDias('2026-02-28', 1), '2026-03-01');
+
+const planoMini = {
+  refeicoes: [
+    { nome: 'Almoço', itens: [{ nome: 'Arroz', kcal: 100 }] },
+    { nome: 'Opção', opcaoDe: ['Almoço'], itens: [{ nome: 'Macarrão', kcal: 90 }] },
+  ],
+};
+
+const diaNovo = montarDia({ data: '2026-10-30', refeicoes: [], agua: 0 }, planoMini);
+assert.deepEqual(diaNovo.refeicoes, [{ nome: 'Almoço', itens: [{ nome: 'Arroz', kcal: 100 }], feita: false }]);
+assert.equal(diaNovo.doPlano, true);
+assert.deepEqual(itensComidos(diaNovo.refeicoes), [], 'abrir um dia passado não conta nada sozinho');
+
+const diaAntigo = montarDia({
+  data: '2026-10-29',
+  agua: 500,
+  refeicoes: [{ nome: 'Jantar', itens: [] }, { nome: 'Almoço', itens: [{ nome: 'Feijão', kcal: 50 }] }],
+}, planoMini);
+assert.deepEqual(diaAntigo.refeicoes.map((r) => r.nome), ['Almoço', 'Almoço'], 'a vazia sai, a registrada à mão fica');
+assert.deepEqual(itensComidos(diaAntigo.refeicoes), [{ nome: 'Feijão', kcal: 50 }], 'o total do dia antigo não muda');
+assert.equal(diaAntigo.agua, 500);
+
+const jaMontado = { doPlano: true, refeicoes: [] };
+assert.deepEqual(montarDia(jaMontado, planoMini).refeicoes, [], 'ele pode ter tirado tudo: não remonta');
+
+const semPlano = { refeicoes: [] };
+assert.equal(montarDia(semPlano, null), semPlano, 'sem plano o dia fica como está');
+assert.equal(semPlano.doPlano, undefined, 'e continua podendo receber o plano depois');
 
 console.log('ok: todas as checagens passaram');
