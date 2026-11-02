@@ -165,13 +165,15 @@ function renderTreino() {
         <div class="data">${todas.length ? `${feitas} de ${todas.length} séries` : 'Adicione o primeiro exercício'}</div>
       </header>
       ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
-      <button class="botao ${sessao.exercicios.length ? 'fraco' : ''}" id="addExercicio">Adicionar exercício</button>
       ${sessao.exercicios.length ? '<button class="botao" id="finalizar">Finalizar treino</button>' : ''}
-      <button class="botao fraco" id="cancelar">Cancelar</button>`;
+      <button class="botao fraco" id="cancelar">Cancelar</button>
+      <div class="acao-fixa"><button class="botao ${sessao.exercicios.length ? 'fraco' : ''}" id="addExercicio">Adicionar exercício</button></div>`;
+    el.classList.add('com-acao');
     agendarGuardar();
     return;
   }
 
+  el.classList.remove('com-acao');
   el.innerHTML = `
     <header class="topo"><h1>Treino</h1>
       <div class="data">${fichas.length ? 'Escolha uma ficha' : 'Nenhuma ficha ainda'}</div></header>

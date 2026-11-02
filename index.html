@@ -184,6 +184,14 @@
   .chip.sel { background: var(--cor); border-color: var(--cor); color: #fff; }
   .serie .ok { font-size: 12px; font-weight: 600; }
 
+  /* O botão de adicionar acompanha a rolagem como o cronômetro, para ser
+     alcançado no meio do treino sem rolar até o fim da lista. Flutua sobre o
+     conteúdo igual à barra de abas, que começa 86px acima da borda. */
+  .acao-fixa { position: fixed; z-index: 29; left: 16px; right: 16px;
+               bottom: calc(env(safe-area-inset-bottom) + 94px); }
+  .acao-fixa .botao { margin: 0; box-shadow: 0 8px 24px -6px #000; }
+  #tela-treino.com-acao { padding-bottom: calc(var(--barra) + env(safe-area-inset-bottom) + 100px); }
+
   /* A busca de exercício cresce para cima: o primeiro resultado fica junto do campo. */
   #axResultados { display: flex; flex-direction: column-reverse; }
   .busca { width: 100%; background: var(--surf2); border: 1px solid var(--linha); border-radius: 12px; padding: 13px; margin-bottom: 10px; }
