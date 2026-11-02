@@ -140,6 +140,14 @@ export async function cargasAnteriores(fichaId) {
   return mapa;
 }
 
+/** Todas as sessões, da mais nova para a mais velha, para a lista de treinos feitos. */
+export async function historico() {
+  const lista = await todos(LOJAS.sessoes);
+  return lista.sort((a, b) => (a.data === b.data
+    ? String(b.em || '').localeCompare(String(a.em || ''))
+    : b.data.localeCompare(a.data)));
+}
+
 /**
  * Última vez que ele fez este exercício, em qualquer treino. É daqui que sai
  * a quantidade de séries de um exercício acrescentado no meio da sessão:

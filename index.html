@@ -53,12 +53,14 @@
   header.topo.fixo .cronometro { font-size: 30px; margin: 0; }
   header.topo.fixo h1 { font-size: 16px; font-weight: 600; flex: 1; min-width: 0;
                         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  header.topo.fixo.editando h1 { font-size: 22px; } /* sem cronômetro do lado, o nome manda */
 
   .card { background: var(--surf); border: 1px solid var(--linha); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
   .card h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--fraco); text-transform: uppercase; letter-spacing: 0.6px; }
 
   .linha-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--linha); }
   .linha-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .linha-toque { width: 100%; text-align: left; } /* a linha inteira é botão */
   .linha-item:first-of-type { padding-top: 0; }
   .sub { color: var(--fraco); font-size: 13px; }
   .destaque { color: var(--cor); }

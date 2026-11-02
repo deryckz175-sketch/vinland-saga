@@ -1,6 +1,6 @@
 // Checagem das funções de data. Rodar: node check.mjs
 import assert from 'node:assert/strict';
-import { chaveDia, diasDoMes, somaMacros, MESES } from './datas.js';
+import { chaveDia, diasDoMes, somaMacros, dataLonga, MESES } from './datas.js';
 import { somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha } from './treino.js';
 
 assert.equal(chaveDia(new Date(2026, 10, 1)), '2026-11-01');
@@ -26,6 +26,10 @@ assert.deepEqual(
   'campo ausente conta como zero'
 );
 assert.deepEqual(somaMacros([]), { kcal: 0, p: 0, c: 0, g: 0 });
+
+assert.equal(dataLonga('2026-11-01', 2026), '1 de novembro');
+assert.equal(dataLonga('2026-01-09', 2026), '9 de janeiro');
+assert.equal(dataLonga('2025-12-31', 2026), '31 de dezembro de 2025', 'ano diferente vai junto');
 
 // ---- séries ----
 

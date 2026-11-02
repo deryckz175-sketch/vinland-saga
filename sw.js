@@ -1,15 +1,27 @@
 // Cache do app para funcionar em modo avião. Os registros do usuário ficam no
 // IndexedDB e não passam por aqui — isto guarda só o código e as tabelas fixas.
 // shortcut: troca o cache inteiro a cada versão, sem atualização parcial.
-const VERSAO = 'vinland-v5';
+const VERSAO = 'vinland-v6';
 const ARQUIVOS = [
   './', 'index.html', 'app.js', 'datas.js', 'db.js', 'treino.js', 'manifest.json',
   'dados/exercicios.json', 'dados/taco.json', 'dados/plano-alimentar.json',
   'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png',
 ];
 
+// no-store em todo lugar: o cache HTTP do navegador entrega arquivo velho mesmo
+// com a rede em primeiro lugar, e aí o app carrega metade novo, metade velho e
+// quebra na importação. É a rede de verdade ou o cache daqui, nada no meio.
+const daRede = (url) => fetch(url, { cache: 'no-store' });
+
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSAO).then((c) => c.addAll(ARQUIVOS)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(VERSAO)
+      .then((c) => Promise.all(ARQUIVOS.map((u) => daRede(u).then((r) => {
+        if (!r.ok) throw new Error(u);
+        return c.put(u, r);
+      }))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -39,7 +51,7 @@ self.addEventListener('fetch', (e) => {
 
   if (ehCodigo(e.request, url)) {
     e.respondWith(
-      fetch(e.request)
+      daRede(e.request.url)
         .then((resp) => guardar(e.request, resp))
         .catch(() => caches.match(e.request).then((hit) => hit || caches.match('index.html')))
     );
@@ -48,6 +60,6 @@ self.addEventListener('fetch', (e) => {
 
   // Ícones e as tabelas de dados não mudam: cache primeiro.
   e.respondWith(
-    caches.match(e.request).then((hit) => hit || fetch(e.request).then((resp) => guardar(e.request, resp)))
+    caches.match(e.request).then((hit) => hit || daRede(e.request.url).then((resp) => guardar(e.request, resp)))
   );
 });

@@ -19,6 +19,13 @@ export function diasDoMes(ano, mes) {
   };
 }
 
+/** '2026-11-01' → '1 de novembro'. Leva o ano junto quando não é o de referência. */
+export function dataLonga(chave, anoRef) {
+  const [a, m, d] = chave.split('-');
+  const base = `${+d} de ${MESES[+m - 1].toLowerCase()}`;
+  return +a === anoRef ? base : `${base} de ${a}`;
+}
+
 export function somaMacros(itens) {
   return itens.reduce((t, i) => ({
     kcal: t.kcal + (i.kcal || 0),
