@@ -2,8 +2,9 @@
 // dá para ajustar de novo depois sem escolher a foto outra vez.
 
 export const AJUSTE_PADRAO = { x: 50, y: 50, zoom: 1 };
+export const ZOOM_MAXIMO = 5;
 
-const limita = (v) => Math.min(100, Math.max(0, v));
+const entre = (v, min, max) => Math.min(max, Math.max(min, v));
 
 /** Com o mesmo ponto em object-position e transform-origin, nenhum ajuste deixa buraco no círculo. */
 export function estiloFoto(ajuste) {
@@ -11,17 +12,30 @@ export function estiloFoto(ajuste) {
   return `object-position:${x}% ${y}%;transform-origin:${x}% ${y}%;transform:scale(${zoom})`;
 }
 
-/**
- * Faz a foto acompanhar o dedo. `lado` é o diâmetro do círculo em pixels, e
- * `largura`/`altura` são as da foto. A folga é o quanto a foto sobra para fora do
- * círculo em cada eixo: sem folga, aquele eixo não tem para onde andar.
- */
-export function moverFoto(ajuste, dx, dy, lado, largura, altura) {
-  const folgaX = lado * ajuste.zoom * Math.max(1, largura / altura) - lado;
-  const folgaY = lado * ajuste.zoom * Math.max(1, altura / largura) - lado;
+/** A bolinha na foto, em pixels da foto: o que aparece no círculo do perfil com esse ajuste. */
+export function circuloDoAjuste(ajuste, largura, altura) {
+  const { x, y, zoom } = { ...AJUSTE_PADRAO, ...ajuste };
+  const d = Math.min(largura, altura) / zoom;
+  return { esq: (x / 100) * (largura - d), topo: (y / 100) * (altura - d), d };
+}
+
+/** O caminho de volta: a bolinha vira o ajuste que é guardado. */
+export function ajusteDoCirculo({ esq, topo, d }, largura, altura) {
   return {
-    ...ajuste,
-    x: folgaX > 0 ? limita(ajuste.x - (dx / folgaX) * 100) : ajuste.x,
-    y: folgaY > 0 ? limita(ajuste.y - (dy / folgaY) * 100) : ajuste.y,
+    x: largura > d ? (esq / (largura - d)) * 100 : 50,
+    y: altura > d ? (topo / (altura - d)) * 100 : 50,
+    zoom: Math.min(largura, altura) / d,
   };
+}
+
+/** Anda com a bolinha sem deixá-la sair da foto. */
+export function moverCirculo(c, dx, dy, largura, altura) {
+  return { ...c, esq: entre(c.esq + dx, 0, largura - c.d), topo: entre(c.topo + dy, 0, altura - c.d) };
+}
+
+/** Muda o tamanho mantendo o centro; perto da borda, a bolinha anda para continuar dentro da foto. */
+export function tamanhoCirculo(c, novo, largura, altura) {
+  const menor = Math.min(largura, altura);
+  const d = entre(novo, menor / ZOOM_MAXIMO, menor);
+  return moverCirculo({ esq: c.esq + (c.d - d) / 2, topo: c.topo + (c.d - d) / 2, d }, 0, 0, largura, altura);
 }

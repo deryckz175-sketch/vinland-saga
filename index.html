@@ -161,8 +161,13 @@
   #ajusteFoto.aberto { display: block; }
   #ajusteFoto h3 { margin: 0 0 4px; font-size: 17px; }
   #ajusteFoto input[type="range"] { display: block; width: 100%; margin: 8px 0 14px; accent-color: var(--cor); }
-  .circulo-ajuste { width: min(72vw, 280px); height: min(72vw, 280px); margin: 24px auto; touch-action: none; cursor: grab; }
-  .circulo-ajuste img { pointer-events: none; -webkit-user-select: none; user-select: none; }
+  .recorte { position: relative; margin: 16px auto; overflow: hidden; border-radius: 10px; touch-action: none; cursor: grab; }
+  .recorte img { display: block; width: 100%; height: 100%; pointer-events: none; -webkit-user-select: none; user-select: none; }
+  /* A sombra gigante escurece tudo fora da bolinha: o .recorte a corta na borda da foto. */
+  .bolinha { position: absolute; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,.55); }
+  /* 85,35% é onde a borda do círculo passa a 45°. O alvo é maior que o ponto visível, para o dedo. */
+  .alca { position: absolute; left: 85.35%; top: 85.35%; transform: translate(-50%, -50%); display: grid; place-items: center; }
+  .alca::after { content: ""; width: 45%; height: 45%; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); }
   .escolhidos { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .marca { font: inherit; font-size: 13px; background: var(--surf2); border: 1px solid var(--linha);
            border-radius: 999px; padding: 6px 11px; color: var(--txt); }

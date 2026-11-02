@@ -1,6 +1,6 @@
 import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga, somaDias } from './datas.js';
 import * as db from './db.js';
-import { AJUSTE_PADRAO, estiloFoto, moverFoto } from './foto.js';
+import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
@@ -807,41 +807,75 @@ function campoFoto() {
 }
 
 /**
+ * Mostra a foto inteira com a bolinha por cima, e ele leva a bolinha até onde quer.
  * Abre por cima da folha do perfil em vez de trocar o conteúdo dela: assim o que
  * ele já digitou no nome, peso e altura continua lá quando voltar.
  */
 function abrirAjusteFoto() {
-  let ajuste = { ...AJUSTE_PADRAO, ...perfil.fotoAjuste };
   const tela = $('#ajusteFoto');
   tela.innerHTML = `<h3>Ajustar foto</h3>
-    <div class="sub">Arraste a foto para posicionar.</div>
-    <div class="avatar circulo-ajuste" id="ajusteCirculo">
-      <img id="ajusteImg" src="${esc(perfil.foto)}" alt="" draggable="false" style="${estiloFoto(ajuste)}">
+    <div class="sub">Arraste a bolinha até o lugar certo. A alça na borda muda o tamanho.</div>
+    <div class="recorte" id="recorte">
+      <img id="ajusteImg" src="${esc(perfil.foto)}" alt="" draggable="false">
+      <div class="bolinha" id="bolinha"><div class="alca" id="alca"></div></div>
     </div>
-    <label class="rot" for="ajusteZoom">Zoom</label>
-    <input type="range" id="ajusteZoom" min="1" max="3" step="0.01" value="${ajuste.zoom}">
+    <label class="rot" for="ajusteTamanho">Tamanho da bolinha</label>
+    <input type="range" id="ajusteTamanho" min="${1 / ZOOM_MAXIMO}" max="1" step="0.01">
     <button class="botao" id="salvarAjuste">Salvar</button>
     <button class="botao fraco" id="fecharAjuste">Cancelar</button>`;
   tela.classList.add('aberto');
-
-  const circulo = $('#ajusteCirculo');
   const img = $('#ajusteImg');
-  const mostrar = () => { img.style.cssText = estiloFoto(ajuste); };
-  let dedo = null;
-  circulo.addEventListener('pointerdown', (ev) => { dedo = { x: ev.clientX, y: ev.clientY }; });
-  circulo.addEventListener('pointermove', (ev) => {
-    if (!dedo || !img.naturalWidth) return;
-    ajuste = moverFoto(ajuste, ev.clientX - dedo.x, ev.clientY - dedo.y, circulo.clientWidth, img.naturalWidth, img.naturalHeight);
-    dedo = { x: ev.clientX, y: ev.clientY };
-    mostrar();
+  if (img.complete && img.naturalWidth) montarRecorte(tela, img);
+  else img.onload = () => montarRecorte(tela, img);
+}
+
+function montarRecorte(tela, img) {
+  const w = img.naturalWidth;
+  const h = img.naturalHeight;
+  // Tamanho em pixels, calculado aqui: a bolinha precisa cair exatamente em cima da foto.
+  const escala = Math.min((tela.clientWidth - 32) / w, (window.innerHeight * 0.55) / h);
+  const recorte = $('#recorte');
+  recorte.style.width = `${w * escala}px`;
+  recorte.style.height = `${h * escala}px`;
+
+  const bolinha = $('#bolinha');
+  const alca = $('#alca');
+  const tamanho = $('#ajusteTamanho');
+  let c = circuloDoAjuste(perfil.fotoAjuste, w, h);
+  const desenhar = () => {
+    bolinha.style.left = `${c.esq * escala}px`;
+    bolinha.style.top = `${c.topo * escala}px`;
+    bolinha.style.width = bolinha.style.height = `${c.d * escala}px`;
+    // Em bolinha pequena, uma alça de tamanho fixo cobriria o centro e arrastar viraria redimensionar.
+    alca.style.width = alca.style.height = `${Math.min(44, c.d * escala * 0.5)}px`;
+    tamanho.value = c.d / Math.min(w, h);
+  };
+  desenhar();
+
+  let arraste = null;
+  recorte.addEventListener('pointerdown', (ev) => {
+    arraste = { alca: ev.target.id === 'alca', x: ev.clientX, y: ev.clientY };
   });
-  for (const fim of ['pointerup', 'pointercancel']) circulo.addEventListener(fim, () => { dedo = null; });
-  $('#ajusteZoom').addEventListener('input', (ev) => {
-    ajuste = { ...ajuste, zoom: Number(ev.target.value) };
-    mostrar();
+  recorte.addEventListener('pointermove', (ev) => {
+    if (!arraste) return;
+    if (arraste.alca) {
+      const r = recorte.getBoundingClientRect();
+      const raio = Math.hypot(ev.clientX - r.left - (c.esq + c.d / 2) * escala, ev.clientY - r.top - (c.topo + c.d / 2) * escala);
+      c = tamanhoCirculo(c, (2 * raio) / escala, w, h);
+    } else {
+      c = moverCirculo(c, (ev.clientX - arraste.x) / escala, (ev.clientY - arraste.y) / escala, w, h);
+    }
+    arraste.x = ev.clientX;
+    arraste.y = ev.clientY;
+    desenhar();
+  });
+  for (const fim of ['pointerup', 'pointercancel']) recorte.addEventListener(fim, () => { arraste = null; });
+  tamanho.addEventListener('input', () => {
+    c = tamanhoCirculo(c, Number(tamanho.value) * Math.min(w, h), w, h);
+    desenhar();
   });
   $('#salvarAjuste').addEventListener('click', async () => {
-    perfil = { ...perfil, fotoAjuste: ajuste };
+    perfil = { ...perfil, fotoAjuste: ajusteDoCirculo(c, w, h) };
     await db.salvarPerfil(perfil);
     fecharAjusteFoto();
   });

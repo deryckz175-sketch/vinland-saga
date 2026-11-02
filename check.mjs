@@ -6,7 +6,7 @@ import {
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
 } from './treino.js';
 import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia } from './dieta.js';
-import { AJUSTE_PADRAO, estiloFoto, moverFoto } from './foto.js';
+import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import { readFileSync } from 'node:fs';
 
 assert.equal(chaveDia(new Date(2026, 10, 1)), '2026-11-01');
@@ -209,12 +209,29 @@ assert.equal(semPlano.doPlano, undefined, 'e continua podendo receber o plano de
 assert.equal(estiloFoto(null), 'object-position:50% 50%;transform-origin:50% 50%;transform:scale(1)', 'foto sem ajuste fica centralizada');
 assert.equal(estiloFoto({ x: 10, y: 20, zoom: 2 }), 'object-position:10% 20%;transform-origin:10% 20%;transform:scale(2)');
 
-// Foto deitada (2:1) num círculo de 100: sobra 100 px na largura e nada na altura.
-assert.deepEqual(moverFoto(AJUSTE_PADRAO, -50, -50, 100, 2000, 1000), { x: 100, y: 50, zoom: 1 }, 'arrastar para a esquerda mostra o lado direito');
-assert.deepEqual(moverFoto(AJUSTE_PADRAO, 25, 0, 100, 2000, 1000), { x: 25, y: 50, zoom: 1 }, 'a foto anda junto com o dedo');
-assert.deepEqual(moverFoto(AJUSTE_PADRAO, -500, 0, 100, 2000, 1000), { x: 100, y: 50, zoom: 1 }, 'não passa da borda');
-assert.deepEqual(moverFoto(AJUSTE_PADRAO, 500, 0, 100, 2000, 1000), { x: 0, y: 50, zoom: 1 });
-assert.deepEqual(moverFoto(AJUSTE_PADRAO, 30, 30, 100, 1000, 1000), AJUSTE_PADRAO, 'foto quadrada sem zoom não tem para onde andar');
-assert.deepEqual(moverFoto({ x: 50, y: 50, zoom: 2 }, -50, 25, 100, 1000, 1000), { x: 100, y: 25, zoom: 2 }, 'com zoom os dois eixos andam');
+// Foto deitada de 2000 x 1000: a maior bolinha tem a altura da foto.
+assert.deepEqual(circuloDoAjuste(null, 2000, 1000), { esq: 500, topo: 0, d: 1000 }, 'sem ajuste: centralizada e do maior tamanho');
+assert.deepEqual(circuloDoAjuste({ x: 100, y: 50, zoom: 2 }, 2000, 1000), { esq: 1500, topo: 250, d: 500 });
+
+// A bolinha vira ajuste e volta igual, em foto deitada, em pé e quadrada.
+for (const [w, h, c] of [
+  [2000, 1000, { esq: 300, topo: 120, d: 400 }],
+  [1000, 2000, { esq: 120, topo: 900, d: 700 }],
+  [1000, 1000, { esq: 10, topo: 20, d: 500 }],
+]) {
+  const volta = circuloDoAjuste(ajusteDoCirculo(c, w, h), w, h);
+  for (const k of ['esq', 'topo', 'd']) assert.ok(Math.abs(volta[k] - c[k]) < 1e-6, `${k} em ${w}x${h}`);
+}
+assert.deepEqual(ajusteDoCirculo({ esq: 0, topo: 0, d: 1000 }, 1000, 1000), { x: 50, y: 50, zoom: 1 }, 'bolinha do tamanho da foto não divide por zero');
+
+const bola = { esq: 100, topo: 100, d: 400 };
+assert.deepEqual(moverCirculo(bola, 50, -20, 2000, 1000), { esq: 150, topo: 80, d: 400 });
+assert.deepEqual(moverCirculo(bola, -500, -500, 2000, 1000), { esq: 0, topo: 0, d: 400 }, 'não sai pelo canto de cima');
+assert.deepEqual(moverCirculo(bola, 5000, 5000, 2000, 1000), { esq: 1600, topo: 600, d: 400 }, 'nem pelo de baixo');
+
+assert.deepEqual(tamanhoCirculo(bola, 200, 2000, 1000), { esq: 200, topo: 200, d: 200 }, 'mantém o centro');
+assert.equal(tamanhoCirculo(bola, 99999, 2000, 1000).d, 1000, 'não passa do lado menor da foto');
+assert.equal(tamanhoCirculo(bola, 1, 2000, 1000).d, 1000 / ZOOM_MAXIMO, 'nem do zoom máximo');
+assert.deepEqual(tamanhoCirculo({ esq: 0, topo: 0, d: 400 }, 800, 2000, 1000), { esq: 0, topo: 0, d: 800 }, 'no canto, cresce para dentro da foto');
 
 console.log('ok: todas as checagens passaram');
