@@ -262,6 +262,10 @@ function folhaAddExercicio() {
     $('#axResultados').innerHTML = achados.length
       ? achados.map((e) => `<button class="opcao" data-ax="${esc(e.nome)}">
           <div><div>${esc(e.nome)}</div><div class="sub">${esc(e.grupo)} · ${esc(e.equipamento)}</div></div></button>`).join('')
+        // O nome dele é o que sai no texto exportado, mesmo quando o catálogo tem parecido.
+        + (q && !achados.some((e) => e.nome.toLowerCase() === ql)
+          ? `<button class="opcao" data-ax="${esc(q)}"><div><div>Usar "${esc(q)}"</div><div class="sub">Com o nome que você digitou</div></div></button>`
+          : '')
       : `<div class="vazio">Nada encontrado.${q ? ` <button class="destaque" data-ax="${esc(q)}">Usar "${esc(q)}"</button>` : ''}</div>`;
     // Com a lista crescendo para cima, a folha precisa descer até o campo.
     const f = $('#folha');
@@ -277,8 +281,8 @@ const TIPOS = {
   restpause: { rotulo: 'rp', nome: 'rest pause' },
 };
 
-// shortcut: só reconhece o catálogo; nome digitado à mão sai sem o +. Virar marca no exercício se ele usar nomes próprios.
-const ehCorporal = (nome) => catalogo.some((e) => e.nome === nome && e.equipamento === 'peso-corporal');
+// shortcut: nome próprio só é reconhecido se começar como no catálogo: "Mergulho" sai com +, "Dips" não. Virar marca no exercício se isso pegar.
+const ehCorporal = (nome) => catalogo.some((e) => e.equipamento === 'peso-corporal' && e.nome.toLowerCase().startsWith(nome.toLowerCase()));
 
 /**
  * O tipo é de cada série, não do exercício: dá para fazer uma linear e uma
