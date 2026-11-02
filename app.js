@@ -1,5 +1,6 @@
 import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros } from './datas.js';
 import * as db from './db.js';
+import { somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha } from './treino.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -156,9 +157,11 @@ function renderTreino() {
     const todas = sessao.exercicios.flatMap((e) => e.series);
     const feitas = todas.filter((s) => s.feita).length;
     el.innerHTML = `
-      <header class="topo">
-        <div class="cronometro" id="cronometro">${relogio()}</div>
-        <h1>${esc(sessao.nome)}</h1>
+      <header class="topo fixo">
+        <div class="linha-crono">
+          <div class="cronometro" id="cronometro">${relogio()}</div>
+          <h1>${esc(sessao.nome)}</h1>
+        </div>
         <div class="data">${todas.length ? `${feitas} de ${todas.length} séries` : 'Adicione o primeiro exercício'}</div>
       </header>
       ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
@@ -187,9 +190,10 @@ function renderTreino() {
 }
 
 function folhaAddExercicio() {
+  // Os resultados ficam ACIMA do campo: embaixo dele o teclado os cobria.
   abrirFolha(`<h3>Adicionar exercício</h3>
-    <input class="busca" id="axBusca" placeholder="Buscar exercício" autocomplete="off">
-    <div id="axResultados"></div>`);
+    <div id="axResultados"></div>
+    <input class="busca" id="axBusca" placeholder="Buscar exercício" autocomplete="off">`);
   const lista = () => {
     const q = $('#axBusca').value.trim();
     const ql = q.toLowerCase();
@@ -198,47 +202,77 @@ function folhaAddExercicio() {
       ? achados.map((e) => `<button class="opcao" data-ax="${esc(e.nome)}">
           <div><div>${esc(e.nome)}</div><div class="sub">${esc(e.grupo)} · ${esc(e.equipamento)}</div></div></button>`).join('')
       : `<div class="vazio">Nada encontrado.${q ? ` <button class="destaque" data-ax="${esc(q)}">Usar "${esc(q)}"</button>` : ''}</div>`;
+    // Com a lista crescendo para cima, a folha precisa descer até o campo.
+    const f = $('#folha');
+    f.scrollTop = f.scrollHeight;
   };
   lista();
   $('#axBusca').addEventListener('input', lista);
 }
 
 /**
- * No modo cluster a carga é uma só para o exercício inteiro: os blocos mudam
- * as repetições, não o peso. Por isso o campo de kg sai das linhas e sobe
- * para o topo do cartão.
+ * O tipo é de cada série, não do exercício: dá para fazer uma linear e uma
+ * cluster no mesmo exercício. Na cluster a carga é uma só e as reps saem dos
+ * blocos, então a coluna de reps vira a soma deles e os blocos ficam na linha
+ * de baixo.
  */
 function cartaoExercicio(ex, ie) {
   const rec = recordes[ex.nome];
-  const cluster = ex.modo === 'cluster';
-  const bateuPr = (s) => s.feita && s.kg != null && (!rec || s.kg > rec.kg);
+  // PR é a maior carga já feita — e o que já foi marcado hoje também conta.
+  // Sem isso o backoff de 72 kg virava PR logo depois da série de 80.
+  const bateuPr = (s, is) => s.feita && s.kg != null && (!rec || s.kg > rec.kg)
+    && !ex.series.some((o, io) => io < is && o.feita && o.kg >= s.kg);
 
-  const linhas = ex.series.map((s, is) => `
-    <div class="serie ${cluster ? 'cluster' : ''} ${s.feita ? 'feita' : ''}">
-      <span class="idx">${cluster ? 'bloco ' + (is + 1) : is + 1}</span>
-      ${cluster ? '' : `<input type="number" inputmode="decimal" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">`}
-      <input type="number" inputmode="numeric" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">
-      <button class="ok" data-feita="${ie}:${is}">${bateuPr(s) ? 'PR' : '✓'}</button>
-    </div>`).join('');
+  const linhas = ex.series.map((s, is) => {
+    const cluster = s.modo === 'cluster';
+    const blocos = s.blocos?.length ? s.blocos : [null];
+    return `
+    <div class="serie ${s.feita ? 'feita' : ''}">
+      <button class="tipo ${cluster ? 'clu' : ''}" data-modo-serie="${ie}:${is}">${cluster ? 'clu' : 'lin'}</button>
+      <input type="number" inputmode="decimal" placeholder="kg" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">
+      ${cluster
+        ? `<div class="soma" id="soma-${ie}-${is}">${somaBlocos(s.blocos) ?? '—'}</div>`
+        : `<input type="number" inputmode="numeric" placeholder="reps" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">`}
+      <input type="number" inputmode="numeric" placeholder="–" value="${s.rir ?? ''}" data-campo="rir" data-e="${ie}" data-s="${is}">
+      <button class="ok" data-feita="${ie}:${is}">${bateuPr(s, is) ? 'PR' : '✓'}</button>
+    </div>
+    ${cluster ? `<div class="blocos">
+      ${blocos.map((b, ib) => `<input type="number" inputmode="numeric" value="${b ?? ''}" data-bloco="${ie}:${is}:${ib}" aria-label="Bloco ${ib + 1}">`).join('<span class="mais">+</span>')}
+      <button class="chip" data-mais-bloco="${ie}:${is}">+ bloco</button>
+      ${blocos.length > 1 ? `<button class="chip" data-menos-bloco="${ie}:${is}">−</button>` : ''}
+    </div>` : ''}`;
+  }).join('');
 
   return `<div class="card">
     <div class="ex-cab">
       <h2>${esc(ex.nome)}</h2>
-      <button class="chip" data-modo="${ie}">${cluster ? 'cluster' : 'linear'}</button>
       <button class="chip apagar" data-tirar-ex="${ie}" aria-label="Remover exercício">✕</button>
     </div>
     ${rec ? `<div class="sub">recorde ${n1(rec.kg)} kg${rec.reps ? ' × ' + rec.reps : ''}</div>` : ''}
-    ${cluster
-      ? `<div class="serie-cab cluster"><span></span><span>reps</span><span></span></div>
-         <label class="rot" for="kgc-${ie}">Carga do exercício (kg)</label>
-         <input class="busca" id="kgc-${ie}" type="number" inputmode="decimal" value="${ex.series[0]?.kg ?? ''}" data-campo="kgCluster" data-e="${ie}">`
-      : '<div class="serie-cab"><span></span><span>kg</span><span>reps</span><span></span></div>'}
+    <div class="serie-cab"><span>tipo</span><span>kg</span><span>reps</span><span>rir</span><span></span></div>
     ${linhas}
+    <div class="ex-pe" id="backoff-${ie}">${chipsBackoff(ex, ie)}</div>
     <div class="ex-pe">
       <button class="chip" data-menos-serie="${ie}">− série</button>
       <button class="chip" data-mais-serie="${ie}">+ série</button>
     </div>
+    <textarea class="obs" rows="2" placeholder="Observação deste exercício" data-obs="${ie}">${esc(ex.obs || '')}</textarea>
   </div>`;
+}
+
+/** A série apontada por um data-* no formato "exercício:série". */
+function serieDe(ref) {
+  const [ie, is] = ref.split(':').map(Number);
+  return sessao.exercicios[ie].series[is];
+}
+
+/** Backoff da maior carga digitada no exercício. Tocar acrescenta a série já com o peso. */
+function chipsBackoff(ex, ie) {
+  const topo = cargaDeTopo(ex.series);
+  if (topo == null) return '';
+  return `<span class="sub">backoff</span>
+    <button class="chip" data-backoff="${ie}:0.9">90% · ${n1(backoff(topo, 0.9))}</button>
+    <button class="chip" data-backoff="${ie}:0.8">80% · ${n1(backoff(topo, 0.8))}</button>`;
 }
 
 // ---- cronômetro da sessão ----
@@ -290,16 +324,11 @@ async function abrirSessao(fichaId) {
   const anteriores = await db.cargasAnteriores(fichaId);
   sessao = {
     fichaId, nome: f.nome, inicio: Date.now(),
-    exercicios: f.exercicios.map((e) => {
-      const ant = anteriores[e.nome];
-      return {
-        nome: e.nome,
-        modo: e.modo || 'linear',
-        series: Array.from({ length: e.series || 3 }, () => ({
-          kg: ant ? ant.kg : null, reps: ant ? ant.reps : null, feita: false,
-        })),
-      };
-    }),
+    exercicios: f.exercicios.map((e) => ({
+      nome: e.nome,
+      obs: '',
+      series: modosDaFicha(e).map((modo) => novaSerie({ ...anteriores[e.nome], modo })),
+    })),
   };
   tocarRelogio();
   guardarSessao();
@@ -308,14 +337,19 @@ async function abrirSessao(fichaId) {
 
 /** Como a ficha ficaria se as mudanças desta sessão fossem salvas nela. */
 function fichaDaSessao() {
-  return sessao.exercicios.map((e) => ({ nome: e.nome, series: e.series.length, modo: e.modo }));
+  return sessao.exercicios.map((e) => ({
+    nome: e.nome,
+    series: e.series.length,
+    modos: e.series.map((s) => s.modo || 'linear'),
+  }));
 }
 
 function fichaMudou() {
   const f = fichas.find((x) => x.id === sessao.fichaId);
   if (!f) return false;
-  const antes = f.exercicios.map((e) => `${e.nome}|${e.series || 3}|${e.modo || 'linear'}`).join('~');
-  const agora = fichaDaSessao().map((e) => `${e.nome}|${e.series}|${e.modo}`).join('~');
+  const chave = (e) => `${e.nome}|${modosDaFicha(e).join(',')}`;
+  const antes = f.exercicios.map(chave).join('~');
+  const agora = fichaDaSessao().map(chave).join('~');
   return antes !== agora;
 }
 
@@ -344,8 +378,13 @@ function pedirFinalizar() {
 
 async function finalizarSessao(salvarNaFicha, nomeNovaFicha) {
   const exercicios = sessao.exercicios.map((e) => ({
-    nome: e.nome, modo: e.modo,
-    series: e.series.filter((s) => s.feita).map((s) => ({ kg: s.kg, reps: s.reps })),
+    nome: e.nome,
+    obs: (e.obs || '').trim(),
+    // reps da cluster é a soma dos blocos: assim recorde e histórico leem as duas igual.
+    series: e.series.filter((s) => s.feita).map((s) => ({
+      modo: s.modo || 'linear', kg: s.kg, reps: repsDaSerie(s), rir: s.rir ?? null,
+      blocos: s.modo === 'cluster' ? s.blocos : null,
+    })),
   })).filter((e) => e.series.length);
 
   let fichaId = sessao.fichaId;
@@ -752,17 +791,33 @@ document.addEventListener('click', async (ev) => {
     return renderTreino();
   }
 
-  if ((el = achar('[data-modo]'))) {
-    const ex = sessao.exercicios[+el.dataset.modo];
-    ex.modo = ex.modo === 'cluster' ? 'linear' : 'cluster';
-    // No cluster a carga é uma só: iguala todos os blocos à do primeiro.
-    if (ex.modo === 'cluster') { const kg = ex.series[0]?.kg ?? null; ex.series.forEach((s) => { s.kg = kg; }); }
+  if ((el = achar('[data-modo-serie]'))) {
+    const s = serieDe(el.dataset.modoSerie);
+    // Trocar de tipo não perde reps: viram a soma dos blocos, e a soma vira bloco.
+    if (s.modo === 'cluster') { s.reps = somaBlocos(s.blocos); s.blocos = null; s.modo = 'linear'; }
+    else { s.blocos = [s.reps ?? null]; s.reps = null; s.modo = 'cluster'; }
+    return renderTreino();
+  }
+  if ((el = achar('[data-mais-bloco]'))) {
+    serieDe(el.dataset.maisBloco).blocos.push(null);
+    return renderTreino();
+  }
+  if ((el = achar('[data-menos-bloco]'))) {
+    const s = serieDe(el.dataset.menosBloco);
+    if (s.blocos.length > 1) s.blocos.pop();
+    return renderTreino();
+  }
+  if ((el = achar('[data-backoff]'))) {
+    const [ie, fracao] = el.dataset.backoff.split(':');
+    const ex = sessao.exercicios[+ie];
+    const s = novaSerie(ex.series[ex.series.length - 1]);
+    s.kg = backoff(cargaDeTopo(ex.series), Number(fracao));
+    ex.series.push(s);
     return renderTreino();
   }
   if ((el = achar('[data-mais-serie]'))) {
     const ex = sessao.exercicios[+el.dataset.maisSerie];
-    const ult = ex.series[ex.series.length - 1];
-    ex.series.push({ kg: ult ? ult.kg : null, reps: ult ? ult.reps : null, feita: false });
+    ex.series.push(novaSerie(ex.series[ex.series.length - 1]));
     return renderTreino();
   }
   if ((el = achar('[data-menos-serie]'))) {
@@ -778,10 +833,21 @@ document.addEventListener('click', async (ev) => {
   if (achar('#addExercicio')) return folhaAddExercicio();
   if ((el = achar('[data-ax]'))) {
     const nome = el.dataset.ax;
-    const ant = (await db.cargasAnteriores(sessao.fichaId))[nome];
+    // A forma vem da última vez que ele fez o exercício (uma série, na primeira);
+    // a carga, da última sessão desta ficha, que é a regra que ele pediu.
+    const [ult, porFicha] = await Promise.all([
+      db.ultimaVezDoExercicio(nome),
+      db.cargasAnteriores(sessao.fichaId),
+    ]);
+    const antes = ult?.series?.length ? ult.series : [null];
     sessao.exercicios.push({
-      nome, modo: 'linear',
-      series: Array.from({ length: 3 }, () => ({ kg: ant ? ant.kg : null, reps: ant ? ant.reps : null, feita: false })),
+      nome,
+      obs: '',
+      series: antes.map((a) => {
+        const s = novaSerie(a);
+        if (porFicha[nome]) s.kg = porFicha[nome].kg;
+        return s;
+      }),
     });
     fecharFolha();
     return renderTreino();
@@ -890,12 +956,30 @@ document.addEventListener('click', async (ev) => {
 });
 
 document.addEventListener('input', (ev) => {
-  const el = ev.target.closest('[data-campo]');
+  const el = ev.target.closest('[data-campo],[data-bloco],[data-obs]');
   if (!el || !sessao) return;
+
+  if (el.dataset.obs != null) {
+    sessao.exercicios[+el.dataset.obs].obs = el.value;
+    return agendarGuardar();
+  }
+
+  // Digitar não redesenha a tela — o campo perderia o foco. Então o que é
+  // calculado a partir do que ele digita se atualiza aqui, no lugar.
   const v = el.value === '' ? null : Number(el.value);
-  const ex = sessao.exercicios[+el.dataset.e];
-  if (el.dataset.campo === 'kgCluster') ex.series.forEach((s) => { s.kg = v; });
-  else ex.series[+el.dataset.s][el.dataset.campo] = v;
+  if (el.dataset.bloco) {
+    const [ie, is, ib] = el.dataset.bloco.split(':').map(Number);
+    const s = sessao.exercicios[ie].series[is];
+    s.blocos[ib] = v;
+    const soma = $(`#soma-${ie}-${is}`);
+    if (soma) soma.textContent = somaBlocos(s.blocos) ?? '—';
+    return agendarGuardar();
+  }
+
+  const ie = +el.dataset.e;
+  const ex = sessao.exercicios[ie];
+  ex.series[+el.dataset.s][el.dataset.campo] = v;
+  if (el.dataset.campo === 'kg') $(`#backoff-${ie}`).innerHTML = chipsBackoff(ex, ie);
   agendarGuardar();
 });
 

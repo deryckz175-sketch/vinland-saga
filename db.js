@@ -128,16 +128,30 @@ export async function ultimaSessaoDaFicha(fichaId) {
   return lista.reduce((a, b) => (a.data >= b.data ? a : b));
 }
 
-/** Cargas da última vez naquela ficha, por nome de exercício. */
+/** Primeira série feita da última vez naquela ficha, por nome de exercício. */
 export async function cargasAnteriores(fichaId) {
   const s = await ultimaSessaoDaFicha(fichaId);
   const mapa = {};
   if (!s) return mapa;
   for (const ex of s.exercicios || []) {
     const feitas = (ex.series || []).filter((x) => x.kg != null);
-    if (feitas.length) mapa[ex.nome] = { kg: feitas[0].kg, reps: feitas[0].reps };
+    if (feitas.length) mapa[ex.nome] = feitas[0];
   }
   return mapa;
+}
+
+/**
+ * Última vez que ele fez este exercício, em qualquer treino. É daqui que sai
+ * a quantidade de séries de um exercício acrescentado no meio da sessão:
+ * ele pediu que viesse com as séries da última vez, não com um número fixo.
+ */
+export async function ultimaVezDoExercicio(nome) {
+  let achado = null;
+  for (const s of await todos(LOJAS.sessoes)) {
+    const ex = (s.exercicios || []).find((e) => e.nome === nome);
+    if (ex && (!achado || s.data > achado.data)) achado = { data: s.data, ex };
+  }
+  return achado ? achado.ex : null;
 }
 
 /**

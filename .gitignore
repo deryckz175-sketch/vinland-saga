@@ -2,3 +2,6 @@ node_modules/
 .DS_Store
 saida-gemini.log
 gemini/
+
+Plano_Alimentar_Ajustado_Deryck.pdf
+.claude/
