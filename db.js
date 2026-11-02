@@ -3,6 +3,8 @@
 // sessoes tem índice por fichaId, porque a carga sugerida vem da última sessão
 // daquela ficha, não do último dia em que o exercício apareceu.
 
+import { itensComidos } from './dieta.js';
+
 const BANCO = 'vinland';
 const VERSAO = 2;
 
@@ -10,7 +12,7 @@ export const LOJAS = {
   perfil: 'perfil',       // um registro só, id 'eu'
   fichas: 'fichas',       // { id, nome, exercicios: [{ nome, series, modo }] }
   sessoes: 'sessoes',     // { id, data, tipo, fichaId, exercicios, minutos }
-  dias: 'dias',           // { data, refeicoes: [...], agua }
+  dias: 'dias',           // { data, refeicoes: [{ nome, itens, feita }], agua, doPlano }
   alimentos: 'alimentos', // alimentos que o usuário criou
   salvas: 'salvas',       // refeições salvas para repetir: { id, nome, itens }
   config: 'config',       // { chave, valor }
@@ -188,11 +190,11 @@ export function salvarDia(d) {
   return gravar(LOJAS.dias, d);
 }
 
-/** Dias que têm comida registrada, com as kcal somadas, para a grade da dieta. */
+/** Dias com refeição concluída, com as kcal somadas, para a grade da dieta. */
 export async function diasComDieta() {
   const mapa = {};
   for (const d of await todos(LOJAS.dias)) {
-    const kcal = (d.refeicoes || []).reduce((t, r) => t + (r.itens || []).reduce((x, i) => x + (i.kcal || 0), 0), 0);
+    const kcal = itensComidos(d.refeicoes).reduce((t, i) => t + (i.kcal || 0), 0);
     if (kcal > 0) mapa[d.data] = kcal;
   }
   return mapa;

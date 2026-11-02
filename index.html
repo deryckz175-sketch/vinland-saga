@@ -61,6 +61,7 @@
   .linha-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--linha); }
   .linha-item:last-child { border-bottom: 0; padding-bottom: 0; }
   .linha-toque { width: 100%; text-align: left; } /* a linha inteira é botão */
+  .linha-toque > :last-child { flex: none; }
   .linha-item:first-of-type { padding-top: 0; }
   .sub { color: var(--fraco); font-size: 13px; }
   .destaque { color: var(--cor); }
@@ -165,7 +166,7 @@
   .serie input { background: var(--surf2); border: 1px solid var(--linha); border-radius: 9px; padding: 9px 2px; width: 100%; text-align: center; }
   .serie .tipo { font-size: 11px; color: var(--fraco); background: var(--surf2); border: 1px solid var(--linha);
                  border-radius: 9px; padding: 9px 0; text-align: center; }
-  .serie .tipo.clu { color: var(--cor); border-color: var(--cor); }
+  .serie .tipo.marcado { color: var(--cor); border-color: var(--cor); }
   .serie .soma { text-align: center; color: var(--fraco); font-variant-numeric: tabular-nums; }
   .serie .ok { width: 32px; height: 32px; border-radius: 9px; background: var(--surf2); display: grid; place-items: center; color: var(--fraco); justify-self: end; }
   .serie.feita .ok { background: var(--cor); color: #fff; }
@@ -179,7 +180,12 @@
          padding: 10px; margin-top: 10px; resize: none; font-family: inherit; }
   .ex-cab { display: flex; align-items: center; gap: 8px; }
   .ex-cab h2 { flex: 1; min-width: 0; margin: 0; }
-  .ex-pe { display: flex; gap: 8px; margin-top: 10px; }
+  .ex-pe { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .refeicao .ex-cab { margin-bottom: 12px; }
+  .concluir { flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--surf2);
+              border: 1px solid var(--fraco); display: grid; place-items: center; font-weight: 700; color: transparent; }
+  .concluida .concluir { background: var(--cor); border-color: var(--cor); color: #fff; }
+  .concluida .ex-cab h2 { color: var(--cor); }
   .chip { font: inherit; font-size: 12px; background: var(--surf2); border: 1px solid var(--linha);
           border-radius: 999px; padding: 6px 11px; color: var(--fraco); white-space: nowrap; }
   .chip.apagar { color: var(--fraco); padding: 6px 10px; }

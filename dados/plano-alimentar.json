@@ -56,6 +56,8 @@
     },
     {
       "nome": "Almoço ou janta com macarrão",
+      "opcaoDe": ["Almoço", "Janta"],
+      "rotulo": "macarrão",
       "itens": [
         { "nome": "Macarrão cozido", "g_": 300, "kcal": 474, "p": 17.4, "c": 92.7, "g": 2.7 },
         { "nome": "Peito de frango grelhado", "g_": 40, "kcal": 64, "p": 12.8, "c": 0.0, "g": 1.1 },

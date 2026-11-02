@@ -1,6 +1,10 @@
 import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga } from './datas.js';
 import * as db from './db.js';
-import { somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha } from './treino.js';
+import {
+  somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
+  temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
+} from './treino.js';
+import { itensComidos, refeicoesDoPlano, comQuantidade } from './dieta.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -59,9 +63,10 @@ async function carregarCatalogos() {
     fetch('dados/exercicios.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
     fetch('dados/taco.json').then((r) => (r.ok ? r.json() : [])).catch(() => []),
     db.todos(db.LOJAS.alimentos).catch(() => []),
-    fetch('dados/plano-alimentar.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    // O service worker serve os dados pelo cache: mudou o arquivo, muda o ?v aqui e no sw.js.
+    fetch('dados/plano-alimentar.json?v=2').then((r) => (r.ok ? r.json() : null)).catch(() => null),
   ]);
-  if (p) { plano = p; await aplicarPlano(); }
+  if (p) { plano = p; await aplicarPlano(); montarDiaDoPlano(); }
   catalogo = ex;
   alimentos = [
     ...meus,
@@ -71,6 +76,7 @@ async function carregarCatalogos() {
       c: nz(a.por100g?.carboidrato), g: nz(a.por100g?.gordura),
     })),
   ];
+  renderTudo(); // o plano e o catálogo chegam depois da primeira tela
 }
 
 /**
@@ -86,6 +92,17 @@ async function aplicarPlano() {
   await db.salvarConfig('planoImportado', plano.origem || true);
   salvas = await db.todos(db.LOJAS.salvas);
   renderTudo();
+}
+
+/**
+ * O dia começa com a dieta dele, por marcar. O que já tinha sido registrado à
+ * mão fica junto, e as refeições vazias saem. A marca impede remontar o dia:
+ * ele pode ter alterado ou tirado alguma coisa.
+ */
+function montarDiaDoPlano() {
+  if (diaHoje.doPlano) return;
+  diaHoje.refeicoes = [...refeicoesDoPlano(plano), ...diaHoje.refeicoes.filter((r) => r.itens.length)];
+  diaHoje.doPlano = true;
 }
 
 /**
@@ -106,13 +123,13 @@ function corDoDia(kcal) {
 // =========================================================================
 
 function macrosDoDia() {
-  return somaMacros(diaHoje.refeicoes.flatMap((r) => r.itens.map((i) => ({ kcal: i.kcal, p: i.p, c: i.c, g: i.g }))));
+  return somaMacros(itensComidos(diaHoje.refeicoes));
 }
 
 function renderHoje() {
   const sessoes = [...diasTreino].includes(CHAVE_HOJE);
   const m = macrosDoDia();
-  const temComida = diaHoje.refeicoes.some((r) => r.itens.length);
+  const temComida = m.kcal > 0;
   const dataLonga = HOJE.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
   $('#tela-hoje').innerHTML = `
@@ -134,8 +151,8 @@ function renderHoje() {
       ${temComida
         ? `<div class="linha-item"><div>Calorias</div><div class="destaque">${m.kcal.toFixed(0)} kcal</div></div>
            <div class="linha-item"><div class="sub">Proteína ${n1(m.p)} g · Carboidrato ${n1(m.c)} g · Gordura ${n1(m.g)} g</div></div>`
-        : `<div class="vazio">Nada registrado hoje.</div>
-           <button class="botao" data-ir="dieta">Registrar refeição</button>`}
+        : `<div class="vazio">Nenhuma refeição concluída hoje.</div>
+           <button class="botao" data-ir="dieta">Abrir a dieta</button>`}
     </div>
 
     <div class="card">
@@ -169,9 +186,11 @@ function renderTreino() {
       ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
       ${editando
         ? `<button class="botao" id="salvarEdicao">Salvar</button>
+           <button class="botao fraco" id="exportarTreino">Exportar em texto</button>
            <button class="botao fraco" id="cancelar">Cancelar</button>
            <button class="botao fraco" id="apagarSessao" data-sessao-id="${sessao.editando}">Apagar treino</button>`
-        : `${sessao.exercicios.length ? '<button class="botao" id="finalizar">Finalizar treino</button>' : ''}
+        : `${sessao.exercicios.length ? `<button class="botao" id="finalizar">Finalizar treino</button>
+             <button class="botao fraco" id="exportarTreino">Exportar em texto</button>` : ''}
            <button class="botao fraco" id="cancelar">Cancelar</button>`}
       <div class="acao-fixa"><button class="botao ${sessao.exercicios.length ? 'fraco' : ''}" id="addExercicio">Adicionar exercício</button></div>`;
     el.classList.add('com-acao');
@@ -252,35 +271,46 @@ function folhaAddExercicio() {
   $('#axBusca').addEventListener('input', lista);
 }
 
+const TIPOS = {
+  linear: { rotulo: 'lin', nome: 'linear' },
+  cluster: { rotulo: 'clu', nome: 'cluster' },
+  restpause: { rotulo: 'rp', nome: 'rest pause' },
+};
+
+// shortcut: só reconhece o catálogo; nome digitado à mão sai sem o +. Virar marca no exercício se ele usar nomes próprios.
+const ehCorporal = (nome) => catalogo.some((e) => e.nome === nome && e.equipamento === 'peso-corporal');
+
 /**
  * O tipo é de cada série, não do exercício: dá para fazer uma linear e uma
- * cluster no mesmo exercício. Na cluster a carga é uma só e as reps saem dos
- * blocos, então a coluna de reps vira a soma deles e os blocos ficam na linha
- * de baixo.
+ * cluster no mesmo exercício. Na cluster e no rest pause a carga é uma só e as
+ * reps saem das partes, então a coluna de reps vira a soma delas e as partes
+ * ficam na linha de baixo. No peso corporal a carga é o que foi somado.
  */
 function cartaoExercicio(ex, ie) {
   const rec = recordes[ex.nome];
+  const rotuloKg = ehCorporal(ex.nome) ? '+kg' : 'kg';
   // PR é a maior carga já feita — e o que já foi marcado hoje também conta.
   // Sem isso o backoff de 72 kg virava PR logo depois da série de 80.
   const bateuPr = (s, is) => s.feita && s.kg != null && (!rec || s.kg > rec.kg)
     && !ex.series.some((o, io) => io < is && o.feita && o.kg >= s.kg);
 
   const linhas = ex.series.map((s, is) => {
-    const cluster = s.modo === 'cluster';
+    const comBlocos = temBlocos(s.modo);
+    const tipo = TIPOS[s.modo] || TIPOS.linear;
     const blocos = s.blocos?.length ? s.blocos : [null];
     return `
     <div class="serie ${s.feita ? 'feita' : ''}">
-      <button class="tipo ${cluster ? 'clu' : ''}" data-modo-serie="${ie}:${is}">${cluster ? 'clu' : 'lin'}</button>
-      <input type="number" inputmode="decimal" placeholder="kg" value="${s.kg ?? ''}" data-campo="kg" data-e="${ie}" data-s="${is}">
-      ${cluster
-        ? `<div class="soma" id="soma-${ie}-${is}">${somaBlocos(s.blocos) ?? '—'}</div>`
-        : `<input type="number" inputmode="numeric" placeholder="reps" value="${s.reps ?? ''}" data-campo="reps" data-e="${ie}" data-s="${is}">`}
+      <button class="tipo ${comBlocos ? 'marcado' : ''}" data-modo-serie="${ie}:${is}" aria-label="Tipo da série: ${tipo.nome}">${tipo.rotulo}</button>
+      <input type="text" inputmode="decimal" autocomplete="off" placeholder="${rotuloKg}" value="${virgula(s.kg)}" data-campo="kg" data-e="${ie}" data-s="${is}">
+      ${comBlocos
+        ? `<div class="soma" id="soma-${ie}-${is}">${virgula(somaBlocos(s.blocos)) || '—'}</div>`
+        : `<input type="text" inputmode="decimal" autocomplete="off" placeholder="reps" value="${virgula(s.reps)}" data-campo="reps" data-e="${ie}" data-s="${is}">`}
       <input type="number" inputmode="numeric" placeholder="–" value="${s.rir ?? ''}" data-campo="rir" data-e="${ie}" data-s="${is}">
       <button class="ok" data-feita="${ie}:${is}">${bateuPr(s, is) ? 'PR' : '✓'}</button>
     </div>
-    ${cluster ? `<div class="blocos">
-      ${blocos.map((b, ib) => `<input type="number" inputmode="numeric" value="${b ?? ''}" data-bloco="${ie}:${is}:${ib}" aria-label="Bloco ${ib + 1}">`).join('<span class="mais">+</span>')}
-      <button class="chip" data-mais-bloco="${ie}:${is}">+ bloco</button>
+    ${comBlocos ? `<div class="blocos">
+      ${blocos.map((b, ib) => `<input type="text" inputmode="decimal" autocomplete="off" value="${virgula(b)}" data-bloco="${ie}:${is}:${ib}" aria-label="Parte ${ib + 1}">`).join('<span class="mais">+</span>')}
+      <button class="chip" data-mais-bloco="${ie}:${is}">${s.modo === 'restpause' ? '+ rest pause' : '+ bloco'}</button>
       ${blocos.length > 1 ? `<button class="chip" data-menos-bloco="${ie}:${is}">−</button>` : ''}
     </div>` : ''}`;
   }).join('');
@@ -290,8 +320,8 @@ function cartaoExercicio(ex, ie) {
       <h2>${esc(ex.nome)}</h2>
       <button class="chip apagar" data-tirar-ex="${ie}" aria-label="Remover exercício">✕</button>
     </div>
-    ${rec ? `<div class="sub">recorde ${n1(rec.kg)} kg${rec.reps ? ' × ' + rec.reps : ''}</div>` : ''}
-    <div class="serie-cab"><span>tipo</span><span>kg</span><span>reps</span><span>rir</span><span></span></div>
+    ${rec ? `<div class="sub">recorde ${virgula(rec.kg)} kg${rec.reps ? ' × ' + virgula(rec.reps) : ''}</div>` : ''}
+    <div class="serie-cab"><span>tipo</span><span>${rotuloKg}</span><span>reps</span><span>rir</span><span></span></div>
     ${linhas}
     <div class="ex-pe" id="backoff-${ie}">${chipsBackoff(ex, ie)}</div>
     <div class="ex-pe">
@@ -424,12 +454,21 @@ function exerciciosGravados() {
   return sessao.exercicios.map((e) => ({
     nome: e.nome,
     obs: (e.obs || '').trim(),
-    // reps da cluster é a soma dos blocos: assim recorde e histórico leem as duas igual.
+    // reps de cluster e rest pause é a soma das partes: assim recorde e histórico leem tudo igual.
     series: e.series.filter((s) => s.feita).map((s) => ({
       modo: s.modo || 'linear', kg: s.kg, reps: repsDaSerie(s), rir: s.rir ?? null,
-      blocos: s.modo === 'cluster' ? s.blocos : null,
+      blocos: temBlocos(s.modo) ? s.blocos : null,
     })),
   })).filter((e) => e.series.length);
+}
+
+/** O texto para colar onde ele posta o treino. Só entra o que está marcado. */
+function folhaExportar() {
+  const texto = textoDoTreino(exerciciosGravados(), ehCorporal);
+  if (!texto) return alerta('Marque pelo menos uma série com as reps para exportar.');
+  abrirFolha(`<h3>Exportar treino</h3>
+    <textarea class="obs" id="textoTreino" rows="${texto.split('\n').length + 2}" readonly>${esc(texto)}</textarea>
+    <button class="botao" id="copiarTreino">Copiar</button>`);
 }
 
 /** Gravar ou apagar um treino mexe na lista, na grade e nos recordes ao mesmo tempo. */
@@ -520,29 +559,13 @@ function renderDieta() {
     <div class="card">
       <div class="linha-item">
         <div><div class="num-grande ${m.kcal ? 'destaque' : ''}">${m.kcal.toFixed(0)}</div>
-          <div class="sub" style="margin-top:6px">kcal somadas hoje</div></div>
+          <div class="sub" style="margin-top:6px">kcal das refeições concluídas</div></div>
       </div>
       ${m.kcal ? `<div class="linha-item"><div class="sub">P ${n1(m.p)} g · C ${n1(m.c)} g · G ${n1(m.g)} g</div></div>` : ''}
     </div>
 
     ${refs.length
-      ? refs.map((r, i) => {
-        const s = somaMacros(r.itens);
-        return `<div class="card">
-          <h2>${esc(r.nome)}</h2>
-          ${r.itens.length
-            ? r.itens.map((it, j) => `<div class="linha-item">
-                <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g</div></div>
-                <button class="sub" data-remover="${i}:${j}">${it.kcal.toFixed(0)} kcal ✕</button></div>`).join('')
-            : '<div class="vazio">Nada registrado.</div>'}
-          <div class="ex-pe">
-            <button class="chip" data-add-refeicao="${i}">+ alimento</button>
-            ${salvas.length ? `<button class="chip" data-repetir="${i}">repetir salva</button>` : ''}
-            ${r.itens.length ? `<button class="chip" data-salvar-ref="${i}">salvar</button>` : ''}
-          </div>
-          ${r.itens.length ? `<div class="sub" style="margin-top:8px">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>` : ''}
-        </div>`;
-      }).join('')
+      ? refs.map(cartaoRefeicao).join('')
       : '<div class="card"><div class="vazio">Nenhuma refeição hoje.</div></div>'}
 
     <div class="card">
@@ -559,6 +582,45 @@ function renderDieta() {
     </div>
 
     <button class="botao fraco" id="novaRefeicao">Adicionar refeição</button>`;
+}
+
+/** Uma refeição do dia: o box conclui, e tocar num alimento muda o que ele comeu. */
+function cartaoRefeicao(r, i) {
+  const s = somaMacros(r.itens);
+  const feita = r.feita !== false;
+  const refeicoesPlano = plano?.refeicoes || [];
+  const igualA = (outra) => JSON.stringify(r.itens) === JSON.stringify(outra.itens);
+  const original = refeicoesPlano.find((p) => p.nome === r.nome);
+  return `<div class="card refeicao ${feita ? 'concluida' : ''}">
+    <div class="ex-cab">
+      <h2>${esc(r.nome)}</h2>
+      <button class="concluir" data-concluir="${i}" aria-pressed="${feita}" aria-label="Concluir ${esc(r.nome)}">✓</button>
+    </div>
+    ${r.itens.length
+      ? r.itens.map((it, j) => `<button class="linha-item linha-toque" data-item="${i}:${j}">
+          <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g</div></div>
+          <div class="sub">${it.kcal.toFixed(0)} kcal ›</div></button>`).join('')
+      : '<div class="vazio">Nada registrado.</div>'}
+    ${r.itens.length ? `<div class="sub" style="margin-top:10px">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>` : ''}
+    <div class="ex-pe">
+      <button class="chip" data-add-refeicao="${i}">+ alimento</button>
+      ${refeicoesPlano.map((o, k) => (o.opcaoDe?.includes(r.nome) && !igualA(o)
+        ? `<button class="chip" data-opcao="${i}:${k}">trocar por ${esc(o.rotulo)}</button>` : '')).join('')}
+      ${original && !igualA(original) ? `<button class="chip" data-voltar-plano="${i}">voltar ao plano</button>` : ''}
+      ${salvas.length ? `<button class="chip" data-repetir="${i}">repetir salva</button>` : ''}
+      ${r.itens.length ? `<button class="chip" data-salvar-ref="${i}">salvar</button>` : ''}
+    </div>
+  </div>`;
+}
+
+/** Onde ele muda o que comeu: outra quantidade, ou tirar da refeição. */
+function folhaItem(i, j) {
+  const it = diaHoje.refeicoes[i].itens[j];
+  abrirFolha(`<h3>${esc(it.nome)}</h3>
+    <label class="rot" for="qtd">Quanto você comeu (g)</label>
+    <input class="busca" id="qtd" type="text" inputmode="decimal" autocomplete="off" value="${virgula(it.g_)}">
+    <button class="botao" data-salvar-item="${i}:${j}">Salvar</button>
+    <button class="botao fraco" data-remover="${i}:${j}">Tirar da refeição</button>`);
 }
 
 async function salvarDiaHoje() {
@@ -679,7 +741,7 @@ function renderMesAmpliado() {
 
 async function mostrarDia(k) {
   const [sessoes, d] = await Promise.all([db.sessoesDoDia(k), db.dia(k)]);
-  const m = somaMacros(d.refeicoes.flatMap((r) => r.itens));
+  const m = somaMacros(itensComidos(d.refeicoes));
   const [, mm, dd] = k.split('-');
   const alvo = $('#detalheDia');
   if (!alvo) return;
@@ -716,7 +778,7 @@ function folhaRegistro() {
     <button class="opcao" data-reg="treino"><span class="bolha">🏋️</span><div><div>Treino</div><div class="sub">${sessao ? 'Voltar para o treino em andamento' : 'Começa agora, com o tempo correndo'}</div></div></button>
     ${fichas.length && !sessao ? `<button class="opcao" data-reg="ficha"><span class="bolha">📋</span><div><div>Treino por ficha</div><div class="sub">${fichas.length} ficha${fichas.length === 1 ? '' : 's'} salva${fichas.length === 1 ? '' : 's'}</div></div></button>` : ''}
     <button class="opcao" data-reg="cardio"><span class="bolha">🏃</span><div><div>Cardio</div><div class="sub">Tipo e tempo</div></div></button>
-    <button class="opcao" data-reg="refeicao"><span class="bolha">🍽️</span><div><div>Refeição</div><div class="sub">Adicionar alimento</div></div></button>
+    <button class="opcao" data-reg="refeicao"><span class="bolha">🍽️</span><div><div>Refeição</div><div class="sub">Marcar o que comeu</div></div></button>
     <button class="opcao" data-reg="perfil"><span class="bolha">👤</span><div><div>Perfil</div><div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'Preencher'}</div></div></button>`);
 }
 
@@ -778,10 +840,10 @@ function folhaNovaFicha() {
 }
 
 function folhaNovaRefeicao() {
-  const sugestoes = REFEICOES_PADRAO.filter((n) => !diaHoje.refeicoes.some((r) => r.nome === n));
+  const sugestoes = plano ? [] : REFEICOES_PADRAO.filter((n) => !diaHoje.refeicoes.some((r) => r.nome === n));
   abrirFolha(`<h3>Adicionar refeição</h3>
     ${sugestoes.map((n) => `<button class="opcao" data-ref-nome="${esc(n)}"><div>${esc(n)}</div></button>`).join('')}
-    <label class="rot" for="rNome">Ou um nome seu</label>
+    <label class="rot" for="rNome">${sugestoes.length ? 'Ou um nome seu' : 'Nome'}</label>
     <input class="busca" id="rNome" placeholder="Pré-treino" autocomplete="off">
     <button class="botao" id="salvarRefeicao">Adicionar</button>`);
 }
@@ -807,7 +869,7 @@ function folhaPorcao(iRef, idAli) {
   const a = alimentos.find((x) => String(x.id) === String(idAli));
   if (!a) return;
   abrirFolha(`<h3>${esc(a.nome)}</h3>
-    <input class="busca" id="qtd" type="number" inputmode="decimal" value="100">
+    <input class="busca" id="qtd" type="text" inputmode="decimal" autocomplete="off" value="100">
     <div class="sub" style="margin-bottom:14px">gramas</div>
     <button class="botao" data-confirma="${iRef}:${esc(idAli)}">Adicionar</button>`);
 }
@@ -866,6 +928,17 @@ document.addEventListener('click', async (ev) => {
     return renderTreino();
   }
   if (achar('#finalizar')) return pedirFinalizar();
+  if (achar('#exportarTreino')) return folhaExportar();
+  if ((el = achar('#copiarTreino'))) {
+    try {
+      await navigator.clipboard.writeText($('#textoTreino').value);
+      el.textContent = 'Copiado';
+    } catch {
+      $('#textoTreino').select();
+      el.textContent = 'Segure no texto para copiar';
+    }
+    return;
+  }
   if (achar('#salvarNaFicha')) return finalizarSessao(true);
   if (achar('#soHoje')) return finalizarSessao(false);
   if (achar('#salvarComoFicha')) {
@@ -881,10 +954,7 @@ document.addEventListener('click', async (ev) => {
   }
 
   if ((el = achar('[data-modo-serie]'))) {
-    const s = serieDe(el.dataset.modoSerie);
-    // Trocar de tipo não perde reps: viram a soma dos blocos, e a soma vira bloco.
-    if (s.modo === 'cluster') { s.reps = somaBlocos(s.blocos); s.blocos = null; s.modo = 'linear'; }
-    else { s.blocos = [s.reps ?? null]; s.reps = null; s.modo = 'cluster'; }
+    trocarTipo(serieDe(el.dataset.modoSerie));
     return renderTreino();
   }
   if ((el = achar('[data-mais-bloco]'))) {
@@ -970,14 +1040,15 @@ document.addEventListener('click', async (ev) => {
 
   if (achar('#novaRefeicao')) return folhaNovaRefeicao();
   if ((el = achar('[data-ref-nome]'))) {
-    diaHoje.refeicoes.push({ nome: el.dataset.refNome, itens: [] });
+    diaHoje.refeicoes.push({ nome: el.dataset.refNome, itens: [], feita: true });
     fecharFolha();
     return salvarDiaHoje();
   }
   if (achar('#salvarRefeicao')) {
     const nome = $('#rNome').value.trim();
     if (!nome) return;
-    diaHoje.refeicoes.push({ nome, itens: [] });
+    // O que ele mesmo acrescenta já conta; só a dieta começa por marcar.
+    diaHoje.refeicoes.push({ nome, itens: [], feita: true });
     fecharFolha();
     return salvarDiaHoje();
   }
@@ -990,8 +1061,8 @@ document.addEventListener('click', async (ev) => {
   if ((el = achar('[data-confirma]'))) {
     const [iRef, ...resto] = el.dataset.confirma.split(':');
     const a = alimentos.find((x) => String(x.id) === resto.join(':'));
-    const q = Number($('#qtd').value) || 0;
-    if (!a || q <= 0) return;
+    const q = lerNumero($('#qtd').value);
+    if (!a || !(q > 0)) return;
     const f = q / 100;
     diaHoje.refeicoes[Number(iRef)].itens.push({
       nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f,
@@ -999,9 +1070,38 @@ document.addEventListener('click', async (ev) => {
     fecharFolha();
     return salvarDiaHoje();
   }
+  if ((el = achar('[data-concluir]'))) {
+    const r = diaHoje.refeicoes[Number(el.dataset.concluir)];
+    r.feita = r.feita === false;
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-item]'))) {
+    const [i, j] = el.dataset.item.split(':').map(Number);
+    return folhaItem(i, j);
+  }
+  if ((el = achar('[data-salvar-item]'))) {
+    const [i, j] = el.dataset.salvarItem.split(':').map(Number);
+    const q = lerNumero($('#qtd').value);
+    if (!(q > 0)) return;
+    const itens = diaHoje.refeicoes[i].itens;
+    itens[j] = comQuantidade(itens[j], q);
+    fecharFolha();
+    return salvarDiaHoje();
+  }
   if ((el = achar('[data-remover]'))) {
     const [i, j] = el.dataset.remover.split(':').map(Number);
     diaHoje.refeicoes[i].itens.splice(j, 1);
+    fecharFolha();
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-opcao]'))) {
+    const [i, k] = el.dataset.opcao.split(':').map(Number);
+    diaHoje.refeicoes[i].itens = plano.refeicoes[k].itens.map((x) => ({ ...x }));
+    return salvarDiaHoje();
+  }
+  if ((el = achar('[data-voltar-plano]'))) {
+    const r = diaHoje.refeicoes[Number(el.dataset.voltarPlano)];
+    r.itens = plano.refeicoes.find((p) => p.nome === r.nome).itens.map((x) => ({ ...x }));
     return salvarDiaHoje();
   }
   if ((el = achar('[data-agua]'))) {
@@ -1036,11 +1136,7 @@ document.addEventListener('click', async (ev) => {
     if (el.dataset.reg === 'ficha') return setTela('treino');
     if (el.dataset.reg === 'cardio') return folhaCardio();
     if (el.dataset.reg === 'perfil') { setTela('perfil'); return folhaPerfil(); }
-    if (el.dataset.reg === 'refeicao') {
-      setTela('dieta');
-      if (!diaHoje.refeicoes.length) return folhaNovaRefeicao();
-      return folhaAlimento(0);
-    }
+    if (el.dataset.reg === 'refeicao') return setTela('dieta');
   }
 });
 
@@ -1055,13 +1151,13 @@ document.addEventListener('input', (ev) => {
 
   // Digitar não redesenha a tela — o campo perderia o foco. Então o que é
   // calculado a partir do que ele digita se atualiza aqui, no lugar.
-  const v = el.value === '' ? null : Number(el.value);
+  const v = lerNumero(el.value);
   if (el.dataset.bloco) {
     const [ie, is, ib] = el.dataset.bloco.split(':').map(Number);
     const s = sessao.exercicios[ie].series[is];
     s.blocos[ib] = v;
     const soma = $(`#soma-${ie}-${is}`);
-    if (soma) soma.textContent = somaBlocos(s.blocos) ?? '—';
+    if (soma) soma.textContent = virgula(somaBlocos(s.blocos)) || '—';
     return agendarGuardar();
   }
 
@@ -1099,6 +1195,12 @@ carregar().catch((e) => {
     <div class="card"><div class="vazio">${bloqueado
       ? 'O app está aberto em outra aba com uma versão anterior. Feche as outras e abra de novo.'
       : 'Não deu para abrir o armazenamento do aparelho. Em aba anônima o navegador bloqueia, e aí nada fica salvo.'}</div></div>`;
+});
+
+// O iPhone pode acordar o app congelado de ontem, e a refeição de hoje cairia no
+// dia anterior. Com treino aberto não recarrega: ele continua contando.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !sessao && chaveDia(new Date()) !== CHAVE_HOJE) location.reload();
 });
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
