@@ -6,6 +6,7 @@ import {
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
 } from './treino.js';
 import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia } from './dieta.js';
+import { AJUSTE_PADRAO, estiloFoto, moverFoto } from './foto.js';
 import { readFileSync } from 'node:fs';
 
 assert.equal(chaveDia(new Date(2026, 10, 1)), '2026-11-01');
@@ -202,5 +203,18 @@ assert.deepEqual(montarDia(jaMontado, planoMini).refeicoes, [], 'ele pode ter ti
 const semPlano = { refeicoes: [] };
 assert.equal(montarDia(semPlano, null), semPlano, 'sem plano o dia fica como está');
 assert.equal(semPlano.doPlano, undefined, 'e continua podendo receber o plano depois');
+
+// ---- ajuste da foto ----
+
+assert.equal(estiloFoto(null), 'object-position:50% 50%;transform-origin:50% 50%;transform:scale(1)', 'foto sem ajuste fica centralizada');
+assert.equal(estiloFoto({ x: 10, y: 20, zoom: 2 }), 'object-position:10% 20%;transform-origin:10% 20%;transform:scale(2)');
+
+// Foto deitada (2:1) num círculo de 100: sobra 100 px na largura e nada na altura.
+assert.deepEqual(moverFoto(AJUSTE_PADRAO, -50, -50, 100, 2000, 1000), { x: 100, y: 50, zoom: 1 }, 'arrastar para a esquerda mostra o lado direito');
+assert.deepEqual(moverFoto(AJUSTE_PADRAO, 25, 0, 100, 2000, 1000), { x: 25, y: 50, zoom: 1 }, 'a foto anda junto com o dedo');
+assert.deepEqual(moverFoto(AJUSTE_PADRAO, -500, 0, 100, 2000, 1000), { x: 100, y: 50, zoom: 1 }, 'não passa da borda');
+assert.deepEqual(moverFoto(AJUSTE_PADRAO, 500, 0, 100, 2000, 1000), { x: 0, y: 50, zoom: 1 });
+assert.deepEqual(moverFoto(AJUSTE_PADRAO, 30, 30, 100, 1000, 1000), AJUSTE_PADRAO, 'foto quadrada sem zoom não tem para onde andar');
+assert.deepEqual(moverFoto({ x: 50, y: 50, zoom: 2 }, -50, 25, 100, 1000, 1000), { x: 100, y: 25, zoom: 2 }, 'com zoom os dois eixos andam');
 
 console.log('ok: todas as checagens passaram');

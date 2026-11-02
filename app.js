@@ -1,5 +1,6 @@
 import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga, somaDias } from './datas.js';
 import * as db from './db.js';
+import { AJUSTE_PADRAO, estiloFoto, moverFoto } from './foto.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
@@ -675,7 +676,7 @@ function renderPerfil() {
   $('#tela-perfil').innerHTML = `
     <div class="perfil-topo">
       <button class="avatar" id="abrirPerfil" aria-label="Editar perfil">
-        ${perfil.foto ? `<img src="${esc(perfil.foto)}" alt="">` : '<span>+</span>'}
+        ${imagemPerfil()}
       </button>
       <button id="abrirPerfilTexto" style="text-align:left">
         <div class="nome">${esc(perfil.nome) || 'Seu nome'}</div>
@@ -792,13 +793,69 @@ function folhaRegistro() {
     <button class="opcao" data-reg="perfil"><span class="bolha">👤</span><div><div>Perfil</div><div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'Preencher'}</div></div></button>`);
 }
 
+function imagemPerfil() {
+  return perfil.foto ? `<img src="${esc(perfil.foto)}" alt="" style="${estiloFoto(perfil.fotoAjuste)}">` : '<span>+</span>';
+}
+
+function campoFoto() {
+  return `<div class="avatar grande">${imagemPerfil()}</div>
+    <div class="acoes-foto">
+      <label class="botao fraco" for="arqFoto">Escolher foto</label>
+      ${perfil.foto ? '<button class="botao fraco" id="ajustarFoto">Ajustar foto</button>' : ''}
+    </div>
+    <input type="file" id="arqFoto" accept="image/*" hidden>`;
+}
+
+/**
+ * Abre por cima da folha do perfil em vez de trocar o conteúdo dela: assim o que
+ * ele já digitou no nome, peso e altura continua lá quando voltar.
+ */
+function abrirAjusteFoto() {
+  let ajuste = { ...AJUSTE_PADRAO, ...perfil.fotoAjuste };
+  const tela = $('#ajusteFoto');
+  tela.innerHTML = `<h3>Ajustar foto</h3>
+    <div class="sub">Arraste a foto para posicionar.</div>
+    <div class="avatar circulo-ajuste" id="ajusteCirculo">
+      <img id="ajusteImg" src="${esc(perfil.foto)}" alt="" draggable="false" style="${estiloFoto(ajuste)}">
+    </div>
+    <label class="rot" for="ajusteZoom">Zoom</label>
+    <input type="range" id="ajusteZoom" min="1" max="3" step="0.01" value="${ajuste.zoom}">
+    <button class="botao" id="salvarAjuste">Salvar</button>
+    <button class="botao fraco" id="fecharAjuste">Cancelar</button>`;
+  tela.classList.add('aberto');
+
+  const circulo = $('#ajusteCirculo');
+  const img = $('#ajusteImg');
+  const mostrar = () => { img.style.cssText = estiloFoto(ajuste); };
+  let dedo = null;
+  circulo.addEventListener('pointerdown', (ev) => { dedo = { x: ev.clientX, y: ev.clientY }; });
+  circulo.addEventListener('pointermove', (ev) => {
+    if (!dedo || !img.naturalWidth) return;
+    ajuste = moverFoto(ajuste, ev.clientX - dedo.x, ev.clientY - dedo.y, circulo.clientWidth, img.naturalWidth, img.naturalHeight);
+    dedo = { x: ev.clientX, y: ev.clientY };
+    mostrar();
+  });
+  for (const fim of ['pointerup', 'pointercancel']) circulo.addEventListener(fim, () => { dedo = null; });
+  $('#ajusteZoom').addEventListener('input', (ev) => {
+    ajuste = { ...ajuste, zoom: Number(ev.target.value) };
+    mostrar();
+  });
+  $('#salvarAjuste').addEventListener('click', async () => {
+    perfil = { ...perfil, fotoAjuste: ajuste };
+    await db.salvarPerfil(perfil);
+    fecharAjusteFoto();
+  });
+}
+
+function fecharAjusteFoto() {
+  $('#ajusteFoto').classList.remove('aberto');
+  $('#campoFoto').innerHTML = campoFoto();
+  renderPerfil();
+}
+
 function folhaPerfil() {
   abrirFolha(`<h3>Seu perfil</h3>
-    <div class="campo-foto">
-      <div class="avatar grande">${perfil.foto ? `<img src="${esc(perfil.foto)}" alt="">` : '<span>+</span>'}</div>
-      <label class="botao fraco" for="arqFoto" style="margin:0">Escolher foto</label>
-      <input type="file" id="arqFoto" accept="image/*" hidden>
-    </div>
+    <div class="campo-foto" id="campoFoto">${campoFoto()}</div>
     <label class="rot" for="pNome">Nome</label>
     <input class="busca" id="pNome" value="${esc(perfil.nome)}" autocomplete="off">
     <label class="rot" for="pPeso">Peso (kg)</label>
@@ -1044,6 +1101,8 @@ document.addEventListener('click', async (ev) => {
   }
 
   if (achar('#abrirPerfil') || achar('#abrirPerfilTexto')) return folhaPerfil();
+  if (achar('#ajustarFoto')) return abrirAjusteFoto();
+  if (achar('#fecharAjuste')) return fecharAjusteFoto();
   if (achar('#salvarPerfil')) {
     perfil = {
       ...perfil,
@@ -1194,10 +1253,12 @@ document.addEventListener('change', (ev) => {
   // Redimensionar antes de salvar quando as fotos de progresso entrarem (etapa 6).
   const leitor = new FileReader();
   leitor.onload = async () => {
-    perfil = { ...perfil, foto: leitor.result };
+    // O ajuste era da foto anterior; a nova começa centralizada.
+    perfil = { ...perfil, foto: leitor.result, fotoAjuste: null };
     await db.salvarPerfil(perfil);
-    folhaPerfil();
+    $('#campoFoto').innerHTML = campoFoto();
     renderPerfil();
+    abrirAjusteFoto();
   };
   leitor.readAsDataURL(arq);
 });

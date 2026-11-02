@@ -1,9 +1,9 @@
 // Cache do app para funcionar em modo avião. Os registros do usuário ficam no
 // IndexedDB e não passam por aqui — isto guarda só o código e as tabelas fixas.
 // shortcut: troca o cache inteiro a cada versão, sem atualização parcial.
-const VERSAO = 'vinland-v7';
+const VERSAO = 'vinland-v8';
 const ARQUIVOS = [
-  './', 'index.html', 'app.js', 'datas.js', 'db.js', 'treino.js', 'dieta.js', 'manifest.json',
+  './', 'index.html', 'app.js', 'datas.js', 'db.js', 'treino.js', 'dieta.js', 'foto.js', 'manifest.json',
   'dados/exercicios.json', 'dados/taco.json', 'dados/plano-alimentar.json?v=2',
   'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png',
 ];

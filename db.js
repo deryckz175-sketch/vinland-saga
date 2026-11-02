@@ -9,7 +9,7 @@ const BANCO = 'vinland';
 const VERSAO = 2;
 
 export const LOJAS = {
-  perfil: 'perfil',       // um registro só, id 'eu'
+  perfil: 'perfil',       // um registro só, id 'eu'; fotoAjuste é a posição e o zoom da foto
   fichas: 'fichas',       // { id, nome, exercicios: [{ nome, series, modo }] }
   sessoes: 'sessoes',     // { id, data, tipo, fichaId, exercicios, minutos }
   dias: 'dias',           // { data, refeicoes: [{ nome, itens, feita }], agua, doPlano }

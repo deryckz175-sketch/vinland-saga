@@ -149,10 +149,20 @@
   .perfil-topo { display: flex; align-items: center; gap: 14px; padding: calc(env(safe-area-inset-top) + 18px) 0 18px; }
   .avatar { width: 62px; height: 62px; border-radius: 50%; background: var(--surf2); display: grid; place-items: center;
             font-size: 26px; color: var(--fraco); border: 1px solid var(--linha); overflow: hidden; flex: none; }
+  /* isolation: o Safari pode deixar a foto com zoom vazar do círculo sem isso. */
+  .avatar { isolation: isolate; }
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .avatar.grande { width: 84px; height: 84px; }
   .campo-foto { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
-  .campo-foto .botao { width: auto; padding: 11px 16px; }
+  .acoes-foto { display: grid; gap: 8px; }
+  .campo-foto .botao { width: auto; padding: 11px 16px; margin: 0; }
+  #ajusteFoto { position: fixed; inset: 0; z-index: 60; display: none; overflow-y: auto; background: var(--bg);
+                padding: calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 24px); }
+  #ajusteFoto.aberto { display: block; }
+  #ajusteFoto h3 { margin: 0 0 4px; font-size: 17px; }
+  #ajusteFoto input[type="range"] { display: block; width: 100%; margin: 8px 0 14px; accent-color: var(--cor); }
+  .circulo-ajuste { width: min(72vw, 280px); height: min(72vw, 280px); margin: 24px auto; touch-action: none; cursor: grab; }
+  .circulo-ajuste img { pointer-events: none; -webkit-user-select: none; user-select: none; }
   .escolhidos { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .marca { font: inherit; font-size: 13px; background: var(--surf2); border: 1px solid var(--linha);
            border-radius: 999px; padding: 6px 11px; color: var(--txt); }
@@ -233,6 +243,8 @@
   <button class="aba" data-tela="perfil">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.9-5.6 7.5-5.6s6.7 1.8 7.5 5.6"/></svg>Perfil</button>
 </nav>
+
+<div id="ajusteFoto"></div>
 
 <div class="folha-fundo" id="folhaFundo"></div>
 <div class="folha" id="folha"><div class="puxador"></div><div id="folhaConteudo"></div></div>
