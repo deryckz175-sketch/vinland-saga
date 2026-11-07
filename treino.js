@@ -27,19 +27,54 @@ export function repsDaSerie(s) {
   return temBlocos(s.modo) ? somaBlocos(s.blocos) : (s.reps ?? null);
 }
 
-/** Linear, cluster, rest pause e de volta. Trocar de tipo não perde reps. */
-export function trocarTipo(s) {
-  if (s.modo === 'cluster') {
-    s.modo = 'restpause';
-  } else if (s.modo === 'restpause') {
+/** Muda o tipo sem perder reps: a soma das partes vira as reps, e as reps viram a primeira parte. */
+export function mudarTipo(s, modo) {
+  if ((s.modo || 'linear') === modo) return;
+  if (modo === 'linear') {
     s.reps = somaBlocos(s.blocos);
     s.blocos = null;
-    s.modo = 'linear';
-  } else {
+  } else if (!temBlocos(s.modo)) {
     s.blocos = [s.reps ?? null];
     s.reps = null;
-    s.modo = 'cluster';
   }
+  // Rest pause é a série e pelo menos uma volta depois da pausa: já deixa o lugar dela.
+  if (modo === 'restpause' && s.blocos.length < 2) s.blocos.push(null);
+  s.modo = modo;
+}
+
+/** O cluster como ele escreve, 4:2-1: quantos blocos, as reps de cada um e as do último. */
+export function partesDoCluster(blocos) {
+  const b = blocos?.length ? blocos : [null];
+  const ultimo = b[b.length - 1];
+  return { n: b.length, r: b[0] ?? null, u: b.length > 1 && ultimo !== b[0] ? ultimo : null };
+}
+
+/** O caminho de volta. Último em branco é igual aos outros. */
+export function blocosDoCluster({ n, r, u }) {
+  const total = Math.min(50, Math.max(1, Math.round(n || 1)));
+  if (total === 1) return [r ?? null];
+  return [...Array(total - 1).fill(r ?? null), u ?? r ?? null];
+}
+
+/**
+ * 1RM estimado pela fórmula de Epley: carga × (1 + reps/30). O RIR entra como as
+ * reps que ainda dava para fazer: 80 kg × 6 com 2 na reserva conta como 8 até a falha.
+ */
+export function umRM(kg, reps, rir) {
+  if (!(kg > 0) || !(reps > 0)) return null;
+  const ateFalha = reps + (rir || 0);
+  return ateFalha <= 1 ? kg : kg * (1 + ateFalha / 30);
+}
+
+/** A série que dá o maior 1RM. Só a linear conta: bloco de cluster não vai até a falha. */
+export function melhorSerie(series) {
+  let melhor = null;
+  for (const s of series || []) {
+    if (temBlocos(s.modo)) continue;
+    const rm = umRM(s.kg, s.reps, s.rir);
+    if (rm != null && (!melhor || rm > melhor.rm)) melhor = { kg: s.kg, reps: s.reps, rir: s.rir ?? null, rm };
+  }
+  return melhor;
 }
 
 /**

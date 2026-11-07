@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { chaveDia, diasDoMes, somaMacros, dataLonga, somaDias, MESES } from './datas.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
-  temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
+  temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
+  partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
-import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia } from './dieta.js';
+import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao } from './dieta.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import { readFileSync } from 'node:fs';
 
@@ -93,13 +94,52 @@ assert.equal(virgula(null), '');
 // ---- tipo da série ----
 
 const giro = { modo: 'linear', reps: 8, blocos: null };
-trocarTipo(giro);
+mudarTipo(giro, 'cluster');
 assert.deepEqual(giro, { modo: 'cluster', reps: null, blocos: [8] }, 'as reps viram o primeiro bloco');
 giro.blocos = [5, 2, 2];
-trocarTipo(giro);
+mudarTipo(giro, 'restpause');
 assert.deepEqual(giro, { modo: 'restpause', reps: null, blocos: [5, 2, 2] }, 'cluster e rest pause têm a mesma forma');
-trocarTipo(giro);
+mudarTipo(giro, 'linear');
 assert.deepEqual(giro, { modo: 'linear', reps: 9, blocos: null }, 'a soma volta a ser as reps');
+const paraRp = { modo: 'linear', reps: 8, blocos: null };
+mudarTipo(paraRp, 'restpause');
+assert.deepEqual(paraRp.blocos, [8, null], 'rest pause já abre o lugar das reps depois da pausa');
+const semTipo = { reps: 6 };
+mudarTipo(semTipo, 'linear');
+assert.equal(semTipo.reps, 6, 'série gravada antes de existir o tipo já é linear: nada muda');
+
+// ---- cluster como ele escreve: 4:2-1 ----
+
+assert.deepEqual(partesDoCluster([2, 2, 2, 1]), { n: 4, r: 2, u: 1 });
+assert.deepEqual(partesDoCluster([2, 2, 2]), { n: 3, r: 2, u: null }, 'último igual aos outros fica em branco');
+assert.deepEqual(partesDoCluster([8]), { n: 1, r: 8, u: null });
+assert.deepEqual(partesDoCluster(null), { n: 1, r: null, u: null });
+assert.deepEqual(blocosDoCluster({ n: 4, r: 2, u: 1 }), [2, 2, 2, 1]);
+assert.deepEqual(blocosDoCluster({ n: 3, r: 2, u: null }), [2, 2, 2], 'último em branco é igual aos outros');
+assert.deepEqual(blocosDoCluster({ n: null, r: 5, u: 1 }), [5], 'apagar o número de blocos para redigitar não quebra');
+assert.equal(blocosDoCluster({ n: 999, r: 1, u: null }).length, 50, 'erro de digitação não cria mil blocos');
+for (const b of [[2, 2, 2, 1], [3, 3], [8], [1, 1, 1, 1, 1]]) {
+  assert.deepEqual(blocosDoCluster(partesDoCluster(b)), b, `ida e volta de ${b}`);
+}
+assert.equal(textoDoTreino([{ nome: 'Puxada', series: [{ modo: 'cluster', kg: 70, blocos: blocosDoCluster({ n: 4, r: 2, u: 1 }) }] }]),
+  'Puxada 70 4:2-1', 'o que ele digita nos três campos sai igual no texto');
+
+// ---- 1RM ----
+
+assert.equal(umRM(100, 1), 100, 'uma rep é o próprio 1RM');
+assert.equal(umRM(100, 10), 100 * (1 + 10 / 30));
+assert.equal(umRM(80, 6, 2), umRM(80, 8), 'RIR conta como as reps que faltaram');
+assert.equal(umRM(null, 5), null);
+assert.equal(umRM(80, null), null);
+assert.equal(umRM(80, 0), null);
+assert.deepEqual(melhorSerie([
+  { modo: 'linear', kg: 100, reps: 3, rir: 0 },
+  { modo: 'linear', kg: 90, reps: 8, rir: 1 },
+  { modo: 'cluster', kg: 120, reps: 7, blocos: [2, 2, 2, 1] },
+  { modo: 'linear', kg: 50, reps: null },
+]), { kg: 90, reps: 8, rir: 1, rm: 90 * (1 + 9 / 30) }, 'a maior estimativa, sem o cluster');
+assert.equal(melhorSerie([{ modo: 'cluster', kg: 120, blocos: [2, 2] }]), null);
+assert.equal(melhorSerie([]), null);
 
 assert.ok(temBlocos('restpause') && temBlocos('cluster') && !temBlocos('linear') && !temBlocos(undefined));
 assert.equal(repsDaSerie({ modo: 'restpause', blocos: [3, 1] }), 4);
@@ -233,5 +273,43 @@ assert.deepEqual(tamanhoCirculo(bola, 200, 2000, 1000), { esq: 200, topo: 200, d
 assert.equal(tamanhoCirculo(bola, 99999, 2000, 1000).d, 1000, 'não passa do lado menor da foto');
 assert.equal(tamanhoCirculo(bola, 1, 2000, 1000).d, 1000 / ZOOM_MAXIMO, 'nem do zoom máximo');
 assert.deepEqual(tamanhoCirculo({ esq: 0, topo: 0, d: 400 }, 800, 2000, 1000), { esq: 0, topo: 0, d: 800 }, 'no canto, cresce para dentro da foto');
+
+// ---- refeição que se ajusta para bater os macros ----
+
+const somaRef = (itens) => somaMacros(itens);
+const perto = (itens, alvo, tolerancia) => ['kcal', 'p', 'c', 'g']
+  .every((k) => Math.abs(somaRef(itens)[k] - alvo[k]) <= tolerancia * alvo[k]);
+const [cafeP, almocoP, lancheP] = planoReal.refeicoes;
+const alvoCafe = somaRef(cafeP.itens);
+
+// Comeu 150 g de banana em vez de 100: o resto se ajusta.
+const cafeMexido = cafeP.itens.map((i) => ({ ...i }));
+cafeMexido[1] = { ...comQuantidade(cafeMexido[1], 150), fixo: true };
+assert.ok(!perto(cafeMexido, alvoCafe, 0.05), 'antes do ajuste, passa do alvo');
+const cafeAjustado = adaptarRefeicao(cafeMexido, alvoCafe);
+assert.ok(perto(cafeAjustado, alvoCafe, 0.03), 'depois, bate os macros do café com menos de 3% de diferença');
+assert.equal(cafeAjustado[1].g_, 150, 'o que ele mexeu fica como ele deixou');
+assert.ok(cafeAjustado.every((i, n) => i.fixo || (i.g_ >= cafeP.itens[n].g_ / 2 && i.g_ <= cafeP.itens[n].g_ * 2)),
+  'ninguém sai da faixa de metade ao dobro do plano');
+assert.ok(cafeAjustado.every((i) => Number.isInteger(i.g_)), 'quantidades em gramas inteiros');
+assert.deepEqual(adaptarRefeicao(cafeAjustado, alvoCafe).map((i) => i.g_), cafeAjustado.map((i) => i.g_),
+  'ajustar de novo dá o mesmo: não escorrega');
+
+// Frango a mais no almoço: proteína não tem como compensar, mas o feijão e os legumes não somem.
+const almocoMexido = almocoP.itens.map((i) => ({ ...i }));
+almocoMexido[2] = { ...comQuantidade(almocoMexido[2], 100), fixo: true };
+const almocoAjustado = adaptarRefeicao(almocoMexido, somaRef(almocoP.itens));
+assert.ok(almocoAjustado[1].g_ >= 40 && almocoAjustado[3].g_ >= 50, 'feijão e legumes continuam no prato');
+assert.ok(Math.abs(somaRef(almocoAjustado).kcal - somaRef(almocoP.itens).kcal) < 10, 'as calorias batem');
+
+// O ovo é unidade: não vira meio ovo.
+const lancheMexido = lancheP.itens.map((i) => ({ ...i }));
+lancheMexido[1] = { ...comQuantidade(lancheMexido[1], 200), fixo: true };
+assert.equal(adaptarRefeicao(lancheMexido, somaRef(lancheP.itens))[2].g_, 50);
+
+const tudoFixo = cafeP.itens.map((i) => ({ ...i, fixo: true }));
+assert.equal(adaptarRefeicao(tudoFixo, alvoCafe), tudoFixo, 'sem nada solto, nada muda');
+assert.doesNotThrow(() => adaptarRefeicao([{ nome: 'X', g_: 0, kcal: 0 }, { nome: 'Y', g_: 100, kcal: 50, p: 1, c: 10, g: 0 }], alvoCafe),
+  'item com zero grama não quebra a conta');
 
 console.log('ok: todas as checagens passaram');

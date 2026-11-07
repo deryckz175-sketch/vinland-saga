@@ -3,9 +3,10 @@ import * as db from './db.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
-  temBlocos, trocarTipo, lerNumero, virgula, textoDoTreino,
+  temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
+  partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
-import { itensComidos, montarDia, comQuantidade } from './dieta.js';
+import { itensComidos, montarDia, comQuantidade, adaptarRefeicao } from './dieta.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -294,6 +295,8 @@ function cartaoExercicio(ex, ie) {
     const comBlocos = temBlocos(s.modo);
     const tipo = TIPOS[s.modo] || TIPOS.linear;
     const blocos = s.blocos?.length ? s.blocos : [null];
+    const cl = partesDoCluster(s.blocos);
+    const campo = (c, valor, modo, rotulo, extra = '') => `<input type="text" inputmode="${modo}" autocomplete="off" value="${valor}" data-cluster="${ie}:${is}:${c}" aria-label="${rotulo}"${extra}>`;
     return `
     <div class="serie ${s.feita ? 'feita' : ''}">
       <button class="tipo ${comBlocos ? 'marcado' : ''}" data-modo-serie="${ie}:${is}" aria-label="Tipo da série: ${tipo.nome}">${tipo.rotulo}</button>
@@ -304,9 +307,14 @@ function cartaoExercicio(ex, ie) {
       <input type="number" inputmode="numeric" placeholder="–" value="${s.rir ?? ''}" data-campo="rir" data-e="${ie}" data-s="${is}">
       <button class="ok" data-feita="${ie}:${is}">${bateuPr(s, is) ? 'PR' : '✓'}</button>
     </div>
-    ${comBlocos ? `<div class="blocos">
+    ${s.modo === 'cluster' ? `<div class="blocos">
+      ${campo('n', cl.n, 'numeric', 'Quantos blocos')}<span class="mais">×</span>
+      ${campo('r', virgula(cl.r), 'decimal', 'Reps em cada bloco')}<span class="mais">último</span>
+      ${campo('u', virgula(cl.u), 'decimal', 'Reps do último bloco', ` placeholder="${virgula(cl.r)}"`)}
+    </div>` : ''}
+    ${s.modo === 'restpause' ? `<div class="blocos">
       ${blocos.map((b, ib) => `<input type="text" inputmode="decimal" autocomplete="off" value="${virgula(b)}" data-bloco="${ie}:${is}:${ib}" aria-label="Parte ${ib + 1}">`).join('<span class="mais">+</span>')}
-      <button class="chip" data-mais-bloco="${ie}:${is}">${s.modo === 'restpause' ? '+ rest pause' : '+ bloco'}</button>
+      <button class="chip" data-mais-bloco="${ie}:${is}">+ rest pause</button>
       ${blocos.length > 1 ? `<button class="chip" data-menos-bloco="${ie}:${is}">−</button>` : ''}
     </div>` : ''}`;
   }).join('');
@@ -314,6 +322,8 @@ function cartaoExercicio(ex, ie) {
   return `<div class="card">
     <div class="ex-cab">
       <h2>${esc(ex.nome)}</h2>
+      ${ie > 0 ? `<button class="chip apagar" data-mover-ex="${ie}:-1" aria-label="Subir exercício">↑</button>` : ''}
+      ${ie < sessao.exercicios.length - 1 ? `<button class="chip apagar" data-mover-ex="${ie}:1" aria-label="Descer exercício">↓</button>` : ''}
       <button class="chip apagar" data-tirar-ex="${ie}" aria-label="Remover exercício">✕</button>
     </div>
     ${rec ? `<div class="sub">recorde ${virgula(rec.kg)} kg${rec.reps ? ' × ' + virgula(rec.reps) : ''}</div>` : ''}
@@ -334,13 +344,52 @@ function serieDe(ref) {
   return sessao.exercicios[ie].series[is];
 }
 
-/** Backoff da maior carga digitada no exercício. Tocar acrescenta a série já com o peso. */
+/**
+ * 1RM estimado e backoff, a partir do que ele digitou. Tocar no 1RM abre a calculadora;
+ * tocar num backoff acrescenta a série já com o peso. No peso corporal a carga é só o
+ * que foi somado, e o 1RM disso não quer dizer nada: lá ele não aparece.
+ */
 function chipsBackoff(ex, ie) {
+  const melhor = ehCorporal(ex.nome) ? null : melhorSerie(ex.series);
   const topo = cargaDeTopo(ex.series);
-  if (topo == null) return '';
-  return `<span class="sub">backoff</span>
+  return `${melhor ? `<button class="chip" data-1rm="${ie}">1RM ≈ ${n1(melhor.rm)}</button>` : ''}
+    ${topo == null ? '' : `<span class="sub">backoff</span>
     <button class="chip" data-backoff="${ie}:0.9">90% · ${n1(backoff(topo, 0.9))}</button>
-    <button class="chip" data-backoff="${ie}:0.8">80% · ${n1(backoff(topo, 0.8))}</button>`;
+    <button class="chip" data-backoff="${ie}:0.8">80% · ${n1(backoff(topo, 0.8))}</button>`}`;
+}
+
+/** A calculadora abre com a melhor série do exercício, e dá para mudar os números. */
+function folha1RM(ie) {
+  const m = melhorSerie(sessao.exercicios[ie].series) || {};
+  abrirFolha(`<h3>Calculadora de 1RM</h3>
+    <div class="sub" style="margin-bottom:12px">Fórmula de Epley. O RIR conta como as reps que ainda dava para fazer.</div>
+    <div class="trio">
+      <label>kg<input class="busca" id="rmKg" type="text" inputmode="decimal" autocomplete="off" value="${virgula(m.kg)}"></label>
+      <label>reps<input class="busca" id="rmReps" type="text" inputmode="decimal" autocomplete="off" value="${virgula(m.reps)}"></label>
+      <label>RIR<input class="busca" id="rmRir" type="number" inputmode="numeric" value="${m.rir ?? ''}"></label>
+    </div>
+    <div class="num-grande destaque" id="rmResultado"></div>
+    <div class="sub" style="margin-top:6px">1RM estimado</div>`);
+  const calcular = () => {
+    const rm = umRM(lerNumero($('#rmKg').value), lerNumero($('#rmReps').value), lerNumero($('#rmRir').value));
+    $('#rmResultado').textContent = rm == null ? '—' : `${n1(rm)} kg`;
+  };
+  calcular();
+  for (const id of ['#rmKg', '#rmReps', '#rmRir']) $(id).addEventListener('input', calcular);
+}
+
+/** O tipo da série num menu: girando no botão, o rest pause ficava escondido atrás do cluster. */
+function folhaTipo(ref) {
+  const atual = serieDe(ref).modo || 'linear';
+  const opcoes = [
+    ['linear', 'Linear', 'Uma série normal: 8'],
+    ['cluster', 'Cluster', 'Blocos com pausa curta: 4:2-1'],
+    ['restpause', 'Rest pause', 'A série e as reps depois da pausa: 8+2+1'],
+  ];
+  abrirFolha(`<h3>Tipo da série</h3>
+    ${opcoes.map(([modo, nome, exemplo]) => `<button class="opcao" data-tipo="${ref}:${modo}">
+      <div style="flex:1"><div>${nome}</div><div class="sub">${exemplo}</div></div>
+      ${modo === atual ? '<span class="destaque">✓</span>' : ''}</button>`).join('')}`);
 }
 
 // ---- cronômetro da sessão ----
@@ -357,9 +406,8 @@ function relogio() {
 function tocarRelogio() {
   clearInterval(tique);
   tique = setInterval(() => {
-    const el = $('#cronometro');
     if (!sessao) return clearInterval(tique);
-    if (el) el.textContent = relogio();
+    for (const el of document.querySelectorAll('#cronometro, #avisoTreino .relogio')) el.textContent = relogio();
   }, 1000);
 }
 
@@ -595,6 +643,21 @@ function renderDieta() {
     <button class="botao fraco" id="novaRefeicao">Adicionar refeição</button>`;
 }
 
+/** A refeição do plano, ou a opção que ele escolheu, que esta tem que bater. */
+function fonteDaRefeicao(r) {
+  const lista = plano?.refeicoes || [];
+  return r.opcao != null ? lista[r.opcao] : lista.find((p) => p.nome === r.nome && !p.opcaoDe);
+}
+
+/**
+ * Mexeu numa refeição ainda por comer: o resto se ajusta para bater os macros dela.
+ * Refeição concluída é registro do que já comeu, então corrigir um item não mexe nos outros.
+ */
+function adaptar(r) {
+  const fonte = fonteDaRefeicao(r);
+  if (r.feita === false && fonte) r.itens = adaptarRefeicao(r.itens, somaMacros(fonte.itens));
+}
+
 /** Uma refeição do dia: o box conclui, e tocar num alimento muda o que ele comeu. */
 function cartaoRefeicao(r, i) {
   const s = somaMacros(r.itens);
@@ -602,6 +665,8 @@ function cartaoRefeicao(r, i) {
   const refeicoesPlano = plano?.refeicoes || [];
   const igualA = (outra) => JSON.stringify(r.itens) === JSON.stringify(outra.itens);
   const original = refeicoesPlano.find((p) => p.nome === r.nome);
+  const fonte = fonteDaRefeicao(r);
+  const alvo = fonte && !igualA(fonte) ? somaMacros(fonte.itens) : null;
   return `<div class="card refeicao ${feita ? 'concluida' : ''}">
     <div class="ex-cab">
       <h2>${esc(r.nome)}</h2>
@@ -609,10 +674,11 @@ function cartaoRefeicao(r, i) {
     </div>
     ${r.itens.length
       ? r.itens.map((it, j) => `<button class="linha-item linha-toque" data-item="${i}:${j}">
-          <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g</div></div>
+          <div><div>${esc(it.nome)}</div><div class="sub">${n1(it.g_)} g${it.g0 != null && !it.trocado && Math.round(it.g0) !== Math.round(it.g_) ? ` · plano ${n1(it.g0)} g` : ''}</div></div>
           <div class="sub">${it.kcal.toFixed(0)} kcal ›</div></button>`).join('')
       : '<div class="vazio">Nada registrado.</div>'}
     ${r.itens.length ? `<div class="sub" style="margin-top:10px">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>` : ''}
+    ${alvo ? `<div class="sub">alvo ${alvo.kcal.toFixed(0)} kcal · P ${alvo.p.toFixed(0)} C ${alvo.c.toFixed(0)} G ${alvo.g.toFixed(0)}</div>` : ''}
     <div class="ex-pe">
       <button class="chip" data-add-refeicao="${i}">+ alimento</button>
       ${refeicoesPlano.map((o, k) => (o.opcaoDe?.includes(r.nome) && !igualA(o)
@@ -624,13 +690,16 @@ function cartaoRefeicao(r, i) {
   </div>`;
 }
 
-/** Onde ele muda o que comeu: outra quantidade, ou tirar da refeição. */
+/** Onde ele muda o que comeu: outra quantidade, outro alimento, ou tirar da refeição. */
 function folhaItem(i, j) {
-  const it = diaDieta.refeicoes[i].itens[j];
+  const r = diaDieta.refeicoes[i];
+  const it = r.itens[j];
   abrirFolha(`<h3>${esc(it.nome)}</h3>
-    <label class="rot" for="qtd">Quanto você comeu (g)</label>
+    <label class="rot" for="qtd">Quantidade (g)</label>
     <input class="busca" id="qtd" type="text" inputmode="decimal" autocomplete="off" value="${virgula(it.g_)}">
+    ${r.feita === false && fonteDaRefeicao(r) ? '<div class="sub" style="margin-bottom:10px">O resto da refeição se ajusta para bater os macros dela.</div>' : ''}
     <button class="botao" data-salvar-item="${i}:${j}">Salvar</button>
+    <button class="botao fraco" data-trocar-item="${i}:${j}">Trocar por outro alimento</button>
     <button class="botao fraco" data-remover="${i}:${j}">Tirar da refeição</button>`);
 }
 
@@ -949,8 +1018,11 @@ function folhaNovaRefeicao() {
     <button class="botao" id="salvarRefeicao">Adicionar</button>`);
 }
 
-function folhaAlimento(iRef) {
-  abrirFolha(`<h3>Adicionar em ${esc(diaDieta.refeicoes[iRef].nome)}</h3>
+/** Busca na TACO para acrescentar, ou para trocar um item (`jTroca`). */
+function folhaAlimento(iRef, jTroca) {
+  const r = diaDieta.refeicoes[iRef];
+  const troca = jTroca != null;
+  abrirFolha(`<h3>${troca ? `Trocar ${esc(r.itens[jTroca].nome)} por` : `Adicionar em ${esc(r.nome)}`}</h3>
     <input class="busca" id="buscaAlimento" placeholder="Buscar alimento" autocomplete="off">
     <div id="resultados"></div>`);
   const lista = () => {
@@ -958,7 +1030,7 @@ function folhaAlimento(iRef) {
     if (!q) { $('#resultados').innerHTML = `<div class="vazio">${alimentos.length} alimentos disponíveis. Digite para buscar.</div>`; return; }
     const achados = alimentos.filter((a) => a.nome.toLowerCase().includes(q)).slice(0, 8);
     $('#resultados').innerHTML = achados.length
-      ? achados.map((a) => `<button class="opcao" data-alimento="${iRef}:${esc(a.id)}">
+      ? achados.map((a) => `<button class="opcao" ${troca ? `data-trocar="${iRef}:${jTroca}:${esc(a.id)}"` : `data-alimento="${iRef}:${esc(a.id)}"`}>
           <div><div>${esc(a.nome)}</div><div class="sub">${a.kcal.toFixed(0)} kcal · P ${n1(a.p)} C ${n1(a.c)} G ${n1(a.g)} por 100 g</div></div></button>`).join('')
       : '<div class="vazio">Nenhum alimento encontrado.</div>';
   };
@@ -989,8 +1061,17 @@ function setTela(nome) {
   window.scrollTo(0, 0);
 }
 
+/** O treino em andamento fica à vista nas outras abas, como o aviso do timer do iPhone. */
+function renderAviso() {
+  const el = $('#avisoTreino');
+  const mostra = Boolean(sessao) && !sessao.editando && telaAtual !== 'treino';
+  el.hidden = !mostra;
+  document.body.classList.toggle('com-aviso', mostra);
+  if (mostra) el.innerHTML = `<span class="ponto"></span><span class="nome">${esc(sessao.nome)}</span><span class="relogio">${relogio()}</span>`;
+}
+
 function renderTudo() {
-  renderHoje(); renderTreino(); renderDieta(); renderPerfil();
+  renderHoje(); renderTreino(); renderDieta(); renderPerfil(); renderAviso();
   if (mesAberto !== null) renderMesAmpliado();
 }
 
@@ -1000,6 +1081,7 @@ document.addEventListener('click', async (ev) => {
 
   if ((el = achar('.aba'))) return setTela(el.dataset.tela);
   if (achar('#fab')) return folhaRegistro();
+  if (achar('#avisoTreino')) return setTela('treino');
   if ((el = achar('[data-ir]'))) return setTela(el.dataset.ir);
   if (achar('#fecharAviso') || ev.target.id === 'folhaFundo') return fecharFolha();
 
@@ -1056,8 +1138,18 @@ document.addEventListener('click', async (ev) => {
     return renderTreino();
   }
 
-  if ((el = achar('[data-modo-serie]'))) {
-    trocarTipo(serieDe(el.dataset.modoSerie));
+  if ((el = achar('[data-modo-serie]'))) return folhaTipo(el.dataset.modoSerie);
+  if ((el = achar('[data-tipo]'))) {
+    const [ie, is, modo] = el.dataset.tipo.split(':');
+    mudarTipo(sessao.exercicios[+ie].series[+is], modo);
+    fecharFolha();
+    return renderTreino();
+  }
+  if ((el = achar('[data-1rm]'))) return folha1RM(Number(el.dataset['1rm']));
+  if ((el = achar('[data-mover-ex]'))) {
+    const [ie, passo] = el.dataset.moverEx.split(':').map(Number);
+    const lista = sessao.exercicios;
+    [lista[ie], lista[ie + passo]] = [lista[ie + passo], lista[ie]];
     return renderTreino();
   }
   if ((el = achar('[data-mais-bloco]'))) {
@@ -1175,9 +1267,9 @@ document.addEventListener('click', async (ev) => {
     const q = lerNumero($('#qtd').value);
     if (!a || !(q > 0)) return;
     const f = q / 100;
-    diaDieta.refeicoes[Number(iRef)].itens.push({
-      nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f,
-    });
+    const r = diaDieta.refeicoes[Number(iRef)];
+    r.itens.push({ nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f, fixo: true });
+    adaptar(r);
     fecharFolha();
     return salvarDiaDieta();
   }
@@ -1194,25 +1286,48 @@ document.addEventListener('click', async (ev) => {
     const [i, j] = el.dataset.salvarItem.split(':').map(Number);
     const q = lerNumero($('#qtd').value);
     if (!(q > 0)) return;
-    const itens = diaDieta.refeicoes[i].itens;
-    itens[j] = comQuantidade(itens[j], q);
+    const r = diaDieta.refeicoes[i];
+    r.itens[j] = { ...comQuantidade(r.itens[j], q), fixo: true };
+    adaptar(r);
     fecharFolha();
     return salvarDiaDieta();
   }
   if ((el = achar('[data-remover]'))) {
     const [i, j] = el.dataset.remover.split(':').map(Number);
     diaDieta.refeicoes[i].itens.splice(j, 1);
+    adaptar(diaDieta.refeicoes[i]);
     fecharFolha();
     return salvarDiaDieta();
   }
   if ((el = achar('[data-opcao]'))) {
     const [i, k] = el.dataset.opcao.split(':').map(Number);
     diaDieta.refeicoes[i].itens = plano.refeicoes[k].itens.map((x) => ({ ...x }));
+    diaDieta.refeicoes[i].opcao = k;
+    return salvarDiaDieta();
+  }
+  if ((el = achar('[data-trocar-item]'))) {
+    const [i, j] = el.dataset.trocarItem.split(':').map(Number);
+    return folhaAlimento(i, j);
+  }
+  if ((el = achar('[data-trocar]'))) {
+    const [i, j, ...resto] = el.dataset.trocar.split(':');
+    const a = alimentos.find((x) => String(x.id) === resto.join(':'));
+    if (!a) return;
+    const r = diaDieta.refeicoes[Number(i)];
+    const velho = r.itens[Number(j)];
+    // Entra com as calorias do que saiu; se a refeição ainda não foi comida, a conta acerta o resto.
+    const g = Math.max(1, a.kcal > 0 ? Math.round((velho.kcal / a.kcal) * 100) : velho.g_);
+    const f = g / 100;
+    // trocado: a quantidade de partida é a equivalente, não a do plano, então não mostra "plano X g".
+    r.itens[Number(j)] = { nome: a.nome, g_: g, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f, trocado: true };
+    adaptar(r);
+    fecharFolha();
     return salvarDiaDieta();
   }
   if ((el = achar('[data-voltar-plano]'))) {
     const r = diaDieta.refeicoes[Number(el.dataset.voltarPlano)];
     r.itens = plano.refeicoes.find((p) => p.nome === r.nome).itens.map((x) => ({ ...x }));
+    delete r.opcao;
     return salvarDiaDieta();
   }
   if ((el = achar('[data-agua]'))) {
@@ -1252,7 +1367,7 @@ document.addEventListener('click', async (ev) => {
 });
 
 document.addEventListener('input', (ev) => {
-  const el = ev.target.closest('[data-campo],[data-bloco],[data-obs]');
+  const el = ev.target.closest('[data-campo],[data-bloco],[data-cluster],[data-obs]');
   if (!el || !sessao) return;
 
   if (el.dataset.obs != null) {
@@ -1263,19 +1378,31 @@ document.addEventListener('input', (ev) => {
   // Digitar não redesenha a tela — o campo perderia o foco. Então o que é
   // calculado a partir do que ele digita se atualiza aqui, no lugar.
   const v = lerNumero(el.value);
+  const mostrarSoma = (ie, is) => {
+    const soma = $(`#soma-${ie}-${is}`);
+    if (soma) soma.textContent = virgula(somaBlocos(sessao.exercicios[ie].series[is].blocos)) || '—';
+  };
   if (el.dataset.bloco) {
     const [ie, is, ib] = el.dataset.bloco.split(':').map(Number);
-    const s = sessao.exercicios[ie].series[is];
-    s.blocos[ib] = v;
-    const soma = $(`#soma-${ie}-${is}`);
-    if (soma) soma.textContent = virgula(somaBlocos(s.blocos)) || '—';
+    sessao.exercicios[ie].series[is].blocos[ib] = v;
+    mostrarSoma(ie, is);
+    return agendarGuardar();
+  }
+  if (el.dataset.cluster) {
+    const [ie, is, qual] = el.dataset.cluster.split(':');
+    // Os três campos lidos juntos da tela: apagar um para redigitar não pode zerar os outros.
+    const linha = el.closest('.blocos');
+    const ler = (c) => lerNumero(linha.querySelector(`[data-cluster$=":${c}"]`).value);
+    sessao.exercicios[+ie].series[+is].blocos = blocosDoCluster({ n: ler('n'), r: ler('r'), u: ler('u') });
+    if (qual === 'r') linha.querySelector('[data-cluster$=":u"]').placeholder = el.value;
+    mostrarSoma(+ie, +is);
     return agendarGuardar();
   }
 
   const ie = +el.dataset.e;
   const ex = sessao.exercicios[ie];
   ex.series[+el.dataset.s][el.dataset.campo] = v;
-  if (el.dataset.campo === 'kg') $(`#backoff-${ie}`).innerHTML = chipsBackoff(ex, ie);
+  $(`#backoff-${ie}`).innerHTML = chipsBackoff(ex, ie);
   agendarGuardar();
 });
 
