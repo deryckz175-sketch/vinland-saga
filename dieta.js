@@ -74,3 +74,19 @@ export function adaptarRefeicao(itens, alvo) {
   soltos.forEach((i, j) => { saida[i] = { ...comQuantidade(itens[i], Math.round(q[j])), g0: base[j] }; });
   return saida;
 }
+
+/**
+ * O ajuste olhando o dia inteiro: o que ele mexeu em qualquer refeição é compensado
+ * nas que ainda faltam comer. Refeição concluída é registro e fica como está. É a
+ * mesma conta da refeição, com todos os itens do dia numa lista só.
+ */
+export function adaptarDia(refeicoes, alvo) {
+  const aberta = (r) => r.feita === false;
+  const todos = refeicoes.flatMap((r) => r.itens.map((it) => (aberta(r) ? it : { ...it, fixo: true })));
+  const ajustados = adaptarRefeicao(todos, alvo);
+  let n = 0;
+  return refeicoes.map((r) => {
+    const itens = ajustados.slice(n, (n += r.itens.length));
+    return aberta(r) ? { ...r, itens } : r;
+  });
+}

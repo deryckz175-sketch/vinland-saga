@@ -6,7 +6,7 @@ import {
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
   partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
-import { itensComidos, montarDia, comQuantidade, adaptarRefeicao } from './dieta.js';
+import { itensComidos, montarDia, comQuantidade, adaptarDia } from './dieta.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -621,6 +621,15 @@ function renderDieta() {
           <div class="sub" style="margin-top:6px">kcal das refeições concluídas</div></div>
       </div>
       ${m.kcal ? `<div class="linha-item"><div class="sub">P ${n1(m.p)} g · C ${n1(m.c)} g · G ${n1(m.g)} g</div></div>` : ''}
+      ${(() => {
+        // Só aparece quando ele mexeu: aí mostra se o dia, contando o que falta, ainda bate o plano.
+        const alvo = alvoDoDia();
+        const mexeu = refs.some((r) => { const f = fonteDaRefeicao(r); return !f || JSON.stringify(r.itens) !== JSON.stringify(f.itens); });
+        if (!alvo || !mexeu) return '';
+        const p = somaMacros(refs.flatMap((r) => r.itens));
+        const linha = (x) => `${x.kcal.toFixed(0)} kcal · P ${x.p.toFixed(0)} C ${x.c.toFixed(0)} G ${x.g.toFixed(0)}`;
+        return `<div class="linha-item"><div class="sub">Previsto no dia: ${linha(p)}<br>Plano: ${linha(alvo)}</div></div>`;
+      })()}
     </div>
 
     ${refs.length
@@ -649,13 +658,19 @@ function fonteDaRefeicao(r) {
   return r.opcao != null ? lista[r.opcao] : lista.find((p) => p.nome === r.nome && !p.opcaoDe);
 }
 
+/** O que o dia tem que bater: a soma das refeições do plano (ou das opções escolhidas). */
+function alvoDoDia() {
+  const fontes = diaDieta.refeicoes.map(fonteDaRefeicao).filter(Boolean);
+  return fontes.length ? somaMacros(fontes.flatMap((f) => f.itens)) : null;
+}
+
 /**
- * Mexeu numa refeição ainda por comer: o resto se ajusta para bater os macros dela.
- * Refeição concluída é registro do que já comeu, então corrigir um item não mexe nos outros.
+ * Mexeu em qualquer refeição: as que ainda faltam comer se ajustam para o dia bater
+ * as kcal e os macros do plano. As concluídas são registro e ficam como estão.
  */
-function adaptar(r) {
-  const fonte = fonteDaRefeicao(r);
-  if (r.feita === false && fonte) r.itens = adaptarRefeicao(r.itens, somaMacros(fonte.itens));
+function adaptar() {
+  const alvo = alvoDoDia();
+  if (alvo) diaDieta.refeicoes = adaptarDia(diaDieta.refeicoes, alvo);
 }
 
 /** Uma refeição do dia: o box conclui, e tocar num alimento muda o que ele comeu. */
@@ -665,8 +680,6 @@ function cartaoRefeicao(r, i) {
   const refeicoesPlano = plano?.refeicoes || [];
   const igualA = (outra) => JSON.stringify(r.itens) === JSON.stringify(outra.itens);
   const original = refeicoesPlano.find((p) => p.nome === r.nome);
-  const fonte = fonteDaRefeicao(r);
-  const alvo = fonte && !igualA(fonte) ? somaMacros(fonte.itens) : null;
   return `<div class="card refeicao ${feita ? 'concluida' : ''}">
     <div class="ex-cab">
       <h2>${esc(r.nome)}</h2>
@@ -678,7 +691,6 @@ function cartaoRefeicao(r, i) {
           <div class="sub">${it.kcal.toFixed(0)} kcal ›</div></button>`).join('')
       : '<div class="vazio">Nada registrado.</div>'}
     ${r.itens.length ? `<div class="sub" style="margin-top:10px">${s.kcal.toFixed(0)} kcal · P ${s.p.toFixed(0)} C ${s.c.toFixed(0)} G ${s.g.toFixed(0)}</div>` : ''}
-    ${alvo ? `<div class="sub">alvo ${alvo.kcal.toFixed(0)} kcal · P ${alvo.p.toFixed(0)} C ${alvo.c.toFixed(0)} G ${alvo.g.toFixed(0)}</div>` : ''}
     <div class="ex-pe">
       <button class="chip" data-add-refeicao="${i}">+ alimento</button>
       ${refeicoesPlano.map((o, k) => (o.opcaoDe?.includes(r.nome) && !igualA(o)
@@ -697,7 +709,7 @@ function folhaItem(i, j) {
   abrirFolha(`<h3>${esc(it.nome)}</h3>
     <label class="rot" for="qtd">Quantidade (g)</label>
     <input class="busca" id="qtd" type="text" inputmode="decimal" autocomplete="off" value="${virgula(it.g_)}">
-    ${r.feita === false && fonteDaRefeicao(r) ? '<div class="sub" style="margin-bottom:10px">O resto da refeição se ajusta para bater os macros dela.</div>' : ''}
+    ${alvoDoDia() && diaDieta.refeicoes.some((x) => x.feita === false) ? '<div class="sub" style="margin-bottom:10px">As refeições que ainda faltam se ajustam para o dia bater o plano.</div>' : ''}
     <button class="botao" data-salvar-item="${i}:${j}">Salvar</button>
     <button class="botao fraco" data-trocar-item="${i}:${j}">Trocar por outro alimento</button>
     <button class="botao fraco" data-remover="${i}:${j}">Tirar da refeição</button>`);
@@ -1269,7 +1281,7 @@ document.addEventListener('click', async (ev) => {
     const f = q / 100;
     const r = diaDieta.refeicoes[Number(iRef)];
     r.itens.push({ nome: a.nome, g_: q, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f, fixo: true });
-    adaptar(r);
+    adaptar();
     fecharFolha();
     return salvarDiaDieta();
   }
@@ -1288,14 +1300,14 @@ document.addEventListener('click', async (ev) => {
     if (!(q > 0)) return;
     const r = diaDieta.refeicoes[i];
     r.itens[j] = { ...comQuantidade(r.itens[j], q), fixo: true };
-    adaptar(r);
+    adaptar();
     fecharFolha();
     return salvarDiaDieta();
   }
   if ((el = achar('[data-remover]'))) {
     const [i, j] = el.dataset.remover.split(':').map(Number);
     diaDieta.refeicoes[i].itens.splice(j, 1);
-    adaptar(diaDieta.refeicoes[i]);
+    adaptar();
     fecharFolha();
     return salvarDiaDieta();
   }
@@ -1320,7 +1332,7 @@ document.addEventListener('click', async (ev) => {
     const f = g / 100;
     // trocado: a quantidade de partida é a equivalente, não a do plano, então não mostra "plano X g".
     r.itens[Number(j)] = { nome: a.nome, g_: g, kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f, trocado: true };
-    adaptar(r);
+    adaptar();
     fecharFolha();
     return salvarDiaDieta();
   }

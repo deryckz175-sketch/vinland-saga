@@ -6,7 +6,7 @@ import {
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
   partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
-import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao } from './dieta.js';
+import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao, adaptarDia } from './dieta.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import { readFileSync } from 'node:fs';
 
@@ -311,5 +311,23 @@ const tudoFixo = cafeP.itens.map((i) => ({ ...i, fixo: true }));
 assert.equal(adaptarRefeicao(tudoFixo, alvoCafe), tudoFixo, 'sem nada solto, nada muda');
 assert.doesNotThrow(() => adaptarRefeicao([{ nome: 'X', g_: 0, kcal: 0 }, { nome: 'Y', g_: 100, kcal: 50, p: 1, c: 10, g: 0 }], alvoCafe),
   'item com zero grama não quebra a conta');
+
+// ---- o dia inteiro se ajusta ----
+
+const alvoDia = somaRef(refeicoesDoPlano(planoReal).flatMap((r) => r.itens));
+// Almoço já comido com 5 g de azeite a mais: a janta compensa.
+const diaTeste = refeicoesDoPlano(planoReal);
+const azeiteAlmoco = diaTeste[1].itens.findIndex((i) => i.nome.startsWith('Azeite'));
+diaTeste[1].itens[azeiteAlmoco] = { ...comQuantidade(diaTeste[1].itens[azeiteAlmoco], 17), fixo: true };
+diaTeste[0].feita = true;
+diaTeste[1].feita = true;
+const diaAjustado = adaptarDia(diaTeste, alvoDia);
+assert.equal(diaAjustado[0], diaTeste[0], 'refeição concluída não muda');
+assert.equal(diaAjustado[1], diaTeste[1]);
+const azeiteJanta = diaAjustado[3].itens.find((i) => i.nome.startsWith('Azeite')).g_;
+assert.ok(azeiteJanta < 12, `o azeite da janta diminui (${azeiteJanta} g)`);
+assert.ok(perto(diaAjustado.flatMap((r) => r.itens), alvoDia, 0.01), 'o dia volta a bater as kcal e os macros');
+assert.deepEqual(adaptarDia(diaTeste.map((r) => ({ ...r, feita: true })), alvoDia).map((r) => r.itens),
+  diaTeste.map((r) => r.itens), 'tudo concluído: nada muda');
 
 console.log('ok: todas as checagens passaram');
