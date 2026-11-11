@@ -27,7 +27,8 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((ks) => Promise.all(ks.filter((k) => k !== VERSAO).map((k) => caches.delete(k))))
+      // Só os caches do Vinland: o Batuque (beat/) usa o mesmo endereço e tem os dele.
+      .then((ks) => Promise.all(ks.filter((k) => k.startsWith('vinland-') && k !== VERSAO).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
