@@ -1,9 +1,10 @@
 // Cache do Batuque para funcionar sem internet. Os beats ficam no IndexedDB,
 // não aqui. Só mexe nos caches com prefixo 'batuque-': o Vinland, no mesmo
 // endereço, tem os dele.
-const VERSAO = 'batuque-v1';
+const VERSAO = 'batuque-v2';
 const ARQUIVOS = [
   './', 'index.html', 'app.js', 'sons.js', 'synth.js', 'motor.js', 'tempo.js', 'wav.js', 'db.js', 'manifest.json',
+  'sampler.js', 'gravador.js', 'gravador-worklet.js',
   'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png',
 ];
 

@@ -6,7 +6,8 @@ import {
 } from './tempo.js';
 import { PACOTES, somDoPad, nomeAcorde, notasDoAcorde, ESCALAS, grau } from './sons.js';
 import { VOZES } from './synth.js';
-import { codificarWav, aparar } from './wav.js';
+import { codificarWav, aparar, cortarTrecho, tirarSilencio } from './wav.js';
+import { calcularPicos, tempoTexto } from './sampler.js';
 import { limitar } from './motor.js';
 
 const perto = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-9, `${msg}: ${a} != ${b}`);
@@ -158,5 +159,38 @@ assert.equal(limitar(-0.3), -0.3);
 assert.ok(limitar(4) < 1 && limitar(4) > 0.99);
 assert.equal(limitar(-2), -limitar(2));
 for (let u = 0; u < 4; u += 0.01) assert.ok(limitar(u + 0.01) >= limitar(u));
+
+// --- Corte de trecho
+{
+  const sr = 1000;
+  const x = new Float32Array(5000).fill(0.5);
+  const [y] = cortarTrecho([x], sr, 1, 2);
+  assert.equal(y.length, 1000, '1 s de trecho');
+  assert.equal(y[0], 0, 'entra do zero');
+  assert.ok(y[999] < 0.1, 'sai perto do zero');
+  assert.equal(y[500], 0.5, 'miolo intacto');
+  assert.equal(x[1000], 0.5, 'não mexe no original');
+  const [z] = cortarTrecho([x], sr, 4.5, 9);
+  assert.equal(z.length, 500, 'para no fim da música');
+  const [w] = cortarTrecho([x], sr, 2, 2);
+  assert.ok(w.length >= 1, 'nunca vazio');
+}
+// --- Silêncio da gravação da saída
+{
+  const sr = 1000;
+  const x = new Float32Array(10000);
+  for (let i = 3000; i < 4000; i++) x[i] = 0.2;
+  const [y] = tirarSilencio([x], sr);
+  assert.equal(y.length, 1000 + 10 + 400, 'folga antes e rabo depois');
+  assert.equal(tirarSilencio([new Float32Array(500)], sr), null);
+}
+// --- Onda
+{
+  const l = new Float32Array([0, 1, -1, 0.5, 0, 0, 0.2, -0.4]);
+  const p = calcularPicos(l, l, 4, 0, 2, 2);
+  assert.deepEqual([...p], [-1, 1, -0.4000000059604645, 0.20000000298023224]);
+}
+assert.equal(tempoTexto(0), '0:00,00');
+assert.equal(tempoTexto(75.5), '1:15,50');
 
 console.log('ok — beat/check.mjs');

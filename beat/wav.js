@@ -49,3 +49,34 @@ export function aparar(canais, taxa, { maxSeg = 10, limiar = 0.02 } = {}) {
     return out;
   });
 }
+
+// Recorta [ini, fim) segundos, com rampas curtas nas pontas para não estalar.
+export function cortarTrecho(canais, taxa, ini, fim, { entrada = 0.002, saida = 0.006 } = {}) {
+  const n = canais[0].length;
+  const a = Math.max(0, Math.min(n, Math.round(ini * taxa)));
+  const b = Math.max(a + 1, Math.min(n, Math.round(fim * taxa)));
+  const len = b - a;
+  const ri = Math.min(Math.floor(len / 2), Math.round(entrada * taxa));
+  const rs = Math.min(Math.floor(len / 2), Math.round(saida * taxa));
+  return canais.map((ch) => {
+    const out = ch.slice(a, b);
+    for (let i = 0; i < ri; i++) out[i] *= i / ri;
+    for (let i = 0; i < rs; i++) out[len - 1 - i] *= i / rs;
+    return out;
+  });
+}
+
+// Tira o silêncio do começo e do fim de uma gravação da saída, sem mexer no
+// volume. Deixa uma folguinha antes e o rabo do reverb depois. null = só silêncio.
+export function tirarSilencio(canais, taxa, { limiar = 0.0008, antes = 0.01, depois = 0.4 } = {}) {
+  const n = canais[0].length;
+  const som = (i) => canais.some((ch) => Math.abs(ch[i]) > limiar);
+  let ini = 0;
+  while (ini < n && !som(ini)) ini++;
+  if (ini >= n) return null;
+  let fim = n - 1;
+  while (fim > ini && !som(fim)) fim--;
+  ini = Math.max(0, ini - Math.round(antes * taxa));
+  fim = Math.min(n, fim + 1 + Math.round(depois * taxa));
+  return canais.map((ch) => ch.slice(ini, fim));
+}

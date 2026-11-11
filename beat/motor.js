@@ -72,9 +72,8 @@ export class Motor {
     this.delay.connect(tom).connect(this.delRetorno).connect(this.delay);
     tom.connect(this.mestre);
 
-    // O metrônomo não passa pelos efeitos.
-    this.direto = g(1);
-    this.direto.connect(this.mestre);
+    // O metrônomo não passa pelos efeitos nem entra na gravação do som.
+    this.direto = g(0.8);
 
     // Saturação suave no fim em vez de compressor: até 0,6 passa reto, acima
     // disso arredonda até no máximo 1. Nunca estoura e não abaixa o volume
@@ -85,6 +84,7 @@ export class Motor {
     this.lim.oversample = '2x';
     this.volumeGeral = g(1);
     this.mestre.connect(this.preLim).connect(this.lim).connect(this.volumeGeral).connect(ctx.destination);
+    this.direto.connect(this.volumeGeral);
   }
 
   _p(param, v) {
@@ -113,8 +113,9 @@ export class Motor {
   volume(v) { this._p(this.volumeGeral.gain, v); }
 
   // Dispara um som. ajuste = { vol, afin } do pad; buffer = amostra do usuário.
+  // grupoAmostra: com amostra, um toque novo no mesmo pad corta o anterior.
   // Devolve um controle para silenciar antes da hora (choke e parar o play).
-  tocar(som, quando, ajuste = {}, buffer = null) {
+  tocar(som, quando, ajuste = {}, buffer = null, grupoAmostra = null) {
     const ctx = this.ctx;
     const vol = ajuste.vol ?? 1;
     const r = 2 ** ((ajuste.afin || 0) / 12);
@@ -158,11 +159,12 @@ export class Motor {
       },
     };
 
-    if (som.grupo && !buffer) {
-      const lista = (this.grupos.get(som.grupo) || []).filter((v) => v.fim > quando);
+    const grupo = buffer ? grupoAmostra : som.grupo;
+    if (grupo) {
+      const lista = (this.grupos.get(grupo) || []).filter((v) => v.fim > quando);
       for (const v of lista) if (v.inicio <= quando) v.parar(quando);
       lista.push(voz);
-      this.grupos.set(som.grupo, lista);
+      this.grupos.set(grupo, lista);
     }
 
     if (this.vivo) {

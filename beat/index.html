@@ -71,6 +71,17 @@
   #bRec.armado { border-color: #e5342b; }
   #bRec .rotulo { min-width: 6.2ch; text-align: left; }
   @keyframes pisca { to { visibility: hidden; } }
+  .fileira:first-child { gap: 10px; }
+  .fileira:first-child .pilula { font-size: 15px; letter-spacing: 1.6px; gap: 8px; }
+  #bRec { flex: 1.35; }
+  .pilula.redondo { flex: none; width: 52px; padding: 0; }
+  .icone-audio { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid #e8e8ea; display: grid; place-items: center; }
+  .icone-audio i { width: 10px; height: 10px; border-radius: 50%; background: #e5342b; }
+  .tempo-audio { display: none; font-size: 12px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  #bAudio.gravando { border-color: #e5342b; box-shadow: 0 0 18px rgba(229,52,43,0.6); animation: respira 1.2s ease-in-out infinite; }
+  #bAudio.gravando .icone-audio { display: none; }
+  #bAudio.gravando .tempo-audio { display: block; color: #ff8a80; }
+  @keyframes respira { 50% { box-shadow: 0 0 4px rgba(229,52,43,0.3); } }
   .bola { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #e8e8ea; transition: background 0.15s; }
   .bola.ativa { background: #e8e8ea; }
   #bPlay.tocando svg { fill: var(--cor); }
@@ -257,6 +268,50 @@
   .folha .campo .val { float: right; color: var(--txt); font-variant-numeric: tabular-nums; }
   .texto-campo { width: 100%; padding: 12px 14px; border-radius: 12px; background: #0e0e10; border: 1px solid #34343a; outline: none; }
 
+  /* ===== Samplear ===== */
+  .sampler {
+    position: fixed; inset: 0; z-index: 30; display: none; flex-direction: column;
+    background: linear-gradient(180deg, #120808 0%, #050505 40%, #000 100%);
+  }
+  .sampler.aberto { display: flex; }
+  .sm-topo { display: flex; align-items: center; justify-content: space-between; padding: calc(var(--topo) + 6px) 10px 6px; font-weight: 700; font-size: 17px; }
+  .sm-x { width: 44px; height: 44px; font-size: 20px; border-radius: 50%; }
+  .sm-corpo { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px calc(var(--baixo) + 24px); }
+  .sm-nome { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin: 4px 0 10px; }
+  .sm-nome b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sm-nome span { color: var(--fraco); font-size: 13px; flex: none; }
+  .sm-onda { display: block; width: 100%; border-radius: 12px; border: 1px solid #2a2a30; touch-action: none; }
+  .sm-onda.geral { height: 64px; }
+  .sm-onda.zoom { height: 140px; margin-top: 8px; }
+  .sm-tempos { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .sm-t { flex: 1; background: #111114; border: 1px solid #26262b; border-radius: 12px; padding: 8px; text-align: center; }
+  .sm-t small { display: block; color: var(--fraco); font-size: 11.5px; }
+  .sm-t b { display: block; font-variant-numeric: tabular-nums; font-size: 15px; margin: 2px 0 6px; }
+  .sm-t.meio { display: flex; flex-direction: column; justify-content: center; }
+  .sm-mm { display: flex; gap: 6px; }
+  .sm-mm button { flex: 1; height: 36px; border-radius: 10px; background: #222227; border: 1px solid #34343a; font-size: 20px; }
+  .sm-linha { display: flex; gap: 8px; margin-top: 8px; }
+  .sm-linha .botao { margin: 0; flex: 1; font-size: 15px; padding: 10px 8px; }
+  .botao.pulsa { border-color: var(--cor); color: var(--cor); }
+  .sm-pads { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .sm-pad {
+    position: relative; aspect-ratio: 1; border-radius: 16%; background: radial-gradient(circle, #2a2a2e, #141416 75%);
+    border: 2px solid #3a3a40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px; min-width: 0;
+  }
+  .sm-pad span { font-weight: 700; font-size: 15px; }
+  .sm-pad small { font-size: 10px; color: var(--fraco); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sm-pad.amostra small { color: color-mix(in srgb, var(--cor) 80%, white); }
+  .sm-pad.destino { border-color: var(--cor); border-style: dashed; }
+  .sm-pad.aceso { animation: sm-aceso 0.6s ease-out; }
+  @keyframes sm-aceso { from { background: var(--cor); } }
+  .sm-item { display: flex; align-items: center; gap: 8px; }
+  .sm-item + .sm-item { border-top: 1px solid #26262b; }
+  .sm-abrir { flex: 1; min-width: 0; display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; text-align: left; }
+  .sm-abrir b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sm-abrir small { color: var(--fraco); flex: none; }
+  .sm-tirar { width: 36px; height: 36px; color: var(--fraco); }
+  .tipo-audio { font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; padding: 1px 6px; border-radius: 6px; background: #2a2a30; color: #ff8a80; }
+
   .aviso {
     position: fixed; left: 50%; top: calc(var(--topo) + 72px); z-index: 60;
     transform: translate(-50%, -10px); opacity: 0; pointer-events: none;
@@ -287,6 +342,9 @@
         <button class="pilula" id="bBanco" aria-label="Trocar banco de pads"><span class="bola ativa"></span><span class="bola"></span></button>
         <button class="pilula" id="bPlay" aria-label="Tocar">
           <svg viewBox="0 0 24 24" id="iconePlay"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+        </button>
+        <button class="pilula redondo" id="bAudio" aria-label="Gravar o som que sai">
+          <span class="icone-audio"><i></i></span><span class="tempo-audio"></span>
         </button>
       </div>
 
@@ -340,6 +398,16 @@
     <button class="aba" data-tela="tela-config">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Configurações</button>
   </nav>
+</div>
+
+<div class="sampler" id="sampler" role="dialog" aria-label="Samplear">
+  <header class="sm-topo">
+    <button id="smFechar" class="sm-x" aria-label="Fechar">✕</button>
+    <div id="smTitulo">Samplear</div>
+    <span style="width:44px"></span>
+  </header>
+  <div class="sm-corpo" id="smCorpo"></div>
+  <input type="file" id="smArquivo" accept="audio/*,.mp3,.m4a,.wav,.aac" hidden>
 </div>
 
 <div class="fundo-folha" id="fundoFolha"></div>
