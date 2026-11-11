@@ -2,9 +2,11 @@
 // Separado do banco do Vinland ('vinland') — os dois apps não se misturam.
 
 const BANCO = 'batuque';
-const VERSAO = 1;
+const VERSAO = 2;
 export const GRAVACOES = 'gravacoes'; // { id, nome, criada, atualizada, bpm, dur, eventos, fx, pads }
 export const AMOSTRAS = 'amostras';   // { id, nome, wav: ArrayBuffer }
+export const MUSICAS = 'musicas';     // { id, nome, dados: ArrayBuffer (arquivo original), dur, criada }
+// Gravações têm dois tipos: beat (padrão: eventos dos pads) e { tipo: 'audio', wav, dur }.
 
 let aberto = null;
 
@@ -16,6 +18,7 @@ function abrir() {
       const db = req.result;
       if (!db.objectStoreNames.contains(GRAVACOES)) db.createObjectStore(GRAVACOES, { keyPath: 'id', autoIncrement: true });
       if (!db.objectStoreNames.contains(AMOSTRAS)) db.createObjectStore(AMOSTRAS, { keyPath: 'id', autoIncrement: true });
+      if (!db.objectStoreNames.contains(MUSICAS)) db.createObjectStore(MUSICAS, { keyPath: 'id', autoIncrement: true });
     };
     req.onsuccess = () => ok(req.result);
     req.onerror = () => { aberto = null; falha(req.error); };

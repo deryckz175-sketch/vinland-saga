@@ -13,10 +13,12 @@ import {
   reescalar, ultimaCamada, desfazerCamada, limparEventos, ordenar, descreverDuracao,
   limitarBpm, BPM_MIN, BPM_MAX,
 } from './tempo.js';
-import { codificarWav, aparar } from './wav.js';
+import { codificarWav, aparar, tirarSilencio } from './wav.js';
 import * as db from './db.js';
+import { gravarSaida } from './gravador.js';
+import { configurarSampler, abrirSampler, fecharSampler, samplerAberto, tempoTexto } from './sampler.js';
 
-const VERSAO_APP = '1.0';
+const VERSAO_APP = '1.1';
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -59,6 +61,7 @@ function carregarCfg() {
     nomes: c.nomes ?? true,
     pads: c.pads && typeof c.pads === 'object' ? c.pads : {},
     contador: Number.isInteger(c.contador) ? c.contador : 0,
+    contadorAudio: Number.isInteger(c.contadorAudio) ? c.contadorAudio : 0,
   };
 }
 const cfg = carregarCfg();
@@ -140,6 +143,7 @@ function carregarAmostrasUsadas() {
 }
 
 const ajustePad = (pacote, pad) => cfg.pads[pacote]?.[pad] || null;
+const grupoDaAmostra = (pacote, pad, aj) => (aj && aj.amostraId != null && !aj.solto ? `amostra:${pacote}:${pad}` : null);
 
 // ===================================================================
 // Transporte
@@ -164,7 +168,7 @@ function tocarPad(pacote, pad, quando, agendado) {
   const som = somDoPad(pacote, pad);
   const aj = ajustePad(pacote, pad);
   const buf = aj && aj.amostraId != null ? bufferPronto(aj.amostraId) : null;
-  const voz = motor.tocar(som, quando, aj || {}, buf);
+  const voz = motor.tocar(som, quando, aj || {}, buf, grupoDaAmostra(pacote, pad, aj));
   if (agendado) {
     T.agendadas.push(voz);
     filaLuz.push({ quando, pacote, pad });
@@ -346,6 +350,67 @@ function apertarClear() {
   gravarJson(CHAVE_TAKE, null);
   render();
   aviso(salvo ? 'Pads limpos — o beat continua em Gravações' : 'Limpo');
+}
+
+// ===================================================================
+// Gravar o som que sai (botão ⏺ do lado do ▶)
+// ===================================================================
+const MAX_AUDIO = 5 * 60;
+let gravAudio = null;      // { rec, timer }
+let iniciandoAudio = false;
+
+async function alternarGravacaoAudio() {
+  if (iniciandoAudio) return;
+  if (gravAudio) { await pararGravacaoAudio(); return; }
+  iniciarAudio();
+  pararPrevia();
+  iniciandoAudio = true;
+  try {
+    const rec = await gravarSaida(ctx, motor.lim);
+    const inicio = Date.now();
+    const timer = setInterval(() => {
+      const seg = rec.segundos();
+      $('bAudio').querySelector('.tempo-audio').textContent = tempoTexto(Math.max(seg, (Date.now() - inicio) / 1000 - 0.3)).replace(/,\d+$/, '');
+      if (seg >= MAX_AUDIO) { pararGravacaoAudio(); aviso('Limite de 5 minutos: gravação salva'); }
+    }, 250);
+    gravAudio = { rec, timer };
+    aviso('Gravando o som — toque ⏺ de novo para parar');
+  } catch (e) {
+    aviso(`Não consegui gravar o som: ${e?.message || e}`, 3000);
+  } finally {
+    iniciandoAudio = false;
+    render();
+  }
+}
+
+async function pararGravacaoAudio() {
+  const g = gravAudio;
+  if (!g) return;
+  gravAudio = null;
+  clearInterval(g.timer);
+  render();
+  const res = await g.rec.parar();
+  if (!res) return;
+  const limpo = tirarSilencio(res.canais, res.taxa);
+  if (!limpo) { aviso('Nada foi gravado — só silêncio'); return; }
+  try {
+    cfg.contadorAudio += 1;
+    salvarCfg();
+    const agora = Date.now();
+    await db.salvar(db.GRAVACOES, {
+      tipo: 'audio',
+      nome: `Áudio ${cfg.contadorAudio}`,
+      criada: agora,
+      atualizada: agora,
+      dur: limpo[0].length / res.taxa,
+      taxa: res.taxa,
+      wav: codificarWav(limpo, res.taxa),
+    });
+    aviso('Áudio salvo em Gravações');
+    if (telaAtual === 'tela-gravacoes') renderGravacoes();
+  } catch (e) {
+    aviso(`Não consegui salvar o áudio: ${e?.message || e}`, 3000);
+  }
 }
 
 function trocarBanco() {
@@ -620,6 +685,7 @@ function apertarEm(el, fn) {
 apertarEm($('bRec'), apertarRec);
 apertarEm($('bPlay'), apertarPlay);
 apertarEm($('bBanco'), trocarBanco);
+apertarEm($('bAudio'), alternarGravacaoAudio);
 $('bLoop').addEventListener('click', apertarLoop);
 $('bClear').addEventListener('click', apertarClear);
 $('bOpcoes').addEventListener('click', () => {
@@ -644,6 +710,9 @@ function render() {
     : '<path d="M7 4.5v15l12.5-7.5z"/>';
   $('bPlay').setAttribute('aria-label', ocupado ? 'Parar' : 'Tocar');
   $('bOpcoes').lastChild.textContent = editando ? 'PRONTO' : 'OPTIONS';
+  $('bAudio').classList.toggle('gravando', !!gravAudio);
+  $('bAudio').setAttribute('aria-label', gravAudio ? 'Parar gravação do som' : 'Gravar o som que sai');
+  if (!gravAudio) $('bAudio').querySelector('.tempo-audio').textContent = '';
   $('tela-pads').classList.toggle('editando', editando);
   grade.classList.toggle('sem-nomes', !cfg.nomes);
   for (let i = 0; i < 16; i++) {
@@ -716,6 +785,11 @@ function confirmar(btn, acao) {
 
 const chaveHtml = (on) => `<span class="chave ${on ? 'on' : ''}"></span>`;
 
+function linhaChaveLocal(id, titulo, sub, on) {
+  return `<button class="linha-cfg" id="${id}" style="width:100%;text-align:left">
+    <span class="txt">${titulo}${sub ? `<small>${sub}</small>` : ''}</span>${chaveHtml(on)}</button>`;
+}
+
 function linhaChave(id, titulo, sub, on) {
   return `<button class="linha-cfg" data-chave="${id}" style="width:100%;text-align:left">
     <span class="txt">${titulo}${sub ? `<small>${sub}</small>` : ''}</span>${chaveHtml(on)}</button>`;
@@ -777,6 +851,7 @@ function abrirOpcoes() {
       ${linhaChave('ajustar', 'Ajustar ao tempo', 'Toques vão para a grade de 1/16 e o loop fecha em compassos inteiros', cfg.ajustar)}
     </div>
     <button class="botao" id="opDesfazer" ${podeDesfazer ? '' : 'disabled'}>↶ Desfazer última camada</button>
+    <button class="botao" id="opSamplear">✂ Samplear uma música</button>
     <button class="botao" id="opEditar">✎ Editar pads (volume, afinação, som próprio)</button>
     <button class="botao" id="opFechar">Fechar</button>
   `, (raiz) => {
@@ -799,6 +874,7 @@ function abrirOpcoes() {
       fecharFolha();
       aviso('Última camada desfeita');
     });
+    raiz.querySelector('#opSamplear').addEventListener('click', () => { fecharFolha(); abrirSampler(); });
     raiz.querySelector('#opEditar').addEventListener('click', () => {
       editando = true;
       fecharFolha();
@@ -844,10 +920,12 @@ function abrirEditorPad(pacote, pad) {
     <div class="card">
       <h2>Som</h2>
       <p style="margin:0 0 12px;font-size:14px">${temAmostra ? `Amostra: <b>${esc(aj.amostraNome || 'sem nome')}</b>` : `Original do pacote: <b>${esc(som.nome)}</b>`}</p>
-      <button class="botao" id="edArquivo">📁 Importar arquivo de áudio</button>
+      <button class="botao" id="edCortar">✂ Cortar trecho de uma música</button>
+      <button class="botao" id="edArquivo">📁 Importar arquivo curto (inteiro)</button>
       <button class="botao" id="edMic">🎙 Gravar com o microfone</button>
       ${temAmostra ? '<button class="botao" id="edOriginal">↺ Voltar ao som original</button>' : ''}
     </div>
+    ${temAmostra ? `<div class="card">${linhaChaveLocal('edCorta', 'Toque novo corta o anterior', 'Desligado, os toques se sobrepõem', !aj.solto)}</div>` : ''}
     <button class="botao" id="edFechar">Pronto</button>
   `, (raiz) => {
     const ouvir = () => { iniciarAudio(); tocarPad(pacote, pad, ctx.currentTime, false); };
@@ -876,10 +954,19 @@ function abrirEditorPad(pacote, pad) {
       };
       inp.click();
     });
+    raiz.querySelector('#edCortar').addEventListener('click', () => {
+      fecharFolha();
+      abrirSampler({ destino: { pacote, pad } });
+    });
+    raiz.querySelector('#edCorta')?.addEventListener('click', (e) => {
+      const solto = !ajustePad(pacote, pad)?.solto;
+      mudarAjuste(pacote, pad, { solto: solto || null });
+      e.currentTarget.querySelector('.chave').classList.toggle('on', !solto);
+    });
     const bMic = raiz.querySelector('#edMic');
     bMic.addEventListener('click', () => gravarMicrofone(bMic, pacote, pad));
     raiz.querySelector('#edOriginal')?.addEventListener('click', () => {
-      mudarAjuste(pacote, pad, { amostraId: null, amostraNome: null });
+      mudarAjuste(pacote, pad, { amostraId: null, amostraNome: null, solto: null });
       limparAmostras();
       abrirEditorPad(pacote, pad);
       aviso('Som original de volta');
@@ -970,10 +1057,67 @@ async function limparAmostras() {
 }
 
 // ===================================================================
+// Samplear (sampler.js) — o que ele precisa do app
+// ===================================================================
+function definirAjuste(pacote, pad, aj) {
+  cfg.pads[pacote] = cfg.pads[pacote] || {};
+  if (aj && Object.keys(aj).length) cfg.pads[pacote][pad] = { ...aj };
+  else delete cfg.pads[pacote][pad];
+  if (!Object.keys(cfg.pads[pacote]).length) delete cfg.pads[pacote];
+  salvarCfg();
+  render();
+}
+
+configurarSampler({
+  audio: () => { iniciarAudio(); return { ctx, motor }; },
+  decodificar: (buf) => { iniciarAudio(); return decodificar(buf); },
+  aviso,
+  pacote: () => cfg.pacote,
+  banco: () => cfg.banco,
+  nomeDoPad: (pacote, pad) => {
+    const aj = ajustePad(pacote, pad);
+    return aj && aj.amostraId != null ? aj.amostraNome || 'Amostra' : somDoPad(pacote, pad).nome;
+  },
+  temAmostra: (pacote, pad) => ajustePad(pacote, pad)?.amostraId != null,
+  tocarPad: (pacote, pad) => { iniciarAudio(); tocarPad(pacote, pad, ctx.currentTime, false); },
+  pararOutros: () => { pararPrevia(); if (T.tocando || T.grav) pararTudo(); fecharFolha(); },
+  // Guarda o trecho como amostra e põe no pad. Devolve o ajuste antigo (para desfazer).
+  async colocarNoPad(canais, taxa, nome, pacote, pad) {
+    iniciarAudio();
+    const wav = codificarWav(canais, taxa);
+    const id = await db.salvar(db.AMOSTRAS, { nome, wav });
+    const buf = ctx.createBuffer(canais.length, canais[0].length, taxa);
+    canais.forEach((ch, i) => buf.getChannelData(i).set(ch));
+    amostras.set(id, buf);
+    const anterior = ajustePad(pacote, pad);
+    const novo = { ...(anterior || {}), amostraId: id, amostraNome: nome };
+    delete novo.afin; // trecho de música entra no tom original
+    definirAjuste(pacote, pad, novo);
+    if (T.take && !T.grav) salvarTakeEmBreve();
+    return anterior ? { ...anterior } : null;
+  },
+  restaurarPad: (pacote, pad, anterior) => {
+    definirAjuste(pacote, pad, anterior);
+    if (anterior && anterior.amostraId != null) carregarAmostra(anterior.amostraId);
+  },
+  voltarAoEditor: (pacote, pad) => abrirEditorPad(pacote, pad),
+  aoFechar: () => { render(); limparAmostras(); },
+});
+
+// ===================================================================
 // Pacotes
 // ===================================================================
 function renderPacotes() {
-  $('listaPacotes').innerHTML = PACOTES.map((p) => `
+  $('listaPacotes').innerHTML = `
+    <div class="card" style="--c:var(--cor)">
+      <button class="pacote" id="pcSamplear">
+        <span class="amostra-cor" style="display:grid;place-items:center;font-size:26px;padding:0">✂</span>
+        <span class="info">
+          <span class="nome">Samplear música</span>
+          <div class="desc">Abra um MP3, corte o trecho que quiser e coloque num pad.</div>
+        </span>
+      </button>
+    </div>` + PACOTES.map((p) => `
     <div class="card ${p.id === cfg.pacote ? 'atual' : ''}" style="--c:${p.cor}">
       <button class="pacote" data-pacote="${p.id}">
         <span class="amostra-cor"><i></i><i></i><i></i><i></i></span>
@@ -985,6 +1129,7 @@ function renderPacotes() {
         ${p.id === cfg.pacote ? '<span class="selo">Usando</span>' : ''}
       </button>
     </div>`).join('');
+  $('pcSamplear').addEventListener('click', () => abrirSampler());
   $('listaPacotes').querySelectorAll('[data-pacote]').forEach((b) => {
     b.addEventListener('click', () => {
       const p = pacotePorId(b.dataset.pacote);
@@ -1026,7 +1171,7 @@ async function renderizarBeat(reg, repeticoes, cauda) {
     for (const e of eventos) {
       const aj = reg.pads?.[e.pacote]?.[e.pad] || {};
       const buf = aj.amostraId != null ? bufs.get(aj.amostraId) || null : null;
-      m.tocar(somDoPad(e.pacote, e.pad), 0.02 + k * reg.dur + e.t, aj, buf);
+      m.tocar(somDoPad(e.pacote, e.pad), 0.02 + k * reg.dur + e.t, aj, buf, grupoDaAmostra(e.pacote, e.pad, aj));
     }
   }
   return new Promise((ok, falha) => {
@@ -1051,7 +1196,8 @@ async function tocarPrevia(reg) {
   if (renderizando) return;
   renderizando = true;
   try {
-    const buf = await renderizarBeat(reg, 1, 2.5);
+    iniciarAudio();
+    const buf = reg.tipo === 'audio' ? await decodificar(reg.wav.slice(0)) : await renderizarBeat(reg, 1, 2.5);
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.connect(motor.volumeGeral);
@@ -1079,7 +1225,7 @@ async function renderGravacoes() {
   }
   lista.sort((a, b) => (b.atualizada || 0) - (a.atualizada || 0));
   if (!lista.length) {
-    $('listaGravacoes').innerHTML = '<div class="vazio">Nenhum beat ainda.<br>Na aba <b>Reproduzir</b>, toque <b>RECORD</b>, faça o beat nos pads e toque <b>RECORD</b> de novo.</div>';
+    $('listaGravacoes').innerHTML = '<div class="vazio">Nada gravado ainda.<br>Na aba <b>Reproduzir</b>, toque <b>RECORD</b> para gravar um beat nos pads, ou o botão <b>⏺</b> do lado do ▶ para gravar o som que sai.</div>';
     return;
   }
   const PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
@@ -1091,7 +1237,9 @@ async function renderGravacoes() {
       <button class="play-mini ${tocando ? 'tocando' : ''}" data-ouvir="${g.id}" aria-label="Ouvir">${tocando ? STOP : PLAY}</button>
       <div class="info">
         <div class="nome">${esc(g.nome)}</div>
-        <div class="meta">${noPad ? '<span class="no-pad">No pad · </span>' : ''}${dataCurta(g.atualizada || g.criada)} · ${g.bpm} BPM · ${descreverDuracao(g.dur, g.bpm)}</div>
+        <div class="meta">${g.tipo === 'audio'
+          ? `<span class="tipo-audio">ÁUDIO</span> ${dataCurta(g.criada)} · ${tempoTexto(g.dur).replace(/,\d+$/, '')}`
+          : `${noPad ? '<span class="no-pad">No pad · </span>' : ''}${dataCurta(g.atualizada || g.criada)} · ${g.bpm} BPM · ${descreverDuracao(g.dur, g.bpm)}`}</div>
       </div>
       <button class="mais" data-mais="${g.id}" aria-label="Mais opções">⋯</button>
     </div>`;
@@ -1105,8 +1253,66 @@ async function renderGravacoes() {
   });
 }
 
+function compartilharArquivo(arquivo, titulo) {
+  if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+    navigator.share({ files: [arquivo], title: titulo }).catch((e) => { if (e && e.name !== 'AbortError') baixar(arquivo); });
+  } else baixar(arquivo);
+}
+
+function abrirMenuAudio(reg) {
+  abrirFolha(`
+    <h3>${esc(reg.nome)}</h3>
+    <p class="sub">Áudio gravado · ${tempoTexto(reg.dur)}</p>
+    <button class="botao primario" id="gCortar">✂ Cortar e colocar num pad</button>
+    <button class="botao" id="gCompartilhar">⤓ Compartilhar WAV (Arquivos, WhatsApp…)</button>
+    <div class="campo"><label>Nome</label>
+      <div style="display:flex;gap:8px"><input class="texto-campo" id="gNome" maxlength="40" value="${esc(reg.nome)}"><button class="chip" id="gRenomear">Salvar</button></div></div>
+    <button class="botao perigo" id="gApagar">Apagar gravação</button>
+    <button class="botao" id="gFechar">Fechar</button>
+  `, (raiz) => {
+    raiz.querySelector('#gCortar').addEventListener('click', () => {
+      pararPrevia();
+      fecharFolha();
+      abrirSampler({ fonte: { tipo: 'gravacao', reg } });
+    });
+    // O arquivo já está pronto: compartilha direto, dentro do toque.
+    raiz.querySelector('#gCompartilhar').addEventListener('click', () => {
+      compartilharArquivo(new File([reg.wav], nomeArquivo(reg.nome), { type: 'audio/wav' }), reg.nome);
+    });
+    ligarRenomearApagar(raiz, reg);
+  });
+}
+
+function ligarRenomearApagar(raiz, reg) {
+  raiz.querySelector('#gRenomear').addEventListener('click', async () => {
+    const nome = raiz.querySelector('#gNome').value.trim().slice(0, 40);
+    if (!nome) { aviso('Escreva um nome'); return; }
+    reg.nome = nome;
+    try {
+      await db.salvar(db.GRAVACOES, reg);
+      if (T.take && T.take.id === reg.id) { T.take.nome = nome; guardarTakeLocal(); }
+      fecharFolha();
+      renderGravacoes();
+      aviso('Nome salvo');
+    } catch (e) { aviso(`Não consegui salvar: ${e?.message || e}`); }
+  });
+  confirmar(raiz.querySelector('#gApagar'), async () => {
+    if (previa && previa.id === reg.id) pararPrevia();
+    try {
+      await db.apagar(db.GRAVACOES, reg.id);
+      if (T.take && T.take.id === reg.id) { T.take.id = null; T.take.nome = null; T.take.criada = null; guardarTakeLocal(); }
+      fecharFolha();
+      renderGravacoes();
+      limparAmostras();
+      aviso('Gravação apagada');
+    } catch (e) { aviso(`Não consegui apagar: ${e?.message || e}`); }
+  });
+  raiz.querySelector('#gFechar').addEventListener('click', fecharFolha);
+}
+
 function abrirMenuGravacao(reg) {
   if (!reg) return;
+  if (reg.tipo === 'audio') { abrirMenuAudio(reg); return; }
   abrirFolha(`
     <h3>${esc(reg.nome)}</h3>
     <p class="sub">${reg.bpm} BPM · ${descreverDuracao(reg.dur, reg.bpm)} · ${reg.eventos.length} toques</p>
@@ -1135,30 +1341,7 @@ function abrirMenuGravacao(reg) {
       aviso(`${reg.nome} nos pads — toque ▶`);
     });
     raiz.querySelector('#gExportar').addEventListener('click', () => abrirExportar(reg));
-    raiz.querySelector('#gRenomear').addEventListener('click', async () => {
-      const nome = raiz.querySelector('#gNome').value.trim().slice(0, 40);
-      if (!nome) { aviso('Escreva um nome'); return; }
-      reg.nome = nome;
-      try {
-        await db.salvar(db.GRAVACOES, reg);
-        if (T.take && T.take.id === reg.id) { T.take.nome = nome; guardarTakeLocal(); }
-        fecharFolha();
-        renderGravacoes();
-        aviso('Nome salvo');
-      } catch (e) { aviso(`Não consegui salvar: ${e?.message || e}`); }
-    });
-    confirmar(raiz.querySelector('#gApagar'), async () => {
-      if (previa && previa.id === reg.id) pararPrevia();
-      try {
-        await db.apagar(db.GRAVACOES, reg.id);
-        if (T.take && T.take.id === reg.id) { T.take.id = null; T.take.nome = null; T.take.criada = null; guardarTakeLocal(); }
-        fecharFolha();
-        renderGravacoes();
-        limparAmostras();
-        aviso('Gravação apagada');
-      } catch (e) { aviso(`Não consegui apagar: ${e?.message || e}`); }
-    });
-    raiz.querySelector('#gFechar').addEventListener('click', fecharFolha);
+    ligarRenomearApagar(raiz, reg);
   });
 }
 
@@ -1214,13 +1397,7 @@ function abrirExportar(reg) {
         // O compartilhar precisa nascer de um toque, por isso vira um segundo botão.
         pronto.innerHTML = `<button class="botao primario" id="exCompartilhar">Compartilhar / Salvar em Arquivos</button>
           <p class="sub" style="margin:8px 0 0">${esc(arquivo.name)} · ${(arquivo.size / 1048576).toFixed(1).replace('.', ',')} MB</p>`;
-        pronto.querySelector('#exCompartilhar').addEventListener('click', async () => {
-          if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
-            try { await navigator.share({ files: [arquivo], title: reg.nome }); } catch (e) {
-              if (e && e.name !== 'AbortError') baixar(arquivo);
-            }
-          } else baixar(arquivo);
-        });
+        pronto.querySelector('#exCompartilhar').addEventListener('click', () => compartilharArquivo(arquivo, reg.nome));
       } catch (e) {
         aviso(`Não consegui gerar: ${e?.message || e}`);
       } finally {
@@ -1252,6 +1429,8 @@ function renderConfig() {
         <li><b>● ○</b> troca entre bateria e acordes/baixo.</li>
         <li>Botões giram arrastando para cima ou para baixo. Dois toques zeram.</li>
         <li><b>OPTIONS</b>: BPM, metrônomo, desfazer camada e editar pads.</li>
+        <li><b>⏺</b> (do lado do ▶) grava o som que sai do app — vai para Gravações, dá para compartilhar ou cortar para um pad.</li>
+        <li><b>Samplear</b> (em Pacotes ou OPTIONS): abra um MP3, marque o trecho e toque num pad.</li>
         <li>Se não sair som, desligue o modo silencioso e aumente o volume.</li>
       </ol>
     </div>
@@ -1321,6 +1500,7 @@ document.querySelectorAll('.aba').forEach((a) => a.addEventListener('click', () 
 // em vez de deixar o relógio torto.
 function aoSair() {
   if (gravMic) gravMic.parar(true);
+  if (gravAudio) pararGravacaoAudio();
   pararPrevia();
   if (T.grav || T.tocando) pararTudo();
   salvarCfg();
