@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Batuque</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="icon" href="icones/icone-192.png">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Batuque">
+<style>
+  :root {
+    --cor: #e5342b;
+    --txt: #f4f4f5;
+    --fraco: #8b8b93;
+    --linha: #34343a;
+    --surf: rgba(20, 20, 23, 0.92);
+    --topo: env(safe-area-inset-top, 0px);
+    --baixo: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: #000; color: var(--txt); overflow: hidden; }
+  body {
+    font: 15px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  input { font-size: 16px; -webkit-user-select: text; user-select: text; }
+  button { background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; }
+
+  #app {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(120% 60% at 10% 0%, color-mix(in srgb, var(--cor) 38%, transparent) 0%, transparent 60%),
+      radial-gradient(90% 50% at 100% 70%, color-mix(in srgb, var(--cor) 16%, transparent) 0%, transparent 70%),
+      linear-gradient(180deg, #120808 0%, #050505 60%, #000 100%);
+    transition: background 0.4s;
+  }
+  .telas { flex: 1; min-height: 0; position: relative; }
+  .tela { position: absolute; inset: 0; display: none; }
+  .tela.ativa { display: flex; flex-direction: column; }
+  .tela.rolavel { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(var(--topo) + 16px) 16px 24px; }
+
+  /* ===== Tela dos pads ===== */
+  #tela-pads { padding: calc(var(--topo) + 10px) 16px 8px; touch-action: none; }
+  .fileira { display: flex; gap: 12px; }
+  .pilula {
+    position: relative; flex: 1; height: 52px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: linear-gradient(180deg, #2b2b30 0%, #0b0b0d 55%, #000 100%);
+    border: 2px solid #3d3d44;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    font-weight: 700; font-size: 17px; letter-spacing: 2.2px; text-transform: uppercase;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.06s;
+  }
+  .pilula:active { transform: scale(0.97); }
+  .pilula svg { width: 22px; height: 22px; fill: currentColor; }
+  .pilula.ligado { border-color: var(--cor); box-shadow: 0 0 16px color-mix(in srgb, var(--cor) 55%, transparent), inset 0 1px 0 rgba(255,255,255,0.08); }
+  .pilula.ligado .icone-loop { color: var(--cor); }
+  .ponto { width: 12px; height: 12px; border-radius: 50%; background: #e5342b; flex: none; }
+  #bRec.armado .ponto, #bRec.gravando .ponto { animation: pisca 0.8s steps(2, start) infinite; }
+  #bRec.gravando { border-color: #e5342b; box-shadow: 0 0 18px rgba(229,52,43,0.6); }
+  #bRec.armado { border-color: #e5342b; }
+  #bRec .rotulo { min-width: 6.2ch; text-align: left; }
+  @keyframes pisca { to { visibility: hidden; } }
+  .bola { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #e8e8ea; transition: background 0.15s; }
+  .bola.ativa { background: #e8e8ea; }
+  #bPlay.tocando svg { fill: var(--cor); }
+
+  .knobs { display: flex; justify-content: space-between; margin-top: 14px; }
+  .knob-caixa { position: relative; width: 31%; display: flex; flex-direction: column; align-items: center; touch-action: none; }
+  .knob {
+    --tam: min(108px, 27vw, 13.5dvh);
+    position: relative; width: var(--tam); height: var(--tam); border-radius: 50%;
+    background: radial-gradient(circle at 50% 30%, #2c2c31 0%, #111113 62%, #050506 100%);
+    border: 3px solid #4b4b52;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.07), 0 0 0 1px #000;
+  }
+  .knob .arco { position: absolute; inset: -9px; width: calc(100% + 18px); height: calc(100% + 18px); transform: rotate(135deg); pointer-events: none; }
+  .knob .arco circle { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .knob .arco .trilho { stroke: rgba(255,255,255,0.08); }
+  .knob .arco .valor { stroke: var(--cor); transition: stroke 0.3s; }
+  .knob .nome {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-62%);
+    text-align: center; font-weight: 700; letter-spacing: 1.8px;
+    font-size: clamp(8px, calc(var(--tam) * 0.13), 14px);
+  }
+  .knob .nome.longo { letter-spacing: 1px; font-size: clamp(7px, calc(var(--tam) * 0.112), 13px); }
+  .knob .ponteiro { position: absolute; inset: 0; transform: rotate(var(--ang, -135deg)); pointer-events: none; }
+  .knob .ponteiro::after {
+    content: ""; position: absolute; left: 50%; top: 7%; width: 10%; height: 24%;
+    transform: translateX(-50%); border-radius: 99px;
+    background: linear-gradient(90deg, #cfcfd3, #ffffff 50%, #bdbdc2);
+    box-shadow: 0 0 6px rgba(0,0,0,0.6);
+  }
+  .knob .valor-txt { position: absolute; left: 0; right: 0; top: 64%; text-align: center; font-size: 11px; color: var(--fraco); font-variant-numeric: tabular-nums; opacity: 0; transition: opacity 0.2s; }
+  .knob-caixa.mexendo .valor-txt, .knob-caixa.com-valor .valor-txt { opacity: 1; }
+  .minmax { width: 100%; display: flex; justify-content: space-between; font-size: 12px; color: #a1a1aa; margin-top: -6px; letter-spacing: 0.5px; pointer-events: none; }
+
+  .batidas { display: flex; gap: 8px; margin: 12px 0 12px; }
+  .batidas i { flex: 1; height: 7px; border-radius: 99px; background: #4a4a50; transition: background 0.06s, box-shadow 0.06s; }
+  .batidas i.ativa { background: var(--cor); box-shadow: 0 0 10px var(--cor); }
+  .batidas i.contagem { background: #fff; }
+
+  .area-pads { flex: 1; min-height: 0; container-type: size; display: flex; align-items: center; justify-content: center; position: relative; }
+  .grade {
+    --lado: min(100cqw, 100cqh);
+    width: var(--lado); height: var(--lado);
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
+    gap: calc(var(--lado) * 0.032);
+    touch-action: none;
+  }
+  @supports not (container-type: size) {
+    .grade { --lado: min(calc(100vw - 32px), 44vh); }
+  }
+  .pad {
+    position: relative; border-radius: 20%;
+    background: radial-gradient(circle at 50% 50%, #2a2a2e 0%, #151517 70%, #111113 100%);
+    border: 2px solid #3a3a40;
+    box-shadow: inset 0 0 0 5px #121214, inset 0 0 0 6.5px #2b2b30, 0 4px 10px rgba(0,0,0,0.5);
+    overflow: hidden; touch-action: none;
+  }
+  .pad::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--cor) 55%, white) 0%, var(--cor) 45%, color-mix(in srgb, var(--cor) 45%, black) 100%);
+  }
+  .pad.apertado::after { opacity: 1; transition: none; }
+  .pad.aceso::after { animation: acende 0.38s ease-out; }
+  .pad.apertado { border-color: color-mix(in srgb, var(--cor) 70%, white); }
+  @keyframes acende { from { opacity: 0.95; } to { opacity: 0; } }
+  .pad .nome-pad {
+    position: absolute; left: 6%; right: 6%; bottom: 9%; z-index: 1;
+    text-align: center; font-size: clamp(9px, calc(var(--lado) * 0.03), 12px); font-weight: 600;
+    color: rgba(255,255,255,0.42); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    pointer-events: none; letter-spacing: 0.3px;
+  }
+  .pad.amostra .nome-pad { color: color-mix(in srgb, var(--cor) 80%, white); }
+  .sem-nomes .pad .nome-pad { display: none; }
+  .editando .pad { border-style: dashed; border-color: var(--cor); }
+  .editando .pad::before {
+    content: "✎"; position: absolute; top: 8%; right: 12%; font-size: 14px; color: var(--cor); z-index: 1;
+  }
+  .batidas-caixa { position: relative; }
+  .faixa-edicao {
+    display: none; position: absolute; inset: 0; align-items: center; justify-content: center;
+    font-size: 12.5px; color: var(--cor); font-weight: 600; letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .editando .faixa-edicao { display: flex; }
+  .editando .batidas { visibility: hidden; }
+
+  .base { margin-top: 10px; }
+  .base .pilula { height: 50px; font-size: 16px; }
+  .base .pilula svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ===== Barra de abas ===== */
+  .abas {
+    display: flex; margin: 0 14px calc(var(--baixo) + 6px); padding: 6px;
+    background: linear-gradient(180deg, #232327, #121214);
+    border: 1px solid #34343a; border-radius: 30px;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.5);
+  }
+  .aba {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 2px 7px; border-radius: 24px; color: #e4e4e7; font-size: 12px; font-weight: 500;
+  }
+  .aba svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .aba.ativa { background: #0a0a0b; color: var(--cor); box-shadow: inset 0 1px 6px rgba(0,0,0,0.6); }
+
+  /* ===== Telas de lista ===== */
+  h1.titulo { margin: 4px 0 14px; font-size: 30px; letter-spacing: -0.5px; }
+  .sub { color: var(--fraco); font-size: 13px; margin: -8px 0 16px; }
+  .card {
+    background: var(--surf); border: 1px solid #2a2a30; border-radius: 18px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .card h2 { margin: 0 0 10px; font-size: 12px; font-weight: 600; color: var(--fraco); text-transform: uppercase; letter-spacing: 0.8px; }
+  .pacote { display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; }
+  .pacote .amostra-cor { width: 52px; height: 52px; border-radius: 14px; flex: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 7px; background: #0c0c0e; border: 1px solid #2c2c32; }
+  .pacote .amostra-cor i { border-radius: 4px; background: var(--c); opacity: 0.85; }
+  .pacote .amostra-cor i:nth-child(2), .pacote .amostra-cor i:nth-child(3) { opacity: 0.4; }
+  .pacote .info { flex: 1; min-width: 0; }
+  .pacote .nome { font-weight: 700; font-size: 17px; }
+  .pacote .desc { color: var(--fraco); font-size: 13px; margin-top: 2px; }
+  .pacote .bpm { font-size: 12px; color: var(--fraco); margin-top: 4px; }
+  .selo { font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; padding: 4px 9px; border-radius: 99px; background: var(--c, var(--cor)); color: #000; flex: none; }
+  .card.atual { border-color: var(--c); box-shadow: 0 0 0 1px var(--c) inset; }
+
+  .grav { display: flex; align-items: center; gap: 12px; }
+  .grav .play-mini {
+    width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    background: linear-gradient(180deg, #2b2b30, #0b0b0d); border: 2px solid #3d3d44;
+  }
+  .grav .play-mini svg { width: 18px; height: 18px; fill: currentColor; }
+  .grav .play-mini.tocando { border-color: var(--cor); color: var(--cor); }
+  .grav .info { flex: 1; min-width: 0; }
+  .grav .nome { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .grav .meta { color: var(--fraco); font-size: 12.5px; margin-top: 1px; }
+  .grav .mais { width: 40px; height: 44px; display: grid; place-items: center; color: #d4d4d8; font-size: 22px; flex: none; }
+  .grav .no-pad { color: var(--cor); font-weight: 600; }
+  .vazio { text-align: center; color: var(--fraco); padding: 50px 20px; font-size: 14px; line-height: 1.6; }
+  .vazio b { color: var(--txt); }
+
+  .linha-cfg { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; min-height: 48px; }
+  .linha-cfg + .linha-cfg { border-top: 1px solid #26262b; }
+  .linha-cfg .txt { flex: 1; min-width: 0; }
+  .linha-cfg .txt small { display: block; color: var(--fraco); font-size: 12.5px; margin-top: 1px; }
+  .chave { position: relative; width: 51px; height: 31px; border-radius: 99px; background: #3a3a40; flex: none; transition: background 0.2s; }
+  .chave::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .chave.on { background: var(--cor); }
+  .chave.on::after { transform: translateX(20px); }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 30px; background: transparent; touch-action: pan-x; }
+  input[type=range]::-webkit-slider-runnable-track { height: 5px; border-radius: 99px; background: #3a3a40; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; margin-top: -10.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+  .botao {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    min-height: 48px; padding: 12px 14px; border-radius: 14px; font-weight: 600; font-size: 16px;
+    background: #222227; border: 1px solid #34343a;
+  }
+  .botao + .botao { margin-top: 8px; }
+  .botao.primario { background: var(--cor); border-color: var(--cor); color: #fff; }
+  .botao.perigo { color: #ff6b62; }
+  .botao:disabled { opacity: 0.4; }
+  .passos { margin: 0; padding-left: 20px; color: #d4d4d8; font-size: 14px; }
+  .passos li + li { margin-top: 6px; }
+
+  .bpm-ctrl { display: flex; align-items: center; gap: 12px; }
+  .bpm-ctrl .num { font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3ch; text-align: center; }
+  .bpm-ctrl .mm { width: 46px; height: 46px; border-radius: 50%; background: #222227; border: 1px solid #34343a; font-size: 24px; flex: none; }
+  .bpm-ctrl input { flex: 1; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 9px 16px; border-radius: 99px; background: #222227; border: 1px solid #34343a; font-weight: 600; }
+  .chip.on { background: var(--cor); border-color: var(--cor); }
+
+  /* ===== Folha (bottom sheet) ===== */
+  .fundo-folha { position: fixed; inset: 0; background: rgba(0,0,0,0.55); opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 40; }
+  .fundo-folha.aberta { opacity: 1; pointer-events: auto; }
+  .folha {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 41;
+    max-height: 88dvh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    background: #161619; border-top: 1px solid #2c2c32; border-radius: 22px 22px 0 0;
+    padding: 8px 18px calc(var(--baixo) + 18px);
+    transform: translateY(105%); transition: transform 0.25s cubic-bezier(.2,.8,.2,1);
+  }
+  .folha.aberta { transform: none; }
+  .folha .puxador { width: 40px; height: 5px; border-radius: 9px; background: #3f3f46; margin: 2px auto 12px; }
+  .folha h3 { margin: 0 0 4px; font-size: 20px; }
+  .folha .sub { margin: 0 0 14px; }
+  .folha .campo { margin: 14px 0; }
+  .folha .campo label { display: block; font-size: 13px; color: var(--fraco); margin-bottom: 6px; }
+  .folha .campo .val { float: right; color: var(--txt); font-variant-numeric: tabular-nums; }
+  .texto-campo { width: 100%; padding: 12px 14px; border-radius: 12px; background: #0e0e10; border: 1px solid #34343a; outline: none; }
+
+  .aviso {
+    position: fixed; left: 50%; top: calc(var(--topo) + 72px); z-index: 60;
+    transform: translate(-50%, -10px); opacity: 0; pointer-events: none;
+    background: rgba(28,28,32,0.96); border: 1px solid #3a3a40; color: #fff;
+    padding: 10px 16px; border-radius: 14px; font-size: 14px; font-weight: 500; text-align: center;
+    max-width: calc(100% - 40px); transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .aviso.visivel { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-height: 700px) {
+    .pilula { height: 44px; font-size: 15px; }
+    .base .pilula { height: 44px; font-size: 14px; }
+    .knobs { margin-top: 8px; }
+    .batidas { margin: 8px 0; }
+    .aba { padding: 5px 2px 5px; font-size: 11px; }
+    .aba svg { width: 22px; height: 22px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="telas">
+    <!-- ===== Reproduzir ===== -->
+    <section class="tela ativa" id="tela-pads">
+      <div class="fileira">
+        <button class="pilula" id="bRec" aria-label="Gravar"><span class="ponto"></span><span class="rotulo">RECORD</span></button>
+        <button class="pilula" id="bBanco" aria-label="Trocar banco de pads"><span class="bola ativa"></span><span class="bola"></span></button>
+        <button class="pilula" id="bPlay" aria-label="Tocar">
+          <svg viewBox="0 0 24 24" id="iconePlay"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+        </button>
+      </div>
+
+      <div class="knobs" id="knobs"></div>
+      <div class="batidas-caixa">
+        <div class="batidas" id="batidas"><i></i><i></i><i></i><i></i></div>
+        <div class="faixa-edicao">Editando: toque num pad · PRONTO para sair</div>
+      </div>
+
+      <div class="area-pads" id="areaPads">
+        <div class="grade" id="grade"></div>
+      </div>
+
+      <div class="fileira base">
+        <button class="pilula" id="bLoop">
+          <svg viewBox="0 0 24 24" class="icone-loop"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 3.5v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20.5v-5h5"/></svg>LOOP</button>
+        <button class="pilula" id="bClear">CLEAR</button>
+        <button class="pilula" id="bOpcoes">
+          <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>OPTIONS</button>
+      </div>
+    </section>
+
+    <!-- ===== Pacotes ===== -->
+    <section class="tela rolavel" id="tela-pacotes">
+      <h1 class="titulo">Pacotes</h1>
+      <p class="sub">Cada pacote tem 32 sons: bateria no banco ● e acordes + baixo no banco ○.</p>
+      <div id="listaPacotes"></div>
+    </section>
+
+    <!-- ===== Gravações ===== -->
+    <section class="tela rolavel" id="tela-gravacoes">
+      <h1 class="titulo">Gravações</h1>
+      <p class="sub">Todo beat gravado fica salvo aqui, no próprio iPhone.</p>
+      <div id="listaGravacoes"></div>
+    </section>
+
+    <!-- ===== Configurações ===== -->
+    <section class="tela rolavel" id="tela-config">
+      <h1 class="titulo">Configurações</h1>
+      <div id="conteudoConfig"></div>
+    </section>
+  </div>
+
+  <nav class="abas" id="abas">
+    <button class="aba ativa" data-tela="tela-pads">
+      <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 8h.01M12 8h.01M16 8h.01M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" stroke-width="3"/></svg>Reproduzir</button>
+    <button class="aba" data-tela="tela-pacotes">
+      <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="14.5" r="3.2"/><circle cx="12" cy="7.5" r="1.4"/></svg>Pacotes</button>
+    <button class="aba" data-tela="tela-gravacoes">
+      <svg viewBox="0 0 24 24"><path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 6v12M23 11v2" transform="translate(-1 0)"/></svg>Gravações</button>
+    <button class="aba" data-tela="tela-config">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Configurações</button>
+  </nav>
+</div>
+
+<div class="fundo-folha" id="fundoFolha"></div>
+<div class="folha" id="folha" role="dialog" aria-modal="true"><div class="puxador"></div><div id="conteudoFolha"></div></div>
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+<input type="file" id="arquivo" accept="audio/*" hidden>
+
+<script>
+  // O Safari do iPhone ignora user-scalable=no; o jeito que funciona é barrar a pinça.
+  for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) {
+    document.addEventListener(ev, (e) => e.preventDefault());
+  }
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
