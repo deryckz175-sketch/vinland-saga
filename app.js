@@ -1199,8 +1199,8 @@ document.addEventListener('click', async (ev) => {
   if (achar('#addExercicio')) return folhaAddExercicio();
   if ((el = achar('[data-ax]'))) {
     const nome = el.dataset.ax;
-    // A forma vem da última vez que ele fez o exercício (uma série, na primeira);
-    // a carga, da última sessão desta ficha, que é a regra que ele pediu.
+    // A forma (séries, tipo, reps) vem da última vez que ele fez o exercício (uma série, na primeira);
+    // a carga, da última vez dele nesta ficha, que é a regra que ele pediu.
     const [ult, porFicha] = await Promise.all([
       db.ultimaVezDoExercicio(nome),
       db.cargasAnteriores(sessao.fichaId),
@@ -1211,8 +1211,9 @@ document.addEventListener('click', async (ev) => {
       obs: '',
       series: antes.map((a, i) => {
         const s = novaSerie(a);
-        const daFicha = serieAnterior(porFicha[nome], i);
-        if (daFicha) s.kg = daFicha.kg;
+        // Em treino de ficha a carga é só daquela ficha: a do Lower A não vale no Lower B.
+        // Nunca feito nesta ficha, a carga fica em branco. Treino livre usa a última vez.
+        if (sessao.fichaId) s.kg = serieAnterior(porFicha[nome], i)?.kg ?? null;
         return s;
       }),
     });
