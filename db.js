@@ -118,28 +118,31 @@ export async function diasComTreino() {
 }
 
 /**
- * Última sessão de uma ficha. É daqui que sai a carga sugerida:
- * a extensora da ficha A puxa a carga da última ficha A, não do último
- * dia em que ele fez extensora em qualquer treino.
+ * Sessões de uma ficha, da mais nova para a mais velha. É daqui que sai a carga
+ * sugerida: a extensora do Lower A puxa do Lower A, nunca do Lower B.
+ * No mesmo dia vale o gravado por último: ele pode treinar ou corrigir duas vezes num dia.
  */
-export async function ultimaSessaoDaFicha(fichaId) {
-  if (!fichaId) return null; // sessão livre não tem ficha, e null não é chave válida
+async function sessoesDaFicha(fichaId) {
+  if (!fichaId) return []; // sessão livre não tem ficha, e null não é chave válida
   const l = await loja(LOJAS.sessoes);
   const lista = await pedir(l.index('fichaId').getAll(IDBKeyRange.only(fichaId)));
-  if (!lista.length) return null;
-  // No mesmo dia vale o gravado por último: ele pode treinar ou corrigir a ficha duas vezes num dia.
-  const maisNova = (a, b) => (a.data !== b.data ? a.data > b.data : String(a.em || '') >= String(b.em || ''));
-  return lista.reduce((a, b) => (maisNova(a, b) ? a : b));
+  return lista.sort((a, b) => (a.data === b.data
+    ? String(b.em || '').localeCompare(String(a.em || ''))
+    : b.data.localeCompare(a.data)));
 }
 
-/** Séries com carga da última vez naquela ficha, por nome de exercício, na ordem em que foram feitas. */
+/**
+ * Séries com carga da última vez que cada exercício foi feito NAQUELA ficha, na ordem
+ * em que foram feitas. Exercício pulado no último treino da ficha puxa do anterior dela.
+ */
 export async function cargasAnteriores(fichaId) {
-  const s = await ultimaSessaoDaFicha(fichaId);
   const mapa = {};
-  if (!s) return mapa;
-  for (const ex of s.exercicios || []) {
-    const feitas = (ex.series || []).filter((x) => x.kg != null);
-    if (feitas.length) mapa[ex.nome] = feitas;
+  for (const s of await sessoesDaFicha(fichaId)) {
+    for (const ex of s.exercicios || []) {
+      if (mapa[ex.nome]) continue;
+      const feitas = (ex.series || []).filter((x) => x.kg != null);
+      if (feitas.length) mapa[ex.nome] = feitas;
+    }
   }
   return mapa;
 }
