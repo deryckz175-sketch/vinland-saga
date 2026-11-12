@@ -93,6 +93,15 @@ export function novaSerie(base) {
   };
 }
 
+/**
+ * A série da última vez na mesma posição: a 1ª puxa a 1ª, a 2ª puxa a 2ª.
+ * Se hoje tem mais séries que da última vez, as que sobram repetem a última.
+ */
+export function serieAnterior(anteriores, i) {
+  if (!anteriores?.length) return null;
+  return anteriores[Math.min(i, anteriores.length - 1)];
+}
+
 /** Maior carga digitada no exercício: é dela que saem os backoffs. */
 export function cargaDeTopo(series) {
   const kgs = (series || []).map((s) => s.kg).filter((k) => k != null);

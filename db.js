@@ -127,17 +127,19 @@ export async function ultimaSessaoDaFicha(fichaId) {
   const l = await loja(LOJAS.sessoes);
   const lista = await pedir(l.index('fichaId').getAll(IDBKeyRange.only(fichaId)));
   if (!lista.length) return null;
-  return lista.reduce((a, b) => (a.data >= b.data ? a : b));
+  // No mesmo dia vale o gravado por último: ele pode treinar ou corrigir a ficha duas vezes num dia.
+  const maisNova = (a, b) => (a.data !== b.data ? a.data > b.data : String(a.em || '') >= String(b.em || ''));
+  return lista.reduce((a, b) => (maisNova(a, b) ? a : b));
 }
 
-/** Primeira série feita da última vez naquela ficha, por nome de exercício. */
+/** Séries com carga da última vez naquela ficha, por nome de exercício, na ordem em que foram feitas. */
 export async function cargasAnteriores(fichaId) {
   const s = await ultimaSessaoDaFicha(fichaId);
   const mapa = {};
   if (!s) return mapa;
   for (const ex of s.exercicios || []) {
     const feitas = (ex.series || []).filter((x) => x.kg != null);
-    if (feitas.length) mapa[ex.nome] = feitas[0];
+    if (feitas.length) mapa[ex.nome] = feitas;
   }
   return mapa;
 }

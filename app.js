@@ -2,7 +2,7 @@ import { MESES, DIAS_SEMANA, chaveDia, diasDoMes, somaMacros, dataLonga, somaDia
 import * as db from './db.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import {
-  somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
+  somaBlocos, repsDaSerie, novaSerie, serieAnterior, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
   partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
@@ -444,7 +444,7 @@ async function abrirSessao(fichaId) {
     exercicios: f.exercicios.map((e) => ({
       nome: e.nome,
       obs: '',
-      series: modosDaFicha(e).map((modo) => novaSerie({ ...anteriores[e.nome], modo })),
+      series: modosDaFicha(e).map((modo, i) => novaSerie({ ...serieAnterior(anteriores[e.nome], i), modo })),
     })),
   };
   tocarRelogio();
@@ -1209,9 +1209,10 @@ document.addEventListener('click', async (ev) => {
     sessao.exercicios.push({
       nome,
       obs: '',
-      series: antes.map((a) => {
+      series: antes.map((a, i) => {
         const s = novaSerie(a);
-        if (porFicha[nome]) s.kg = porFicha[nome].kg;
+        const daFicha = serieAnterior(porFicha[nome], i);
+        if (daFicha) s.kg = daFicha.kg;
         return s;
       }),
     });
