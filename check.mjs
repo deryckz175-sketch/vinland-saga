@@ -4,7 +4,7 @@ import { chaveDia, diasDoMes, somaMacros, dataLonga, somaDias, MESES } from './d
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
-  partesDoCluster, blocosDoCluster, umRM, melhorSerie,
+  partesDoCluster, blocosDoCluster, umRM, melhorSerie, serieAnterior,
 } from './treino.js';
 import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao, adaptarDia } from './dieta.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
@@ -60,6 +60,12 @@ assert.deepEqual(
 );
 assert.deepEqual(novaSerie(null), { modo: 'linear', kg: null, reps: null, blocos: null, rir: null, feita: false });
 assert.equal(novaSerie({ modo: 'cluster' }).blocos.length, 1, 'cluster sem histórico começa com um bloco');
+
+// Cada série puxa a carga da mesma série da última vez, não todas a da primeira.
+const ultimaVez = [{ kg: 100, reps: 5 }, { kg: 90, reps: 8 }, { kg: 80, reps: 10 }];
+assert.deepEqual([0, 1, 2].map((i) => novaSerie(serieAnterior(ultimaVez, i)).kg), [100, 90, 80]);
+assert.equal(serieAnterior(ultimaVez, 5).kg, 80, 'série a mais repete a última');
+assert.equal(serieAnterior(undefined, 0), null);
 assert.notEqual(novaSerie({ modo: 'cluster', blocos: [5] }).blocos, undefined);
 
 const base = { modo: 'cluster', kg: 70, blocos: [5, 3] };

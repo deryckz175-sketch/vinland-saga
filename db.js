@@ -130,14 +130,14 @@ export async function ultimaSessaoDaFicha(fichaId) {
   return lista.reduce((a, b) => (a.data >= b.data ? a : b));
 }
 
-/** Primeira série feita da última vez naquela ficha, por nome de exercício. */
+/** Séries com carga da última vez naquela ficha, por nome de exercício, na ordem em que foram feitas. */
 export async function cargasAnteriores(fichaId) {
   const s = await ultimaSessaoDaFicha(fichaId);
   const mapa = {};
   if (!s) return mapa;
   for (const ex of s.exercicios || []) {
     const feitas = (ex.series || []).filter((x) => x.kg != null);
-    if (feitas.length) mapa[ex.nome] = feitas[0];
+    if (feitas.length) mapa[ex.nome] = feitas;
   }
   return mapa;
 }
