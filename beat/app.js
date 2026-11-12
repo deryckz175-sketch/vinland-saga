@@ -6,7 +6,7 @@
 //   RECORD com beat: grava por cima (nova camada) enquanto o loop toca.
 //   ▶ toca/para. CLEAR tira o beat dos pads (a cópia em Gravações fica).
 
-import { PACOTES, pacotePorId, somDoPad } from './sons.js';
+import { PACOTES, pacotePorId, somDoPad, tipoDoPad, gruposDoPad } from './sons.js';
 import { Motor } from './motor.js';
 import {
   compasso, batida, posicionar, fecharTake, eventosNaJanela, batidasNaJanela,
@@ -18,7 +18,7 @@ import * as db from './db.js';
 import { gravarSaida } from './gravador.js';
 import { configurarSampler, abrirSampler, fecharSampler, samplerAberto, tempoTexto } from './sampler.js';
 
-const VERSAO_APP = '1.1';
+const VERSAO_APP = '1.2';
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -143,7 +143,6 @@ function carregarAmostrasUsadas() {
 }
 
 const ajustePad = (pacote, pad) => cfg.pads[pacote]?.[pad] || null;
-const grupoDaAmostra = (pacote, pad, aj) => (aj && aj.amostraId != null && !aj.solto ? `amostra:${pacote}:${pad}` : null);
 
 // ===================================================================
 // Transporte
@@ -168,7 +167,7 @@ function tocarPad(pacote, pad, quando, agendado) {
   const som = somDoPad(pacote, pad);
   const aj = ajustePad(pacote, pad);
   const buf = aj && aj.amostraId != null ? bufferPronto(aj.amostraId) : null;
-  const voz = motor.tocar(som, quando, aj || {}, buf, grupoDaAmostra(pacote, pad, aj));
+  const voz = motor.tocar(som, quando, aj || {}, buf, gruposDoPad(aj));
   if (agendado) {
     T.agendadas.push(voz);
     filaLuz.push({ quando, pacote, pad });
@@ -580,7 +579,7 @@ for (let i = 0; i < 16; i++) {
   const b = document.createElement('div');
   b.className = 'pad';
   b.dataset.i = i;
-  b.innerHTML = '<span class="nome-pad"></span>';
+  b.innerHTML = '<span class="nome-pad"></span><i class="marca-corta"></i>';
   grade.appendChild(b);
   padsEl.push(b);
 }
@@ -720,6 +719,7 @@ function render() {
     const aj = ajustePad(cfg.pacote, pad);
     const temAmostra = aj && aj.amostraId != null;
     padsEl[i].classList.toggle('amostra', !!temAmostra);
+    padsEl[i].classList.toggle('corta', tipoDoPad(aj) === 'corta');
     padsEl[i].firstChild.textContent = temAmostra ? (aj.amostraNome || 'Amostra') : somDoPad(cfg.pacote, pad).nome;
   }
   for (const f of FX) desenharKnob(f.id);
@@ -887,6 +887,10 @@ function abrirOpcoes() {
 // ===================================================================
 // Editor de pad
 // ===================================================================
+function mudarTipo(pacote, pad, tipo) {
+  mudarAjuste(pacote, pad, { modo: tipo, solto: null });
+}
+
 function mudarAjuste(pacote, pad, mudanca) {
   const atual = { ...(ajustePad(pacote, pad) || {}), ...mudanca };
   for (const [k, v] of Object.entries(atual)) if (v == null) delete atual[k];
@@ -925,7 +929,13 @@ function abrirEditorPad(pacote, pad) {
       <button class="botao" id="edMic">🎙 Gravar com o microfone</button>
       ${temAmostra ? '<button class="botao" id="edOriginal">↺ Voltar ao som original</button>' : ''}
     </div>
-    ${temAmostra ? `<div class="card">${linhaChaveLocal('edCorta', 'Toque novo corta o anterior', 'Desligado, os toques se sobrepõem', !aj.solto)}</div>` : ''}
+    <div class="campo"><label>Tipo do pad</label>
+      <div class="seg" id="edTipo">
+        <button data-tipo="corta" class="${tipoDoPad(aj) === 'corta' ? 'on' : ''}">✂ Interrompe</button>
+        <button data-tipo="livre" class="${tipoDoPad(aj) === 'livre' ? 'on' : ''}">Não interrompe</button>
+      </div>
+      <p class="sub" style="margin:6px 0 0">Interrompe: ao tocar, corta o que outro pad "interrompe" estiver tocando.</p>
+    </div>
     <button class="botao" id="edFechar">Pronto</button>
   `, (raiz) => {
     const ouvir = () => { iniciarAudio(); tocarPad(pacote, pad, ctx.currentTime, false); };
@@ -958,11 +968,10 @@ function abrirEditorPad(pacote, pad) {
       fecharFolha();
       abrirSampler({ destino: { pacote, pad } });
     });
-    raiz.querySelector('#edCorta')?.addEventListener('click', (e) => {
-      const solto = !ajustePad(pacote, pad)?.solto;
-      mudarAjuste(pacote, pad, { solto: solto || null });
-      e.currentTarget.querySelector('.chave').classList.toggle('on', !solto);
-    });
+    raiz.querySelectorAll('#edTipo [data-tipo]').forEach((b) => b.addEventListener('click', () => {
+      mudarTipo(pacote, pad, b.dataset.tipo);
+      raiz.querySelectorAll('#edTipo [data-tipo]').forEach((x) => x.classList.toggle('on', x === b));
+    }));
     const bMic = raiz.querySelector('#edMic');
     bMic.addEventListener('click', () => gravarMicrofone(bMic, pacote, pad));
     raiz.querySelector('#edOriginal')?.addEventListener('click', () => {
@@ -972,7 +981,10 @@ function abrirEditorPad(pacote, pad) {
       aviso('Som original de volta');
     });
     raiz.querySelector('#edFechar').addEventListener('click', fecharFolha);
-  }, () => { if (gravMic) gravMic.parar(true); });
+  }, () => {
+    if (gravMic) gravMic.parar(true);
+    if (telaAtual === 'tela-tipos') renderTipos();
+  });
 }
 
 async function usarAudio(arrayBuffer, nome, pacote, pad) {
@@ -1105,6 +1117,70 @@ configurarSampler({
 });
 
 // ===================================================================
+// Aba Pads: tipo de cada pad (interrompe ou não) e atalho para editar
+// ===================================================================
+let tiposAcao = 'tipo';   // 'tipo' = toque troca o tipo; 'editar' = abre o editor
+let tiposBanco = null;
+
+function renderTipos() {
+  if (tiposBanco == null) tiposBanco = cfg.banco;
+  const pac = pacotePorId(cfg.pacote);
+  let html = `
+    <p class="sub">Pacote <b style="color:var(--txt)">${esc(pac.nome)}</b> · troque em Pacotes</p>
+    <div class="seg" id="tpAcao">
+      <button data-acao="tipo" class="${tiposAcao === 'tipo' ? 'on' : ''}">Tocar troca o tipo</button>
+      <button data-acao="editar" class="${tiposAcao === 'editar' ? 'on' : ''}">Tocar abre o editor</button>
+    </div>
+    <div class="chips" style="margin:12px 0">
+      <button class="chip ${tiposBanco === 0 ? 'on' : ''}" data-banco="0">● Banco 1</button>
+      <button class="chip ${tiposBanco === 1 ? 'on' : ''}" data-banco="1">○ Banco 2</button>
+    </div>
+    <div class="tp-grade">`;
+  for (let i = 0; i < 16; i++) {
+    const pad = tiposBanco * 16 + i;
+    const aj = ajustePad(cfg.pacote, pad);
+    const tipo = tipoDoPad(aj);
+    const nome = aj && aj.amostraId != null ? aj.amostraNome || 'Amostra' : somDoPad(cfg.pacote, pad).nome;
+    html += `<button class="tp-pad ${tipo}" data-pad="${pad}">
+      <span class="tp-num">${i + 1}</span>
+      <span class="tp-nome">${esc(nome)}</span>
+      <span class="tp-tipo">${tipo === 'corta' ? '✂ Interrompe' : 'Não interrompe'}</span>
+    </button>`;
+  }
+  html += `</div>
+    <div class="sm-linha" style="margin-top:12px">
+      <button class="botao" id="tpTodosCorta">Todos interrompem</button>
+      <button class="botao" id="tpTodosLivre">Nenhum interrompe</button>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>Como funciona</h2>
+      <p style="margin:0 0 8px;font-size:14px"><b style="color:var(--cor)">✂ Interrompe</b>: quando você toca o pad, ele corta o som de qualquer outro pad "interrompe" que estiver tocando (e o dele mesmo). Bom para trechos de música e vocais.</p>
+      <p style="margin:0;font-size:14px"><b>Não interrompe</b>: os sons se sobrepõem e nunca são cortados. Bom para bateria.</p>
+      <p class="sub" style="margin:8px 0 0">Para tudo cortar tudo, use "Todos interrompem". Vale também para o que já está gravado no beat.</p>
+    </div>`;
+  const raiz = $('conteudoTipos');
+  raiz.innerHTML = html;
+  raiz.querySelectorAll('#tpAcao [data-acao]').forEach((b) => b.addEventListener('click', () => { tiposAcao = b.dataset.acao; renderTipos(); }));
+  raiz.querySelectorAll('[data-banco]').forEach((b) => b.addEventListener('click', () => { tiposBanco = Number(b.dataset.banco); renderTipos(); }));
+  raiz.querySelectorAll('.tp-pad').forEach((b) => b.addEventListener('click', () => {
+    const pad = Number(b.dataset.pad);
+    iniciarAudio();
+    if (tiposAcao === 'editar') { tocarPad(cfg.pacote, pad, ctx.currentTime, false); abrirEditorPad(cfg.pacote, pad); return; }
+    const novo = tipoDoPad(ajustePad(cfg.pacote, pad)) === 'corta' ? 'livre' : 'corta';
+    mudarTipo(cfg.pacote, pad, novo);
+    tocarPad(cfg.pacote, pad, ctx.currentTime, false);
+    renderTipos();
+  }));
+  const todos = (tipo) => {
+    for (let i = 0; i < 16; i++) mudarTipo(cfg.pacote, tiposBanco * 16 + i, tipo);
+    renderTipos();
+    aviso(tipo === 'corta' ? 'Todos os pads do banco interrompem' : 'Nenhum pad do banco interrompe');
+  };
+  raiz.querySelector('#tpTodosCorta').addEventListener('click', () => todos('corta'));
+  raiz.querySelector('#tpTodosLivre').addEventListener('click', () => todos('livre'));
+}
+
+// ===================================================================
 // Pacotes
 // ===================================================================
 function renderPacotes() {
@@ -1171,7 +1247,7 @@ async function renderizarBeat(reg, repeticoes, cauda) {
     for (const e of eventos) {
       const aj = reg.pads?.[e.pacote]?.[e.pad] || {};
       const buf = aj.amostraId != null ? bufs.get(aj.amostraId) || null : null;
-      m.tocar(somDoPad(e.pacote, e.pad), 0.02 + k * reg.dur + e.t, aj, buf, grupoDaAmostra(e.pacote, e.pad, aj));
+      m.tocar(somDoPad(e.pacote, e.pad), 0.02 + k * reg.dur + e.t, aj, buf, gruposDoPad(aj));
     }
   }
   return new Promise((ok, falha) => {
@@ -1431,6 +1507,7 @@ function renderConfig() {
         <li><b>OPTIONS</b>: BPM, metrônomo, desfazer camada e editar pads.</li>
         <li><b>⏺</b> (do lado do ▶) grava o som que sai do app — vai para Gravações, dá para compartilhar ou cortar para um pad.</li>
         <li><b>Samplear</b> (em Pacotes ou OPTIONS): abra um MP3, marque o trecho e toque num pad.</li>
+        <li>Aba <b>Pads</b>: escolha quais pads <b>interrompem</b> (cortam o som um do outro) e quais não.</li>
         <li>Se não sair som, desligue o modo silencioso e aumente o volume.</li>
       </ol>
     </div>
@@ -1486,6 +1563,7 @@ function mostrarTela(id) {
   document.querySelectorAll('.tela').forEach((t) => t.classList.toggle('ativa', t.id === id));
   document.querySelectorAll('.aba').forEach((a) => a.classList.toggle('ativa', a.dataset.tela === id));
   if (id === 'tela-pacotes') renderPacotes();
+  if (id === 'tela-tipos') { tiposBanco = cfg.banco; renderTipos(); }
   if (id === 'tela-gravacoes') renderGravacoes();
   if (id === 'tela-config') renderConfig();
   if (id !== 'tela-gravacoes') pararPrevia();

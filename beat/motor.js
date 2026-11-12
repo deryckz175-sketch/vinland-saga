@@ -113,9 +113,11 @@ export class Motor {
   volume(v) { this._p(this.volumeGeral.gain, v); }
 
   // Dispara um som. ajuste = { vol, afin } do pad; buffer = amostra do usuário.
-  // grupoAmostra: com amostra, um toque novo no mesmo pad corta o anterior.
+  // extras: grupos de corte além do próprio som (ex.: 'corta' = pads do tipo
+  // "interrompe", que se cortam entre si). Quem entra num grupo silencia quem
+  // já está soando nele.
   // Devolve um controle para silenciar antes da hora (choke e parar o play).
-  tocar(som, quando, ajuste = {}, buffer = null, grupoAmostra = null) {
+  tocar(som, quando, ajuste = {}, buffer = null, extras = []) {
     const ctx = this.ctx;
     const vol = ajuste.vol ?? 1;
     const r = 2 ** ((ajuste.afin || 0) / 12);
@@ -159,9 +161,9 @@ export class Motor {
       },
     };
 
-    const grupo = buffer ? grupoAmostra : som.grupo;
-    if (grupo) {
-      const lista = (this.grupos.get(grupo) || []).filter((v) => v.fim > quando);
+    const grupos = [buffer ? null : som.grupo, ...extras].filter(Boolean);
+    for (const grupo of grupos) {
+      const lista = (this.grupos.get(grupo) || []).filter((v) => v.fim > quando && v.paradaEm > quando);
       for (const v of lista) if (v.inicio <= quando) v.parar(quando);
       lista.push(voz);
       this.grupos.set(grupo, lista);

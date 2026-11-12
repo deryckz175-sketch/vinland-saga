@@ -225,3 +225,15 @@ export function somDoPad(pacoteId, pad) {
   cache.set(chave, som);
   return som;
 }
+
+// Tipo do pad: 'corta' (interrompe — corta o que outro pad "interrompe" estiver
+// tocando) ou 'livre' (não interrompe — os sons se sobrepõem).
+// Sem escolha feita: pad com amostra (trecho de música) interrompe; som do
+// pacote não. `solto` é o nome antigo da opção "não cortar".
+export const TIPOS_PAD = ['corta', 'livre'];
+export function tipoDoPad(aj) {
+  if (aj && TIPOS_PAD.includes(aj.modo)) return aj.modo;
+  if (aj && aj.amostraId != null) return aj.solto ? 'livre' : 'corta';
+  return 'livre';
+}
+export const gruposDoPad = (aj) => (tipoDoPad(aj) === 'corta' ? ['corta'] : []);
