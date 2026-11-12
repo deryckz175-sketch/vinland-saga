@@ -4,7 +4,7 @@ import {
   passo, compasso, posicionar, fecharTake, eventosNaJanela, batidasNaJanela,
   reescalar, desfazerCamada, ultimaCamada, limparEventos, limitarBpm, descreverDuracao,
 } from './tempo.js';
-import { PACOTES, somDoPad, nomeAcorde, notasDoAcorde, ESCALAS, grau } from './sons.js';
+import { PACOTES, somDoPad, nomeAcorde, notasDoAcorde, ESCALAS, grau, tipoDoPad, gruposDoPad } from './sons.js';
 import { VOZES } from './synth.js';
 import { codificarWav, aparar, cortarTrecho, tirarSilencio } from './wav.js';
 import { calcularPicos, tempoTexto } from './sampler.js';
@@ -192,5 +192,15 @@ for (let u = 0; u < 4; u += 0.01) assert.ok(limitar(u + 0.01) >= limitar(u));
 }
 assert.equal(tempoTexto(0), '0:00,00');
 assert.equal(tempoTexto(75.5), '1:15,50');
+
+// --- Tipo do pad
+assert.equal(tipoDoPad(null), 'livre', 'som do pacote não interrompe');
+assert.equal(tipoDoPad({ amostraId: 3 }), 'corta', 'trecho de música interrompe');
+assert.equal(tipoDoPad({ amostraId: 3, solto: true }), 'livre', 'opção antiga respeitada');
+assert.equal(tipoDoPad({ modo: 'corta' }), 'corta', 'escolha vale para som do pacote');
+assert.equal(tipoDoPad({ amostraId: 3, modo: 'livre' }), 'livre', 'escolha vale para amostra');
+assert.equal(tipoDoPad({ modo: 'xyz' }), 'livre');
+assert.deepEqual(gruposDoPad({ modo: 'corta' }), ['corta']);
+assert.deepEqual(gruposDoPad({}), []);
 
 console.log('ok — beat/check.mjs');
