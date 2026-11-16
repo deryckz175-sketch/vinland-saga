@@ -1,7 +1,7 @@
 // Cache do app para funcionar em modo avião. Os registros do usuário ficam no
 // IndexedDB e não passam por aqui — isto guarda só o código e as tabelas fixas.
 // shortcut: troca o cache inteiro a cada versão, sem atualização parcial.
-const VERSAO = 'vinland-v10';
+const VERSAO = 'vinland-v11';
 const ARQUIVOS = [
   './', 'index.html', 'app.js', 'datas.js', 'db.js', 'treino.js', 'dieta.js', 'foto.js', 'manifest.json',
   'dados/exercicios.json', 'dados/taco.json', 'dados/plano-alimentar.json?v=2',
@@ -62,5 +62,14 @@ self.addEventListener('fetch', (e) => {
   // Ícones e as tabelas de dados não mudam: cache primeiro.
   e.respondWith(
     caches.match(e.request).then((hit) => hit || daRede(e.request.url).then((resp) => guardar(e.request, resp)))
+  );
+});
+
+// Tocar na notificação do treino em andamento volta para o app aberto, ou abre ele.
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((cs) => (cs.length ? cs[0].focus() : self.clients.openWindow('./')))
   );
 });
