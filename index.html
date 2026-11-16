@@ -224,6 +224,16 @@
           border-radius: 999px; padding: 6px 11px; color: var(--fraco); white-space: nowrap; }
   .chip.apagar { color: var(--fraco); padding: 6px 10px; }
   .chip.sel { background: var(--cor); border-color: var(--cor); color: #fff; }
+  /* ---- peso ---- */
+  .peso-atual { display: flex; align-items: baseline; gap: 4px; }
+  .leitura-peso { margin-top: 14px; min-height: 20px; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .grafico-peso svg { display: block; width: 100%; height: auto; margin-top: 4px; touch-action: pan-y; }
+  .grafico-peso .grade { stroke: var(--linha); stroke-width: 1; }
+  .grafico-peso .eixo { fill: var(--fraco); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .grafico-peso .linha-peso { fill: none; stroke: var(--cor); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .grafico-peso .ponto-peso { fill: var(--cor); stroke: var(--surf); stroke-width: 2; }
+  .grafico-peso .ponto-peso.ativo { stroke-width: 3; }
+  .grafico-peso .mira { stroke: var(--fraco); stroke-width: 1; stroke-dasharray: 3 3; }
   .serie .ok { font-size: 12px; font-weight: 600; }
 
   /* O botão de adicionar acompanha a rolagem como o cronômetro, para ser

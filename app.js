@@ -7,6 +7,7 @@ import {
   partesDoCluster, blocosDoCluster, umRM, melhorSerie,
 } from './treino.js';
 import { itensComidos, montarDia, comQuantidade, adaptarDia } from './dieta.js';
+import { PERIODOS, recortePeso, variacaoPeso, geometriaPeso, pontoMaisPerto } from './peso.js';
 
 const HOJE = new Date();
 const ANO = HOJE.getFullYear();
@@ -26,6 +27,9 @@ let salvas = [];     // refeições salvas para repetir
 let diasDieta = {};  // data -> kcal somadas
 let plano = null;    // dados/plano-alimentar.json, quando existe
 let gradeDe = 'treino';
+let pesos = [];      // pesagens { data, kg }, da mais velha para a mais nova
+let periodoPeso = '3m';
+let todosPesos = false; // a lista de pesagens mostra só as últimas até ele pedir todas
 let catalogo = [];   // dados/exercicios.json
 let alimentos = [];  // dados/taco.json + os criados pelo usuário
 
@@ -51,6 +55,10 @@ async function carregar() {
   if (!diaHoje.refeicoes.length) diaHoje.refeicoes = REFEICOES_PADRAO.map((nome) => ({ nome, itens: [] }));
   diaDieta = diaHoje;
   gradeDe = (await db.config('gradeDe')) || 'treino';
+  periodoPeso = (await db.config('periodoPeso')) || '3m';
+  pesos = await db.pesos();
+  // O peso que já estava no perfil vira a primeira pesagem, para o gráfico ter de onde partir.
+  if (!pesos.length && perfil.peso) await registrarPeso(CHAVE_HOJE, perfil.peso);
 
   // Retoma um treino que ficou aberto: o app pode ter sido encerrado no meio.
   const aberta = await db.config('sessaoAberta');
@@ -818,6 +826,8 @@ function renderPerfil() {
         <button data-cor="${c}" style="background:${c}" class="${c === atual ? 'sel' : ''}" aria-label="Cor"></button>`).join('')}</div>
     </div>
 
+    ${cartaoPeso()}
+
     <div class="card">
       <div class="ano-cabeca">
         <span class="ano">${ANO} ›</span>
@@ -831,6 +841,140 @@ function renderPerfil() {
     </div>
 
     ${total ? '' : `<div class="card"><div class="vazio">A grade acende conforme você registra ${gradeDe === 'dieta' ? 'refeições' : 'treinos'}.</div></div>`}`;
+  ligarGraficoPeso();
+}
+
+// ---- peso corporal ----
+
+/** −1,2 com o sinal de menos de verdade, e + quando subiu. */
+const comSinal = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + n1(Math.abs(v));
+const dataCurta = (chave) => {
+  const [a, m, d] = chave.split('-');
+  return `${+d} ${MESES[+m - 1].slice(0, 3).toLowerCase()}${+a === ANO ? '' : ` ${a.slice(2)}`}`;
+};
+
+/** Uma pesagem por dia: gravar de novo no mesmo dia troca. O perfil fica com a mais nova. */
+async function registrarPeso(data, kg, dataAntiga = null) {
+  if (dataAntiga && dataAntiga !== data) await db.apagar(db.LOJAS.pesos, dataAntiga);
+  await db.gravar(db.LOJAS.pesos, { data, kg });
+  await depoisDeMexerNoPeso();
+}
+
+async function apagarPeso(data) {
+  await db.apagar(db.LOJAS.pesos, data);
+  await depoisDeMexerNoPeso();
+}
+
+async function depoisDeMexerNoPeso() {
+  pesos = await db.pesos();
+  const ultimo = pesos[pesos.length - 1];
+  if (ultimo && ultimo.kg !== perfil.peso) {
+    perfil = { ...perfil, peso: ultimo.kg };
+    await db.salvarPerfil(perfil);
+  }
+}
+
+/** A largura do desenho em pixels de tela: a do cartão, que é a da tela menos as margens. */
+const larguraGrafico = () => Math.max(260, Math.min(640, window.innerWidth) - 66);
+const ALTURA_GRAFICO = 170;
+
+function cartaoPeso() {
+  const cabeca = `<div class="ex-cab" style="margin-bottom:12px"><h2>Peso</h2>
+    <button class="chip" id="registrarPeso">+ Registrar</button></div>`;
+  if (!pesos.length) {
+    return `<div class="card">${cabeca}<div class="vazio">Registre seu peso para acompanhar a evolução no gráfico.</div></div>`;
+  }
+  const ultimo = pesos[pesos.length - 1];
+  const recorte = recortePeso(pesos, periodoPeso, CHAVE_HOJE);
+  const variacao = variacaoPeso(recorte);
+  const lista = [...pesos].reverse();
+  const mostrados = todosPesos ? lista : lista.slice(0, 5);
+  return `<div class="card">
+    ${cabeca}
+    <div class="peso-atual">
+      <span class="num-grande">${n1(ultimo.kg)}</span><span class="sub"> kg · ${ultimo.data === CHAVE_HOJE ? 'hoje' : dataLonga(ultimo.data, ANO)}</span>
+    </div>
+    <div class="sub" style="margin-top:6px">${variacao == null
+      ? (recorte.length ? 'Uma pesagem neste período' : 'Nenhuma pesagem neste período')
+      : `${comSinal(variacao)} kg desde ${dataLonga(recorte[0].data, ANO)}`}</div>
+    <div class="ex-pe">${PERIODOS.map((p) => `<button class="chip ${p.id === periodoPeso ? 'sel' : ''}" data-periodo-peso="${p.id}">${p.nome}</button>`).join('')}</div>
+    ${recorte.length ? `<div class="leitura-peso" id="leituraPeso"></div>
+      <div class="grafico-peso" id="graficoPeso">${svgPeso(recorte)}</div>` : ''}
+    <div style="margin-top:8px">${mostrados.map((p) => {
+      const antes = lista[lista.indexOf(p) + 1];
+      return `<button class="linha-item linha-toque" data-editar-peso="${p.data}">
+        <div>${dataLonga(p.data, ANO)}</div>
+        <div><span style="font-weight:600">${n1(p.kg)} kg</span>${antes ? ` <span class="sub">${comSinal(Math.round((p.kg - antes.kg) * 10) / 10)}</span>` : ''}</div>
+      </button>`;
+    }).join('')}</div>
+    ${lista.length > 5 ? `<button class="chip" id="todosPesos" style="margin-top:10px">${todosPesos ? 'Mostrar menos' : `Ver todas (${lista.length})`}</button>` : ''}
+  </div>`;
+}
+
+/** Uma série só, na cor do app: o título do cartão já diz o que é, sem legenda. */
+function svgPeso(recorte) {
+  const L = larguraGrafico();
+  const g = geometriaPeso(recorte, { largura: L, altura: ALTURA_GRAFICO });
+  const baseY = ALTURA_GRAFICO - g.base;
+  const comPontos = g.pontos.length <= 40;
+  const primeiro = g.pontos[0];
+  const ultimo = g.pontos[g.pontos.length - 1];
+  return `<svg viewBox="0 0 ${L} ${ALTURA_GRAFICO}" role="img" aria-label="Gráfico do peso ao longo do tempo">
+    ${g.marcas.map((m) => `<line x1="${g.esq}" x2="${L - g.dir}" y1="${m.y}" y2="${m.y}" class="grade"/>
+      <text x="${g.esq - 6}" y="${m.y + 4}" text-anchor="end" class="eixo">${n1(m.kg)}</text>`).join('')}
+    <text x="${primeiro.x}" y="${baseY + 16}" text-anchor="${g.pontos.length > 1 ? 'start' : 'middle'}" class="eixo">${dataCurta(primeiro.data)}</text>
+    ${g.pontos.length > 1 ? `<text x="${ultimo.x}" y="${baseY + 16}" text-anchor="end" class="eixo">${dataCurta(ultimo.data)}</text>` : ''}
+    <line id="miraPeso" class="mira" x1="0" x2="0" y1="${g.topo}" y2="${baseY}" visibility="hidden"/>
+    ${g.pontos.length > 1 ? `<path d="${g.linha}" class="linha-peso"/>` : ''}
+    ${(comPontos ? g.pontos : [ultimo]).map((p) => `<circle cx="${p.x}" cy="${p.y}" r="4" class="ponto-peso"/>`).join('')}
+    <circle id="destaquePeso" cx="${ultimo.x}" cy="${ultimo.y}" r="6" class="ponto-peso ativo"/>
+  </svg>`;
+}
+
+/** O que o dedo aponta no gráfico aparece em cima dele: peso e dia. */
+function mostrarLeituraPeso(p) {
+  const leitura = $('#leituraPeso');
+  if (!leitura || !p) return;
+  leitura.innerHTML = `<b>${n1(p.kg)} kg</b> <span class="sub">· ${dataLonga(p.data, ANO)}</span>`;
+  const destaque = $('#destaquePeso');
+  destaque.setAttribute('cx', p.x); destaque.setAttribute('cy', p.y);
+}
+
+function ligarGraficoPeso() {
+  const caixa = $('#graficoPeso');
+  if (!caixa) return;
+  const recorte = recortePeso(pesos, periodoPeso, CHAVE_HOJE);
+  const L = larguraGrafico();
+  const g = geometriaPeso(recorte, { largura: L, altura: ALTURA_GRAFICO });
+  mostrarLeituraPeso(g.pontos[g.pontos.length - 1]);
+  const svg = caixa.querySelector('svg');
+  const mira = $('#miraPeso');
+  const apontar = (ev) => {
+    const r = svg.getBoundingClientRect();
+    const p = pontoMaisPerto(g.pontos, ((ev.clientX - r.left) * L) / r.width);
+    mira.setAttribute('x1', p.x); mira.setAttribute('x2', p.x); mira.setAttribute('visibility', 'visible');
+    mostrarLeituraPeso(p);
+  };
+  svg.addEventListener('pointerdown', apontar);
+  svg.addEventListener('pointermove', apontar);
+  svg.addEventListener('pointerleave', () => {
+    mira.setAttribute('visibility', 'hidden');
+    mostrarLeituraPeso(g.pontos[g.pontos.length - 1]);
+  });
+}
+
+function folhaPeso(data = null) {
+  const atual = data ? pesos.find((p) => p.data === data) : null;
+  const sugestao = atual?.kg ?? pesos[pesos.length - 1]?.kg ?? perfil.peso;
+  abrirFolha(`<h3>${atual ? 'Editar pesagem' : 'Registrar peso'}</h3>
+    <label class="rot" for="novoPeso">Peso (kg)</label>
+    <input class="busca" id="novoPeso" type="text" inputmode="decimal" autocomplete="off" value="${virgula(sugestao)}">
+    <label class="rot" for="dataPeso">Dia</label>
+    <input class="busca" id="dataPeso" type="date" value="${atual?.data || CHAVE_HOJE}" max="${CHAVE_HOJE}">
+    <button class="botao" id="salvarPeso"${atual ? ` data-original="${atual.data}"` : ''}>Salvar</button>
+    ${atual ? `<button class="botao fraco" id="apagarPeso" data-data="${atual.data}">Apagar pesagem</button>` : ''}`);
+  const campo = $('#novoPeso');
+  campo.focus(); campo.select();
 }
 
 function contaMes(mes) {
@@ -922,6 +1066,7 @@ function folhaRegistro() {
     ${fichas.length && !sessao ? `<button class="opcao" data-reg="ficha"><span class="bolha">📋</span><div><div>Treino por ficha</div><div class="sub">${fichas.length} ficha${fichas.length === 1 ? '' : 's'} salva${fichas.length === 1 ? '' : 's'}</div></div></button>` : ''}
     <button class="opcao" data-reg="cardio"><span class="bolha">🏃</span><div><div>Cardio</div><div class="sub">Tipo e tempo</div></div></button>
     <button class="opcao" data-reg="refeicao"><span class="bolha">🍽️</span><div><div>Refeição</div><div class="sub">Marcar o que comeu</div></div></button>
+    <button class="opcao" data-reg="peso"><span class="bolha">⚖️</span><div><div>Peso</div><div class="sub">${pesos.length ? `Último: ${n1(pesos[pesos.length - 1].kg)} kg` : 'Pesagem de hoje'}</div></div></button>
     <button class="opcao" data-reg="perfil"><span class="bolha">👤</span><div><div>Perfil</div><div class="sub">${perfil.peso ? n1(perfil.peso) + ' kg' : 'Preencher'}</div></div></button>`);
 }
 
@@ -1025,7 +1170,7 @@ function folhaPerfil() {
     <label class="rot" for="pNome">Nome</label>
     <input class="busca" id="pNome" value="${esc(perfil.nome)}" autocomplete="off">
     <label class="rot" for="pPeso">Peso (kg)</label>
-    <input class="busca" id="pPeso" type="number" inputmode="decimal" value="${perfil.peso ?? ''}">
+    <input class="busca" id="pPeso" type="text" inputmode="decimal" autocomplete="off" value="${virgula(perfil.peso)}">
     <label class="rot" for="pAltura">Altura (cm)</label>
     <input class="busca" id="pAltura" type="number" inputmode="numeric" value="${perfil.altura ?? ''}">
     <button class="botao" id="salvarPerfil">Salvar</button>`);
@@ -1297,14 +1442,39 @@ document.addEventListener('click', async (ev) => {
   if (achar('#abrirPerfil') || achar('#abrirPerfilTexto')) return folhaPerfil();
   if (achar('#ajustarFoto')) return abrirAjusteFoto();
   if (achar('#fecharAjuste')) return fecharAjusteFoto();
+  if (achar('#registrarPeso')) return folhaPeso();
+  if ((el = achar('[data-editar-peso]'))) return folhaPeso(el.dataset.editarPeso);
+  if ((el = achar('[data-periodo-peso]'))) {
+    periodoPeso = el.dataset.periodoPeso;
+    await db.salvarConfig('periodoPeso', periodoPeso);
+    return renderPerfil();
+  }
+  if (achar('#todosPesos')) { todosPesos = !todosPesos; return renderPerfil(); }
+  if ((el = achar('#salvarPeso'))) {
+    const kg = lerNumero($('#novoPeso').value);
+    const data = $('#dataPeso').value || CHAVE_HOJE;
+    if (!(kg > 0) || data > CHAVE_HOJE) return;
+    await registrarPeso(data, kg, el.dataset.original || null);
+    fecharFolha();
+    return renderTudo();
+  }
+  if ((el = achar('#apagarPeso'))) {
+    await apagarPeso(el.dataset.data);
+    fecharFolha();
+    return renderTudo();
+  }
+
   if (achar('#salvarPerfil')) {
+    const pesoAntes = perfil.peso;
     perfil = {
       ...perfil,
       nome: $('#pNome').value.trim(),
-      peso: Number($('#pPeso').value) || null,
+      peso: lerNumero($('#pPeso').value) || null,
       altura: Number($('#pAltura').value) || null,
     };
     await db.salvarPerfil(perfil);
+    // Mudar o peso no perfil é uma pesagem de hoje: entra no gráfico.
+    if (perfil.peso && perfil.peso !== pesoAntes) await registrarPeso(CHAVE_HOJE, perfil.peso);
     fecharFolha();
     return renderTudo();
   }
@@ -1430,6 +1600,7 @@ document.addEventListener('click', async (ev) => {
     if (el.dataset.reg === 'ficha') return setTela('treino');
     if (el.dataset.reg === 'cardio') return folhaCardio();
     if (el.dataset.reg === 'perfil') { setTela('perfil'); return folhaPerfil(); }
+    if (el.dataset.reg === 'peso') { setTela('perfil'); return folhaPeso(); }
     if (el.dataset.reg === 'refeicao') return setTela('dieta');
   }
 });

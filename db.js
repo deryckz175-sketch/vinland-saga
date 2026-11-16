@@ -6,7 +6,7 @@
 import { itensComidos } from './dieta.js';
 
 const BANCO = 'vinland';
-const VERSAO = 2;
+const VERSAO = 3;
 
 export const LOJAS = {
   perfil: 'perfil',       // um registro só, id 'eu'; fotoAjuste é a posição e o zoom da foto
@@ -16,6 +16,7 @@ export const LOJAS = {
   alimentos: 'alimentos', // alimentos que o usuário criou
   salvas: 'salvas',       // refeições salvas para repetir: { id, nome, itens }
   config: 'config',       // { chave, valor }
+  pesos: 'pesos',         // peso corporal, um por dia: { data, kg }
 };
 
 let aberto = null;
@@ -38,6 +39,9 @@ export function abrir() {
       }
       if (ev.oldVersion < 2) {
         db.createObjectStore(LOJAS.salvas, { keyPath: 'id', autoIncrement: true });
+      }
+      if (ev.oldVersion < 3) {
+        db.createObjectStore(LOJAS.pesos, { keyPath: 'data' });
       }
     };
     req.onsuccess = () => {
@@ -90,6 +94,11 @@ export async function perfil() {
 
 export function salvarPerfil(p) {
   return gravar(LOJAS.perfil, { ...p, id: 'eu' });
+}
+
+/** Pesagens, da mais velha para a mais nova. */
+export async function pesos() {
+  return (await todos(LOJAS.pesos)).sort((a, b) => a.data.localeCompare(b.data));
 }
 
 /** Sessões de um dia (chave 'AAAA-MM-DD'). */
