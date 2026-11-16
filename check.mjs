@@ -9,6 +9,7 @@ import {
 import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao, adaptarDia } from './dieta.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
 import { readFileSync } from 'node:fs';
+import { recortePeso, variacaoPeso, geometriaPeso, pontoMaisPerto } from './peso.js';
 
 assert.equal(chaveDia(new Date(2026, 10, 1)), '2026-11-01');
 assert.equal(chaveDia(new Date(2026, 0, 9)), '2026-01-09');
@@ -335,5 +336,35 @@ assert.ok(azeiteJanta < 12, `o azeite da janta diminui (${azeiteJanta} g)`);
 assert.ok(perto(diaAjustado.flatMap((r) => r.itens), alvoDia, 0.01), 'o dia volta a bater as kcal e os macros');
 assert.deepEqual(adaptarDia(diaTeste.map((r) => ({ ...r, feita: true })), alvoDia).map((r) => r.itens),
   diaTeste.map((r) => r.itens), 'tudo concluído: nada muda');
+
+// ---- peso ----
+const pesagens = [
+  { data: '2026-05-01', kg: 82 }, { data: '2026-09-01', kg: 79.4 },
+  { data: '2026-10-20', kg: 78.6 }, { data: '2026-11-15', kg: 77.9 },
+];
+assert.deepEqual(recortePeso(pesagens, '1m', '2026-11-16').map((p) => p.data), ['2026-10-20', '2026-11-15']);
+assert.equal(recortePeso(pesagens, '3m', '2026-11-16').length, 3);
+assert.equal(recortePeso(pesagens, 'tudo', '2026-11-16').length, 4);
+assert.equal(variacaoPeso(pesagens), -4.1);
+assert.equal(variacaoPeso([pesagens[0]]), null);
+
+const geo = geometriaPeso(pesagens, { largura: 300, altura: 170 });
+assert.equal(geo.pontos[0].x, geo.esq, 'o mais velho na esquerda');
+assert.equal(geo.pontos[3].x, 300 - geo.dir, 'o mais novo na direita');
+// x pelo calendário: maio→setembro é bem mais longe que outubro→novembro
+assert.ok(geo.pontos[1].x - geo.pontos[0].x > 3 * (geo.pontos[3].x - geo.pontos[2].x));
+assert.ok(geo.pontos[0].y < geo.pontos[3].y, 'mais peso, mais alto');
+assert.ok(geo.marcas.length <= 6 && geo.marcas[0].kg <= 77.9 && geo.marcas[geo.marcas.length - 1].kg >= 82);
+const passos = geo.marcas.slice(1).map((m, i) => Math.round((m.kg - geo.marcas[i].kg) * 10) / 10);
+assert.ok(passos.every((x) => x === passos[0]), 'marcas com o mesmo espaço');
+const largo = geometriaPeso([{ data: '2026-01-01', kg: 95 }, { data: '2026-11-01', kg: 71 }], { largura: 300, altura: 170 });
+assert.ok(largo.marcas.length <= 6, 'perder 24 kg não enche o gráfico de linhas');
+// um ponto só: no meio, e a escala ainda cobre 2 kg
+const um = geometriaPeso([{ data: '2026-11-16', kg: 80 }], { largura: 300, altura: 170 });
+assert.equal(um.pontos[0].x, um.esq + (300 - um.esq - um.dir) / 2);
+assert.ok(um.marcas[um.marcas.length - 1].kg - um.marcas[0].kg >= 2);
+assert.equal(geometriaPeso([], { largura: 300, altura: 170 }), null);
+assert.equal(pontoMaisPerto(geo.pontos, 299).data, '2026-11-15');
+assert.equal(pontoMaisPerto(geo.pontos, 0).data, '2026-05-01');
 
 console.log('ok: todas as checagens passaram');
