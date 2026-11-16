@@ -190,7 +190,6 @@ function renderTreino() {
       <div class="acao-fixa"><button class="botao ${sessao.exercicios.length ? 'fraco' : ''}" id="addExercicio">Adicionar exercício</button></div>`;
     el.classList.add('com-acao');
     agendarGuardar();
-    atualizarNotificacao();
     return;
   }
 
@@ -432,8 +431,9 @@ function agendarGuardar() {
 
 // ---- notificação do treino em andamento ----
 // O popup do cronômetro do iPhone (Live Activity) é só de app nativo. O mais perto
-// que um app web chega é uma notificação: na tela bloqueada o iPhone mostra há
-// quanto tempo ela chegou, e o corpo diz a hora em que o treino começou.
+// que um app web chega é UMA notificação, mandada ao começar: na tela bloqueada o
+// iPhone mostra há quanto tempo ela chegou, e o texto diz a hora em que começou.
+// Nada de atualizar: o iPhone não substitui pela tag, empilha outra e avisa de novo.
 // Só funciona com o app instalado na tela de início (iOS 16.4+) e com permissão.
 
 const podeNotificar = () => 'Notification' in window && 'serviceWorker' in navigator;
@@ -453,53 +453,24 @@ async function notificacoesDoTreino() {
   return reg ? (await reg.getNotifications({ tag: 'treino' })) : [];
 }
 
-/** O que a notificação mostra: igual ao topo do treino, com o tempo em minutos. */
-function textoDaNotificacao() {
-  const todas = sessao.exercicios.flatMap((e) => e.series);
-  const feitas = todas.filter((x) => x.feita).length;
-  const min = Math.floor((Date.now() - sessao.inicio) / 60000);
-  const tempo = min >= 60 ? `${Math.floor(min / 60)}h${String(min % 60).padStart(2, '0')}` : `${min} min`;
-  const hora = new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  return {
-    titulo: todas.length ? `${sessao.nome} · ${feitas} de ${todas.length} séries` : `${sessao.nome} em andamento`,
-    corpo: `${tempo} de treino · começou às ${hora}`,
-  };
+async function tirarNotificacao() {
+  try { for (const n of await notificacoesDoTreino()) n.close(); } catch { /* nada a tirar */ }
 }
-
-let seriesNotificadas = null; // o título da última notificação: série nova marcada, notificação nova
 
 async function notificarTreino(permissao = pedirPermissao()) {
   try {
     if (await permissao !== 'granted' || !sessao || sessao.editando) return;
+    await tirarNotificacao(); // nunca mais de uma, mesmo onde a tag não substitui
     const reg = await navigator.serviceWorker.ready;
-    const { titulo, corpo } = textoDaNotificacao();
-    seriesNotificadas = titulo;
-    await reg.showNotification(titulo, {
-      body: corpo,
-      tag: 'treino', // a mesma tag substitui a anterior: nunca fica mais de uma
-      renotify: false, // trocar o texto não pode vibrar nem tocar a cada série
+    const hora = new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    await reg.showNotification(`${sessao.nome} em andamento`, {
+      body: `Começou às ${hora}`,
+      tag: 'treino',
       timestamp: sessao.inicio,
       silent: true,
       icon: 'icones/icone-192.png',
     });
   } catch { /* sem notificação o treino segue igual */ }
-}
-
-async function tirarNotificacao() {
-  seriesNotificadas = null;
-  try { for (const n of await notificacoesDoTreino()) n.close(); } catch { /* nada a tirar */ }
-}
-
-const notificacaoLigada = () => podeNotificar() && Notification.permission === 'granted' && sessao && !sessao.editando;
-
-/** Ao sair do app: atualiza o tempo e, se ele tocou nela e o iPhone a apagou, ela volta. */
-function repoeNotificacao() {
-  if (notificacaoLigada()) notificarTreino();
-}
-
-/** Com o app aberto: só quando muda a contagem de séries, para não trocar a cada redesenho. */
-function atualizarNotificacao() {
-  if (notificacaoLigada() && textoDaNotificacao().titulo !== seriesNotificadas) notificarTreino();
 }
 
 /** Sessão sem ficha: começa vazia e os exercícios entram conforme ele treina. */
@@ -1537,7 +1508,6 @@ carregar().catch((e) => {
 // O iPhone pode acordar o app congelado de ontem, e a refeição de hoje cairia no
 // dia anterior. Com treino aberto não recarrega: ele continua contando.
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') repoeNotificacao();
   if (document.visibilityState === 'visible' && !sessao && chaveDia(new Date()) !== CHAVE_HOJE) location.reload();
 });
 
