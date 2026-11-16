@@ -175,6 +175,8 @@ function renderTreino() {
           <h1>${esc(sessao.nome)}</h1>
         </div>
         <div class="data">${editando ? dataLonga(sessao.data, ANO) + ' · ' : ''}${todas.length ? `${feitas} de ${todas.length} séries` : 'Adicione o primeiro exercício'}</div>
+        ${!editando && podeNotificar() && Notification.permission === 'default'
+          ? '<button class="chip" id="ativarNotificacao" style="margin-top:8px">🔔 Mostrar o treino na tela bloqueada</button>' : ''}
       </header>
       ${sessao.exercicios.map((ex, ie) => cartaoExercicio(ex, ie)).join('')}
       ${editando
@@ -1149,6 +1151,8 @@ document.addEventListener('click', async (ev) => {
   if ((el = achar('.aba'))) return setTela(el.dataset.tela);
   if (achar('#fab')) return folhaRegistro();
   if (achar('#avisoTreino')) return setTela('treino');
+  // Treino que já estava aberto antes da permissão: o pedido sai deste toque.
+  if (achar('#ativarNotificacao')) { await notificarTreino(pedirPermissao()); return renderTreino(); }
   if ((el = achar('[data-ir]'))) return setTela(el.dataset.ir);
   if (achar('#fecharAviso') || ev.target.id === 'folhaFundo') return fecharFolha();
 
