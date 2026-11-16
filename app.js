@@ -55,7 +55,7 @@ async function carregar() {
   // Retoma um treino que ficou aberto: o app pode ter sido encerrado no meio.
   const aberta = await db.config('sessaoAberta');
   if (aberta && aberta.data === CHAVE_HOJE) { sessao = aberta; tocarRelogio(); }
-  else if (aberta) await db.salvarConfig('sessaoAberta', null);
+  else if (aberta) { await db.salvarConfig('sessaoAberta', null); tirarNotificacao(); }
   const cor = await db.config('cor');
   if (cor) document.documentElement.style.setProperty('--cor', cor);
   renderTudo();
@@ -427,9 +427,61 @@ function agendarGuardar() {
   guardaPendente = setTimeout(guardarSessao, 500);
 }
 
+// ---- notificação do treino em andamento ----
+// O popup do cronômetro do iPhone (Live Activity) é só de app nativo. O mais perto
+// que um app web chega é uma notificação: na tela bloqueada o iPhone mostra há
+// quanto tempo ela chegou, e o corpo diz a hora em que o treino começou.
+// Só funciona com o app instalado na tela de início (iOS 16.4+) e com permissão.
+
+const podeNotificar = () => 'Notification' in window && 'serviceWorker' in navigator;
+
+/**
+ * O iPhone só mostra o pedido de permissão se ele vier direto do toque:
+ * por isso é chamado no começo do clique, antes de qualquer await.
+ */
+function pedirPermissao() {
+  if (!podeNotificar()) return Promise.resolve('denied');
+  if (Notification.permission !== 'default') return Promise.resolve(Notification.permission);
+  return Notification.requestPermission().catch(() => 'denied');
+}
+
+async function notificacoesDoTreino() {
+  const reg = await navigator.serviceWorker.getRegistration();
+  return reg ? (await reg.getNotifications({ tag: 'treino' })) : [];
+}
+
+async function notificarTreino(permissao = pedirPermissao()) {
+  try {
+    if (await permissao !== 'granted' || !sessao || sessao.editando) return;
+    const reg = await navigator.serviceWorker.ready;
+    const hora = new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    await reg.showNotification('Treino em andamento', {
+      body: `${sessao.nome} · começou às ${hora}`,
+      tag: 'treino', // a mesma tag substitui a anterior: nunca fica mais de uma
+      timestamp: sessao.inicio,
+      silent: true,
+      icon: 'icones/icone-192.png',
+    });
+  } catch { /* sem notificação o treino segue igual */ }
+}
+
+async function tirarNotificacao() {
+  try { for (const n of await notificacoesDoTreino()) n.close(); } catch { /* nada a tirar */ }
+}
+
+/** Tocar na notificação abre o app e o iPhone a apaga: ao sair de novo, ela volta. */
+async function repoeNotificacao() {
+  try {
+    if (!podeNotificar() || Notification.permission !== 'granted' || !sessao || sessao.editando) return;
+    if (!(await notificacoesDoTreino()).length) await notificarTreino();
+  } catch { /* idem */ }
+}
+
 /** Sessão sem ficha: começa vazia e os exercícios entram conforme ele treina. */
 function novaSessaoLivre() {
+  const permissao = pedirPermissao();
   sessao = { fichaId: null, nome: 'Treino', inicio: Date.now(), exercicios: [] };
+  notificarTreino(permissao);
   tocarRelogio();
   guardarSessao();
   setTela('treino');
@@ -438,6 +490,7 @@ function novaSessaoLivre() {
 async function abrirSessao(fichaId) {
   const f = fichas.find((x) => x.id === fichaId);
   if (!f) return;
+  const permissao = pedirPermissao();
   const anteriores = await db.cargasAnteriores(fichaId);
   sessao = {
     fichaId, nome: f.nome, inicio: Date.now(),
@@ -447,6 +500,7 @@ async function abrirSessao(fichaId) {
       series: modosDaFicha(e).map((modo, i) => novaSerie({ ...serieAnterior(anteriores[e.nome], i), modo })),
     })),
   };
+  notificarTreino(permissao);
   tocarRelogio();
   guardarSessao();
   setTela('treino');
@@ -552,6 +606,7 @@ async function finalizarSessao(salvarNaFicha, nomeNovaFicha) {
 
   clearInterval(tique);
   sessao = null;
+  tirarNotificacao();
   await guardarSessao();
   fichas = await db.todos(db.LOJAS.fichas);
   await recarregarTreinos();
@@ -1144,6 +1199,7 @@ document.addEventListener('click', async (ev) => {
     return finalizarSessao(false, nome);
   }
   if (achar('#cancelar')) {
+    if (!sessao?.editando) tirarNotificacao();
     clearInterval(tique);
     sessao = null;
     await guardarSessao();
@@ -1454,6 +1510,7 @@ carregar().catch((e) => {
 // O iPhone pode acordar o app congelado de ontem, e a refeição de hoje cairia no
 // dia anterior. Com treino aberto não recarrega: ele continua contando.
 document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') repoeNotificacao();
   if (document.visibilityState === 'visible' && !sessao && chaveDia(new Date()) !== CHAVE_HOJE) location.reload();
 });
 
