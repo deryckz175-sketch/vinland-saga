@@ -138,6 +138,9 @@
   .folha.aberta { transform: none; }
   .puxador { width: 36px; height: 4px; border-radius: 2px; background: var(--linha); margin: 0 auto 14px; }
   .folha h3 { margin: 0 0 14px; font-size: 17px; }
+  .serie-lida { display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid var(--linha); font-variant-numeric: tabular-nums; }
+  .serie-lida:first-of-type { border-top: 0; }
+  .serie-lida > .sub { width: 14px; text-align: right; }
   .opcao { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 0; border-bottom: 1px solid var(--linha); text-align: left; }
   .opcao:last-child { border-bottom: 0; }
   .opcao .bolha { width: 36px; height: 36px; border-radius: 10px; background: var(--surf2); display: grid; place-items: center; font-size: 17px; }
