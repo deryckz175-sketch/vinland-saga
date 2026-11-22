@@ -254,15 +254,24 @@ function editarSessao(id) {
   setTela('treino');
 }
 
-function folhaAddExercicio() {
+/** O exercício que está sendo trocado, ou null quando a busca é para acrescentar um. */
+let trocandoEx = null;
+
+function folhaAddExercicio(ie = null) {
+  trocandoEx = ie;
+  const velho = ie == null ? null : sessao.exercicios[ie];
+  const marcadas = velho ? velho.series.filter((x) => x.feita).length : 0;
   // Os resultados ficam ACIMA do campo: embaixo dele o teclado os cobria.
-  abrirFolha(`<h3>Adicionar exercício</h3>
+  abrirFolha(`<h3>${velho ? `Trocar ${esc(velho.nome)}` : 'Adicionar exercício'}</h3>
+    ${velho ? `<div class="sub" style="margin:-8px 0 10px">O novo entra no mesmo lugar, com ${velho.series.length} série${velho.series.length === 1 ? '' : 's'}.${
+      marcadas ? ` ${marcadas === 1 ? 'A série marcada sai' : `As ${marcadas} séries marcadas saem`} do treino.` : ''}</div>` : ''}
     <div id="axResultados"></div>
     <input class="busca" id="axBusca" placeholder="Buscar exercício" autocomplete="off">`);
   const lista = () => {
     const q = $('#axBusca').value.trim();
     const ql = q.toLowerCase();
-    const achados = (ql ? catalogo.filter((e) => e.nome.toLowerCase().includes(ql)) : catalogo).slice(0, 8);
+    const achados = (ql ? catalogo.filter((e) => e.nome.toLowerCase().includes(ql)) : catalogo)
+      .filter((e) => e.nome !== velho?.nome).slice(0, 8);
     $('#axResultados').innerHTML = achados.length
       ? achados.map((e) => `<button class="opcao" data-ax="${esc(e.nome)}">
           <div><div>${esc(e.nome)}</div><div class="sub">${esc(e.grupo)} · ${esc(e.equipamento)}</div></div></button>`).join('')
@@ -335,6 +344,7 @@ function cartaoExercicio(ex, ie) {
       <h2>${esc(ex.nome)}</h2>
       ${ie > 0 ? `<button class="chip apagar" data-mover-ex="${ie}:-1" aria-label="Subir exercício">↑</button>` : ''}
       ${ie < sessao.exercicios.length - 1 ? `<button class="chip apagar" data-mover-ex="${ie}:1" aria-label="Descer exercício">↓</button>` : ''}
+      <button class="chip apagar" data-trocar-ex="${ie}" aria-label="Trocar exercício">⇄</button>
       <button class="chip apagar" data-tirar-ex="${ie}" aria-label="Remover exercício">✕</button>
     </div>
     ${rec ? `<div class="sub">recorde ${virgula(rec.kg)} kg${rec.reps ? ' × ' + virgula(rec.reps) : ''}</div>` : ''}
@@ -1468,6 +1478,7 @@ document.addEventListener('click', async (ev) => {
     return renderTreino();
   }
   if (achar('#addExercicio')) return folhaAddExercicio();
+  if ((el = achar('[data-trocar-ex]'))) return folhaAddExercicio(+el.dataset.trocarEx);
   if ((el = achar('[data-ax]'))) {
     const nome = el.dataset.ax;
     // A forma (séries, tipo, reps) vem da última vez que ele fez o exercício (uma série, na primeira);
@@ -1476,8 +1487,13 @@ document.addEventListener('click', async (ev) => {
       db.ultimaVezDoExercicio(nome),
       db.cargasAnteriores(sessao.fichaId),
     ]);
-    const antes = ult?.series?.length ? ult.series : [null];
-    sessao.exercicios.push({
+    // Na troca, o lugar da ficha manda: as séries e os tipos do que saiu. As reps
+    // vêm da última vez do novo, série por série, e a carga segue a regra de sempre.
+    const velho = trocandoEx == null ? null : sessao.exercicios[trocandoEx];
+    const antes = velho
+      ? velho.series.map((v, i) => ({ ...serieAnterior(ult?.series, i), modo: v.modo || 'linear' }))
+      : (ult?.series?.length ? ult.series : [null]);
+    const novo = {
       nome,
       obs: '',
       series: antes.map((a, i) => {
@@ -1487,7 +1503,10 @@ document.addEventListener('click', async (ev) => {
         if (sessao.fichaId) s.kg = serieAnterior(porFicha[nome], i)?.kg ?? null;
         return s;
       }),
-    });
+    };
+    if (velho) sessao.exercicios[trocandoEx] = novo;
+    else sessao.exercicios.push(novo);
+    trocandoEx = null;
     fecharFolha();
     return renderTreino();
   }
