@@ -4,7 +4,7 @@ import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo
 import {
   somaBlocos, repsDaSerie, novaSerie, serieAnterior, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
-  partesDoCluster, blocosDoCluster, umRM, melhorSerie,
+  partesDoCluster, blocosDoCluster, umRM, melhorSerie, textoDaSerie, seriesEmLinha,
 } from './treino.js';
 import { itensComidos, montarDia, comQuantidade, adaptarDia } from './dieta.js';
 import { PERIODOS, recortePeso, variacaoPeso, geometriaPeso, pontoMaisPerto } from './peso.js';
@@ -183,6 +183,7 @@ function renderTreino() {
           <h1>${esc(sessao.nome)}</h1>
         </div>
         <div class="data">${editando ? dataLonga(sessao.data, ANO) + ' · ' : ''}${todas.length ? `${feitas} de ${todas.length} séries` : 'Adicione o primeiro exercício'}</div>
+        ${!editando && sessoes.length ? '<button class="chip" id="verAntigos" style="margin-top:8px">📋 Treinos antigos</button>' : ''}
         ${!editando && podeNotificar() && Notification.permission === 'default'
           ? '<button class="chip" id="ativarNotificacao" style="margin-top:8px">🔔 Mostrar o treino na tela bloqueada</button>' : ''}
       </header>
@@ -219,7 +220,7 @@ function renderTreino() {
     <button class="botao fraco" id="abrirCardio">Registrar cardio</button>
     ${sessoes.length ? `<div class="card">
       <h2>Treinos feitos</h2>
-      ${sessoes.map((s) => `<button class="linha-item linha-toque" data-sessao="${s.id}">
+      ${sessoes.map((s) => `<button class="linha-item linha-toque" data-ver-sessao="${s.id}">
         <div><div>${esc(s.nome)}</div><div class="sub">${dataLonga(s.data, ANO)} · ${resumoSessao(s)}</div></div>
         <div class="sub">›</div></button>`).join('')}
     </div>` : ''}`;
@@ -341,11 +342,78 @@ function cartaoExercicio(ex, ie) {
     ${linhas}
     <div class="ex-pe" id="backoff-${ie}">${chipsBackoff(ex, ie)}</div>
     <div class="ex-pe">
+      ${!sessao.editando && sessoes.some((x) => (x.exercicios || []).some((e) => e.nome === ex.nome))
+        ? `<button class="chip" data-hist-ex="${ie}">Histórico</button>` : ''}
       <button class="chip" data-menos-serie="${ie}">− série</button>
       <button class="chip" data-mais-serie="${ie}">+ série</button>
     </div>
     <textarea class="obs" rows="2" placeholder="Observação deste exercício" data-obs="${ie}">${esc(ex.obs || '')}</textarea>
   </div>`;
+}
+
+// ---- consultar treinos antigos ----
+// Tudo aqui é só leitura e abre numa folha por cima: o treino em andamento não é tocado.
+
+let filtroAntigos = 'ficha'; // com treino de ficha aberto, começa pelos daquela ficha
+
+/** 100 kg × 8 · RIR 2. No peso corporal a carga é o que foi somado: +15 kg. */
+function serieLegivel(x, corporal) {
+  const kg = x.kg ? `${corporal ? '+' : ''}${virgula(x.kg)} kg` : (corporal ? 'corpo' : '— kg');
+  const reps = textoDaSerie(x) || virgula(x.reps) || '—';
+  return `${kg} × ${reps}${x.rir != null ? ` <span class="sub">· RIR ${x.rir}</span>` : ''}`;
+}
+
+function folhaTreinosAntigos() {
+  const daFicha = sessao?.fichaId && !sessao.editando ? sessao.fichaId : null;
+  const filtro = daFicha ? filtroAntigos : 'todos';
+  const lista = filtro === 'ficha' ? sessoes.filter((x) => x.fichaId === daFicha) : sessoes;
+  abrirFolha(`<h3>Treinos antigos</h3>
+    ${daFicha ? `<div class="ex-pe" style="margin:0 0 6px">
+      <button class="chip ${filtro === 'ficha' ? 'sel' : ''}" data-filtro-antigos="ficha">${esc(sessao.nome)}</button>
+      <button class="chip ${filtro === 'todos' ? 'sel' : ''}" data-filtro-antigos="todos">Todos</button>
+    </div>` : ''}
+    ${lista.length ? lista.map((x) => `<button class="linha-item linha-toque" data-ver-sessao="${x.id}">
+        <div><div>${esc(x.nome)}</div><div class="sub">${dataLonga(x.data, ANO)} · ${resumoSessao(x)}</div></div>
+        <div class="sub">›</div></button>`).join('')
+      : '<div class="vazio">Nenhum treino desta ficha ainda.</div>'}`);
+}
+
+function folhaVerSessao(id) {
+  const x = sessoes.find((s) => s.id === id);
+  if (!x) return;
+  const corpo = x.tipo === 'cardio'
+    ? `<div class="card"><div>${esc(x.atividade || x.nome)}</div><div class="sub">${x.minutos} min</div></div>`
+    : (x.exercicios || []).map((e) => {
+      const corporal = ehCorporal(e.nome);
+      return `<div class="card">
+        <div class="ex-cab"><h2>${esc(e.nome)}</h2></div>
+        ${e.series.map((se, i) => `<div class="serie-lida"><span class="sub">${i + 1}</span><span>${serieLegivel(se, corporal)}</span></div>`).join('')}
+        ${e.obs ? `<div class="sub" style="margin-top:8px">${esc(e.obs)}</div>` : ''}
+      </div>`;
+    }).join('');
+  abrirFolha(`<button class="chip" data-voltar-antigos>‹ Treinos antigos</button>
+    <h3 style="margin-top:12px">${esc(x.nome)}</h3>
+    <div class="sub" style="margin:-8px 0 14px">${dataLonga(x.data, ANO)}${x.minutos ? ` · ${x.minutos} min` : ''}</div>
+    ${corpo}
+    ${sessao ? '' : `<button class="botao fraco" data-sessao="${x.id}">Editar este treino</button>`}`);
+}
+
+/** As últimas vezes de um exercício, em qualquer ficha, com a ficha de cada vez. */
+function folhaHistoricoExercicio(nome) {
+  const corporal = ehCorporal(nome);
+  const vezes = [];
+  for (const x of sessoes) {
+    const e = (x.exercicios || []).find((ex) => ex.nome === nome);
+    if (e) vezes.push({ x, e });
+    if (vezes.length === 12) break;
+  }
+  const rec = recordes[nome];
+  abrirFolha(`<h3>${esc(nome)}</h3>
+    ${rec ? `<div class="sub" style="margin:-8px 0 10px">recorde ${corporal ? '+' : ''}${virgula(rec.kg)} kg${rec.reps ? ' × ' + virgula(rec.reps) : ''}</div>` : ''}
+    ${vezes.map(({ x, e }) => `<button class="linha-item linha-toque" data-ver-sessao="${x.id}">
+      <div><div>${seriesEmLinha(e, corporal) || '—'}</div>
+        <div class="sub">${dataLonga(x.data, ANO)} · ${esc(x.nome)}${sessao?.fichaId && x.fichaId === sessao.fichaId ? ' · esta ficha' : ''}</div></div>
+      <div class="sub">›</div></button>`).join('')}`);
 }
 
 /** A série apontada por um data-* no formato "exercício:série". */
@@ -1297,7 +1365,11 @@ document.addEventListener('click', async (ev) => {
 
   if ((el = achar('[data-ficha]'))) return abrirSessao(el.dataset.ficha);
   if (achar('#novaFicha')) return folhaNovaFicha();
-  if ((el = achar('[data-sessao]'))) return editarSessao(Number(el.dataset.sessao));
+  if ((el = achar('[data-sessao]'))) { fecharFolha(); return editarSessao(Number(el.dataset.sessao)); }
+  if (achar('#verAntigos') || achar('[data-voltar-antigos]')) return folhaTreinosAntigos();
+  if ((el = achar('[data-filtro-antigos]'))) { filtroAntigos = el.dataset.filtroAntigos; return folhaTreinosAntigos(); }
+  if ((el = achar('[data-ver-sessao]'))) return folhaVerSessao(Number(el.dataset.verSessao));
+  if ((el = achar('[data-hist-ex]'))) return folhaHistoricoExercicio(sessao.exercicios[+el.dataset.histEx].nome);
   if (achar('#salvarEdicao')) return salvarEdicao();
 
   if ((el = achar('#apagarSessao'))) {

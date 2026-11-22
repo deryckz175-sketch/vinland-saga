@@ -4,7 +4,7 @@ import { chaveDia, diasDoMes, somaMacros, dataLonga, somaDias, MESES } from './d
 import {
   somaBlocos, repsDaSerie, novaSerie, cargaDeTopo, backoff, modosDaFicha,
   temBlocos, mudarTipo, lerNumero, virgula, textoDoTreino,
-  partesDoCluster, blocosDoCluster, umRM, melhorSerie, serieAnterior,
+  partesDoCluster, blocosDoCluster, umRM, melhorSerie, serieAnterior, seriesEmLinha,
 } from './treino.js';
 import { itensComidos, refeicoesDoPlano, comQuantidade, montarDia, adaptarRefeicao, adaptarDia } from './dieta.js';
 import { ZOOM_MAXIMO, estiloFoto, circuloDoAjuste, ajusteDoCirculo, moverCirculo, tamanhoCirculo } from './foto.js';
@@ -336,6 +336,13 @@ assert.ok(azeiteJanta < 12, `o azeite da janta diminui (${azeiteJanta} g)`);
 assert.ok(perto(diaAjustado.flatMap((r) => r.itens), alvoDia, 0.01), 'o dia volta a bater as kcal e os macros');
 assert.deepEqual(adaptarDia(diaTeste.map((r) => ({ ...r, feita: true })), alvoDia).map((r) => r.itens),
   diaTeste.map((r) => r.itens), 'tudo concluído: nada muda');
+
+// Histórico do exercício: mesma carga junta, com a unidade.
+assert.equal(seriesEmLinha({ nome: 'Supino', series: [
+  { modo: 'linear', kg: 100, reps: 8 }, { modo: 'linear', kg: 100, reps: 8 }, { modo: 'linear', kg: 92.5, reps: 10 },
+] }), '100 kg × 8/8 · 92,5 kg × 10');
+assert.equal(seriesEmLinha({ nome: 'Barra', series: [{ modo: 'linear', kg: 10, reps: 6 }] }, true), '+10 kg × 6');
+assert.equal(seriesEmLinha({ nome: 'Barra', series: [{ modo: 'linear', kg: null, reps: 12 }] }, true), '12');
 
 // ---- peso ----
 const pesagens = [

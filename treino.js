@@ -129,7 +129,7 @@ function textoCluster(b) {
 }
 
 /** Uma série escrita: 8,5 na linear, 5+2+2 no rest pause, 4:2-1 no cluster. */
-function textoDaSerie(s) {
+export function textoDaSerie(s) {
   const b = (s.blocos || []).filter((x) => x != null);
   if (!temBlocos(s.modo) || !b.length) return virgula(s.reps);
   if (b.length === 1) return virgula(b[0]);
@@ -137,7 +137,7 @@ function textoDaSerie(s) {
 }
 
 /** Séries seguidas com a mesma carga ficam juntas (65 4/4/4); carga nova abre grupo (70 8 / 60 8). */
-function linhaDoExercicio(ex, corporal) {
+export function gruposDeCarga(ex) {
   const grupos = [];
   for (const s of ex.series) {
     const texto = textoDaSerie(s);
@@ -146,9 +146,20 @@ function linhaDoExercicio(ex, corporal) {
     if (ultimo && ultimo.kg === s.kg) ultimo.series.push(texto);
     else grupos.push({ kg: s.kg, series: [texto] });
   }
+  return grupos;
+}
+
+function linhaDoExercicio(ex, corporal) {
+  const grupos = gruposDeCarga(ex);
   if (!grupos.length) return '';
   const carga = (kg) => (kg ? `${corporal ? '+' : ''}${virgula(kg)} ` : '');
   return `${ex.nome} ${grupos.map((g) => carga(g.kg) + g.series.join('/')).join(' / ')}`;
+}
+
+/** As séries numa linha para ler, com a unidade: 100 kg × 8/8 · 90 kg × 10. */
+export function seriesEmLinha(ex, corporal = false) {
+  const carga = (kg) => (kg ? `${corporal ? '+' : ''}${virgula(kg)} kg × ` : '');
+  return gruposDeCarga(ex).map((g) => carga(g.kg) + g.series.join('/')).join(' · ');
 }
 
 /** O treino em texto, um exercício por linha. No peso corporal a carga é o que foi somado: +15. */
